@@ -1,0 +1,49 @@
+﻿<Grid xmlns="http://xamarin.com/schemas/2014/forms"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            NavigationPage.HasNavigationBar="False"
+            x:Class="PTHPlayer.ChannelControl"
+            xmlns:local="clr-namespace:PTHPlayer.ViewModels" 
+            xmlns:modal="clr-namespace:PTHPlayer.Modals"
+            VerticalOptions="FillAndExpand"
+            HorizontalOptions="FillAndExpand"
+            ColumnSpacing="0"
+            RowSpacing="0"
+            xmlns:tizen="clr-namespace:Xamarin.Forms.PlatformConfiguration.TizenSpecific;assembly=Xamarin.Forms.Core">
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="3*" />
+            </Grid.ColumnDefinitions>
+            
+            <ListView Grid.Column="0" x:Name="ChannelListView"
+                ItemsSource="{Binding Items}"
+                ItemTapped="Handle_ItemTapped"
+                BackgroundColor="Transparent">
+                <!--Built in Cells-->
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell >
+                            <ViewCell.View Opacity="0" >
+                                <Grid Padding="2">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition  Height="40"></RowDefinition>
+                                        <RowDefinition Height="24"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="70"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="40"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Text="{Binding Number}" LineBreakMode="TailTruncation" FontSize="80"/>
+                                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding Label}" Font="Medium"  TextColor="Gray" LineBreakMode="TailTruncation"/>
+                                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding Title}" Font="Small"  TextColor="Gray" FontSize="36" LineBreakMode="TailTruncation"/>
+                                    <Image Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Source="{Binding Image}" Aspect="AspectFill"/>
+                                </Grid>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+

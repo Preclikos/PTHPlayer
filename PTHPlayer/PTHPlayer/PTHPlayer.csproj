@@ -1,0 +1,68 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
+    <PackageReference Include="Tizen.NET.TV" Version="5.5.0.4997532" />
+    <PackageReference Include="Xamarin.Forms" Version="4.7.0.1351" />
+	  <PackageReference Include="SkiaSharp" Version="1.60.3">
+		  <ExcludeAssets>Runtime</ExcludeAssets>
+	  </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PTHPlayer.HTSP\PTHPlayer.HTSP.csproj" />
+  </ItemGroup>
+
+    <ItemGroup>
+    <Compile Update="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\ChannelControl.xaml.cs">
+      <DependentUpon>ChannelControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\PlayerControl.xaml.cs">
+      <DependentUpon>PlayerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Modals\SubtitleSelectionControl.xaml.cs">
+      <DependentUpon>SubtitleSelectionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Modals\AudioSelectionControl.xaml.cs">
+      <DependentUpon>AudioSelectionControl.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+
+	<PropertyGroup>
+		<TizenTpkExcludePattern Condition="'$(TargetFramework)' == 'tizen50'">runtimes\*\native\libSkiaSharp.so;</TizenTpkExcludePattern>
+	</PropertyGroup>
+
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<ItemGroup>
+    <EmbeddedResource Update="App.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="MainPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Modals\AudioSelectionControl.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Modals\NotificationControl.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

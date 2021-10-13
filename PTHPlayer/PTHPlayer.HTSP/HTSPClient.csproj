@@ -1,0 +1,16 @@
+﻿<Project Sdk="Tizen.NET.Sdk/1.1.6">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp2.1</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Tizen.NET.TV" Version="6.6.0.5599517">
+			<ExcludeAssets>Runtime</ExcludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Packets\" />
+	</ItemGroup>
+</Project>

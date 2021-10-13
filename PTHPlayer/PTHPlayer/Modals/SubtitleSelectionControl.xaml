@@ -1,0 +1,40 @@
+﻿<StackLayout 
+            xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PTHPlayer.Modals.SubtitleSelectionControl"
+             xmlns:local="clr-namespace:PTHPlayer.Modals.ModalViewModels">
+    <StackLayout.BindingContext>
+        <local:SubtitleSelectionViewModel/>
+    </StackLayout.BindingContext>
+
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="500"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="500"/>
+        </Grid.ColumnDefinitions>
+
+        <StackLayout  Grid.Row="1" Grid.Column="1" BackgroundColor="#9F000000">
+        <Label Text="Titulky" />
+        <Switch IsToggled="{Binding SubtitleEnabled}" Toggled="SubtitleEnable_Toggled" x:Name="SubtitleEnable" />
+        <ListView            
+                x:Name="SubtitleSelectionList"
+                ItemsSource="{Binding SubtitleConfig}"
+                ItemTapped="Handle_ItemTapped"
+                BackgroundColor="Transparent">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Language}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        </StackLayout>
+    </Grid>
+</StackLayout>
