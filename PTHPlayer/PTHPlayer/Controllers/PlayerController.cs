@@ -66,7 +66,7 @@ namespace PTHPlayer.Controllers
                 CancellationTokenSrc = new CancellationTokenSource();
             }
 
-            Task.Run(async () => await SubscriptionProcess(channelId));
+             _ = SubscriptionProcess(channelId);
         }
 
         async Task SubscriptionProcess(int channelId)
@@ -119,13 +119,16 @@ namespace PTHPlayer.Controllers
             }
         }
 
-        public void UnSubscribe()
+        public void UnSubscribe(bool forceStop = false)
         {
             SubscriptionStop = new TaskCompletionSource<HTSMessage>();
             HTSPClient.UnSubscribe(SubscriptionId);
-            if (Status != SubscriptionStatus.New)
+            if (Status != SubscriptionStatus.New || forceStop)
             {
-                SubscriptionStop.Task.Wait(2000);
+                if (!forceStop)
+                {
+                    SubscriptionStop.Task.Wait(2000);
+                }
                 SubtitlePlayer.Stop();
                 PlayerService.SubscriptionStop();
             }
@@ -142,12 +145,7 @@ namespace PTHPlayer.Controllers
             return PlayerService.GetSubtitleConfigs();
         }
 
-        public void ChangeAudioTrack(int indexId)
-        {
-            Task.Run(async () => await ChangeAudioTrackProcess(indexId));
-        }
-
-        public async Task ChangeAudioTrackProcess(int indexId)
+        public async Task ChangeAudioTrack(int indexId)
         {
             Status = SubscriptionStatus.Pause;
 

@@ -51,7 +51,7 @@ namespace PTHPlayer.Modals
 
             var audioConfig = (AudioConfigModel)e.Item;
 
-            VideoPlayerController.ChangeAudioTrack(audioConfig.Index);
+            _ = VideoPlayerController.ChangeAudioTrack(audioConfig.Index);
 
             ((ListView)sender).SelectedItem = null;
         }

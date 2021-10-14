@@ -2,7 +2,6 @@
 using PTHPlayer.DataStorage.Service;
 using PTHPlayer.HTSP;
 using PTHPlayer.HTSP.Listeners;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -43,14 +42,13 @@ namespace PTHPlayer
 
             // Handle when your app sleeps
             //PlayerService.Stop();
-            Task.Run(() =>
-            {
-                VideoPlayerController.UnSubscribe();
-                HTSPService.Close();
-            });
+
+            VideoPlayerController.UnSubscribe(true);
+            HTSPService.Close();
+
             //VideoPlayerController.UnSubscribe();
 
-            
+
 
             //PlayerService.CleanUp();
         }
@@ -72,10 +70,9 @@ namespace PTHPlayer
                 if (LastChannelId != -1)
                 {
 
-                    Task.Run(() =>
-                    {
-                        VideoPlayerController.Subscription(LastChannelId);
-                    });
+
+                    VideoPlayerController.Subscription(LastChannelId);
+
                     App.DataService.SelectedChannelId = LastChannelId;
                 }
             }
