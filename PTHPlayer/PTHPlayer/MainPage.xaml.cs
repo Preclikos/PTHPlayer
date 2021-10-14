@@ -1,7 +1,8 @@
 ﻿using PTHPlayer.Controllers;
 using PTHPlayer.Enums;
 using PTHPlayer.Interfaces;
-using PTHPlayer.Subtitles.Player;
+using PTHPlayer.VideoPlayer.Enums;
+using PTHPlayer.VideoPlayer.Models;
 using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -21,7 +22,7 @@ namespace PTHPlayer
             InitializeComponent();
             VideoPlayerController = videoPlayerController;
 
-            VideoPlayerControl = new PlayerControl(VideoPlayerController) { IsVisible = false};
+            VideoPlayerControl = new PlayerControl(VideoPlayerController) { IsVisible = false };
             MainContent.Children.Add(VideoPlayerControl);
 
             ChannelSelectionControl = new ChannelControl(VideoPlayerController) { IsVisible = false };
@@ -34,8 +35,7 @@ namespace PTHPlayer
         {
             base.OnAppearing();
 
-            VideoPlayerController.PlayerPlay += PlayerService_PlayerPlay;
-            VideoPlayerController.PlayerStop += PlayerService_PlayerStop;
+            VideoPlayerController.PlayerStateChange += PlayerService_StateChange;
 
             MessagingCenter.Subscribe<IKeyEventSender, string>(this, "KeyDown",
              async (sender, arg) =>
@@ -93,22 +93,29 @@ namespace PTHPlayer
              });
         }
 
-        private void PlayerService_PlayerStop(object sender, System.EventArgs e)
+        private void PlayerService_StateChange(object sender, PlayerStateChangeEventArgs e)
         {
-            Device.BeginInvokeOnMainThread(() =>
+            switch (e.State)
             {
-                MainLogo.Source = ImageSource.FromFile("icons/share200.gif");
-                MainLogo.IsAnimationPlaying = true;
-                MainLogo.FadeTo(1, 200);
-            });
-        }
-
-        private void PlayerService_PlayerPlay(object sender, System.EventArgs e)
-        {
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                MainLogo.FadeTo(0, 1000);
-            });
+                case PlayerStates.Stop:
+                    {
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            MainLogo.Source = ImageSource.FromFile("icons/share200.gif");
+                            MainLogo.IsAnimationPlaying = true;
+                            MainLogo.FadeTo(1, 200);
+                        });
+                        break;
+                    }
+                case PlayerStates.Play:
+                    {
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            MainLogo.FadeTo(0, 1000);
+                        });
+                        break;
+                    }
+            }
         }
 
         protected override bool OnBackButtonPressed()

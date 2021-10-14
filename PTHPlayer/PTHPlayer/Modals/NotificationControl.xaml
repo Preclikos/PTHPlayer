@@ -14,6 +14,6 @@
     </Grid.ColumnDefinitions>
 
     <StackLayout Grid.Column="1" Grid.Row="1" x:Name="NotificationLayout">
-        <Label Text="Test" />
+        <!-- <Label Text="Test" /> -->
     </StackLayout>
 </Grid>

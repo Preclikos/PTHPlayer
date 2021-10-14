@@ -16,8 +16,7 @@ namespace PTHPlayer.VideoPlayer.Player
 {
     public class PlayerService
     {
-        public event EventHandler<EventArgs> PlayerPlay;
-        public event EventHandler<EventArgs> PlayerStop;
+        public event EventHandler<PlayerStateChangeEventArgs> PlayerStateChange;
         public event EventHandler<PlayerErrorEventArgs> PlayerError;
 
         private List<PacketModel> bufferedPackets = new List<PacketModel>();
@@ -217,6 +216,10 @@ namespace PTHPlayer.VideoPlayer.Player
         public void PushToBuffer(HTSMessage muxPkt)
         {
             var packet = ParsePacket(muxPkt);
+            if (videoConfig.Index != packet.StreamId && audioConfig.Index != packet.StreamId && subtitleConfig.Index != packet.StreamId)
+            {
+                return;
+            }
             bufferedPackets.Add(packet);
         }
 
@@ -310,7 +313,7 @@ namespace PTHPlayer.VideoPlayer.Player
                 audioPacketCount = 0;
                 if (NativePlayerService.GetPlayerState() == 3)
                 {
-                    DelegatePlayerPlay(new EventArgs());
+                    DelegatePlayerStateChange(new PlayerStateChangeEventArgs() { State = PlayerStates.Play });
                 }
             }
 
@@ -372,7 +375,7 @@ namespace PTHPlayer.VideoPlayer.Player
         public void SubscriptionStop()
         {
 
-            DelegatePlayerStop(new EventArgs());
+            DelegatePlayerStateChange(new PlayerStateChangeEventArgs() { State = PlayerStates.Stop });
 
             CleanUp();
 
@@ -408,18 +411,9 @@ namespace PTHPlayer.VideoPlayer.Player
             }
         }
 
-        protected void DelegatePlayerPlay(EventArgs e)
+        protected void DelegatePlayerStateChange(PlayerStateChangeEventArgs e)
         {
-            EventHandler<EventArgs> handler = PlayerPlay;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        protected void DelegatePlayerStop(EventArgs e)
-        {
-            EventHandler<EventArgs> handler = PlayerStop;
+            EventHandler<PlayerStateChangeEventArgs> handler = PlayerStateChange;
             if (handler != null)
             {
                 handler(this, e);

@@ -1,8 +1,8 @@
 ﻿using PTHPlayer.Controllers;
 using PTHPlayer.DataStorage.Service;
 using PTHPlayer.HTSP;
-using PTHPlayer.Models;
-using System.Threading;
+using PTHPlayer.HTSP.Listeners;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -11,13 +11,12 @@ namespace PTHPlayer
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class App : Application
     {
-        public static HTSPClientModel HTSPService;
+        public static HTSPService HTSPService;
         public static HTSPListener HTPListener;
         public static DataModel DataService;
         private static int LastChannelId = -1;
 
         private PlayerController VideoPlayerController;
-        private CancellationTokenSource CancellationTokenSource;
         public App()
         {
             InitializeComponent();
@@ -28,7 +27,7 @@ namespace PTHPlayer
         {
             DataService = new DataModel();
 
-            HTSPService = new HTSPClientModel();
+            HTSPService = new HTSPService();
 
             VideoPlayerController = new PlayerController(HTSPService);
 
@@ -44,17 +43,22 @@ namespace PTHPlayer
 
             // Handle when your app sleeps
             //PlayerService.Stop();
+            Task.Run(() =>
+            {
+                VideoPlayerController.UnSubscribe();
+                HTSPService.Close();
+            });
+            //VideoPlayerController.UnSubscribe();
 
-            HTSPService.Close();
+            
 
             //PlayerService.CleanUp();
-
-            CancellationTokenSource.Cancel();
         }
 
         protected override void OnResume()
         {
-            CancellationTokenSource = new CancellationTokenSource();
+            //VideoPlayerController.ResetState();
+
             if (HTSPService.NeedRestart())
             {
                 DataService = new DataModel();
@@ -67,7 +71,11 @@ namespace PTHPlayer
 
                 if (LastChannelId != -1)
                 {
-                    VideoPlayerController.Subscription(LastChannelId);
+
+                    Task.Run(() =>
+                    {
+                        VideoPlayerController.Subscription(LastChannelId);
+                    });
                     App.DataService.SelectedChannelId = LastChannelId;
                 }
             }

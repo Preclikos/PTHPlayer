@@ -1,13 +1,13 @@
-﻿using PTHPlayer.HTSP;
-using PTHPlayer.HTSP.HTSP_Responses;
+﻿using PTHPlayer.HTSP.HTSP_Responses;
+using PTHPlayer.HTSP.Listeners;
 using System;
 
-namespace PTHPlayer.Models
+namespace PTHPlayer.HTSP
 {
-    public class HTSPClientModel
+    public class HTSPService
     {
         public static HTSConnectionAsync HTPClient;
-        public HTSPClientModel()
+        public HTSPService()
         {
         }
 

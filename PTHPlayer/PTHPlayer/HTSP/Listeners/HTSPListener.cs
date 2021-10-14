@@ -5,7 +5,7 @@ using PTHPlayer.VideoPlayer.Player;
 using System;
 using System.Linq;
 
-namespace PTHPlayer.HTSP
+namespace PTHPlayer.HTSP.Listeners
 {
     public class HTSPListener : HTSConnectionListener
     {
@@ -31,27 +31,21 @@ namespace PTHPlayer.HTSP
                 case "subscriptionStart":
                     {
                         SubcriptionListener.OnSubscriptionStart(response);
-                        //PlayerService.Subscription(response);
                         break;
                     }
                 case "subscriptionStop":
                     {
                         SubcriptionListener.OnSubscriptionStop(response);
-                        //PlayerService.SubscriptionStop(response);
                         break;
                     }
                 case "subscriptionSkip":
                     {
-                        //SubcriptionListener.OnSubscriptionSkip(response);
+                        SubcriptionListener.OnSubscriptionSkip(response);
                         break;
                     }
                 case "muxpkt":
                     {
                         SubcriptionListener.OnMuxPkt(response);
-                        //if(SubcriptionListener.OnMuxPkt(response))
-                        //{
-                        // PlayerService.Packet(response);
-                        //}
                         break;
                     }
                 case "channelAdd":

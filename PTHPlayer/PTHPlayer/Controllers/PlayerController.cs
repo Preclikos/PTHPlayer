@@ -15,10 +15,9 @@ namespace PTHPlayer.Controllers
 {
     public class PlayerController : IPlayerListener
     {
-        public event EventHandler<EventArgs> PlayerPlay;
-        public event EventHandler<EventArgs> PlayerStop;
+        public event EventHandler<PlayerStateChangeEventArgs> PlayerStateChange;
 
-        HTSPClientModel HTSPClient { get; }
+        HTSPService HTSPClient { get; }
         PlayerService PlayerService { get; }
         SubtitlePlayer SubtitlePlayer { get; }
 
@@ -35,15 +34,14 @@ namespace PTHPlayer.Controllers
 
         SubscriptionStatus Status = SubscriptionStatus.New;
 
-        public PlayerController(HTSPClientModel hTSPClient)
+        public PlayerController(HTSPService hTSPClient)
         {
             HTSPClient = hTSPClient;
 
             PlayerService = new PlayerService();
             SubtitlePlayer = new SubtitlePlayer(PlayerService);
 
-            PlayerService.PlayerPlay += DelegatePlayerPlay;
-            PlayerService.PlayerStop += DelegatePlayerStop;
+            PlayerService.PlayerStateChange += DelegatePlayerStateChange;
         }
 
         public void SetSubtitleDisplay(Image image)
@@ -51,8 +49,17 @@ namespace PTHPlayer.Controllers
             SubtitlePlayer.SetDisplay(image);
         }
 
+        public void Stop()
+        {
+            SubtitlePlayer.Stop();
+            PlayerService.SubscriptionStop();
+            Status = SubscriptionStatus.New;
+
+        }
+
         public void Subscription(int channelId)
         {
+
             if (Status == SubscriptionStatus.New)
             {
                 CancellationTokenSrc.Cancel();
@@ -112,13 +119,13 @@ namespace PTHPlayer.Controllers
             }
         }
 
-        void UnSubscribe()
+        public void UnSubscribe()
         {
             SubscriptionStop = new TaskCompletionSource<HTSMessage>();
             HTSPClient.UnSubscribe(SubscriptionId);
             if (Status != SubscriptionStatus.New)
             {
-                SubscriptionStop.Task.Wait();
+                SubscriptionStop.Task.Wait(2000);
                 SubtitlePlayer.Stop();
                 PlayerService.SubscriptionStop();
             }
@@ -212,18 +219,9 @@ namespace PTHPlayer.Controllers
             PlayerService.EnableSubtitleTrack(isEnabled, index);
         }
 
-        protected void DelegatePlayerPlay(object sender, EventArgs e)
+        protected void DelegatePlayerStateChange(object sender, PlayerStateChangeEventArgs e)
         {
-            EventHandler<EventArgs> handler = PlayerPlay;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        protected void DelegatePlayerStop(object sender, EventArgs e)
-        {
-            EventHandler<EventArgs> handler = PlayerStop;
+            EventHandler<PlayerStateChangeEventArgs> handler = PlayerStateChange;
             if (handler != null)
             {
                 handler(this, e);
