@@ -65,7 +65,7 @@
         </StackLayout>
         <ProgressBar Margin="0" Progress="{Binding Progress}" ScaleY="3" BackgroundColor="DarkSlateBlue" />
         <StackLayout Orientation="Horizontal">
-            <component:PlayerButton Margin="0, 15" ImageSource="icons/multimedia.png" WidthRequest="100" Clicked="Handle_PlayButton" HorizontalOptions="Start" BackgroundColor="Transparent" />
+            <component:PlayerButton x:Name="PlayButton" Margin="0, 15" ImageSource="icons/multimedia.png" WidthRequest="100" Clicked="Handle_PlayButton" HorizontalOptions="Start" BackgroundColor="Transparent" />
             <Label HorizontalOptions="CenterAndExpand"/>
             <component:PlayerButton Margin="0, 15" ImageSource="icons/messages.png" WidthRequest="100" Clicked="Handle_SubtitleSelection" HorizontalOptions="End" BackgroundColor="Transparent" />
             <component:PlayerButton Margin="0, 15" ImageSource="icons/loudspeaker_fixedColor.png" WidthRequest="100"  Clicked="Handle_AudioSelection" HorizontalOptions="End" BackgroundColor="Transparent" />

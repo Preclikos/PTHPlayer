@@ -239,6 +239,7 @@ namespace PTHPlayer
 
                  if (arg == "XF86RaiseChannel" || arg == "XF86LowerChannel")
                  {
+                     PlayButton.Focus();
                      switch (arg)
                      {
 

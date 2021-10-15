@@ -71,7 +71,14 @@ namespace PTHPlayer
 
         private void CredentialPage_Disappearing(object sender, System.EventArgs e)
         {
-            HTSPConnectionController.Connect();
+            if (!DataStorageService.IsCredentialsExist())
+            {
+                Current.Quit();
+            }
+            else
+            {
+                HTSPConnectionController.Connect();
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace PTHPlayer
+namespace PTHPlayer.Controls
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ChannelControl : Grid

@@ -22,7 +22,7 @@
         </Grid.ColumnDefinitions>
 
         <StackLayout Grid.Row="1" Grid.Column="1" BackgroundColor="#9F000000">
-        <Label  Text="Audio Stopy" />
+        <Label  Text="Audio Stopy" FontSize="Large" />
             <ListView tizen:VisualElement.Style="default"
                 x:Name="AudioSelectionList"
                 ItemsSource="{Binding AudioConfig}"

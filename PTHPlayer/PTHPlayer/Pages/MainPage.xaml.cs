@@ -1,4 +1,5 @@
 ﻿using PTHPlayer.Controllers;
+using PTHPlayer.Controls;
 using PTHPlayer.Enums;
 using PTHPlayer.Interfaces;
 using PTHPlayer.VideoPlayer.Enums;
@@ -86,7 +87,7 @@ namespace PTHPlayer.Pages
                              }
                              else
                              {
-                                 Application.Current.Quit();
+                                 ExitModal.IsVisible = true;
                              }
                              break;
                          }
@@ -104,13 +105,13 @@ namespace PTHPlayer.Pages
                         {
                             Loading.IsAnimationPlaying = true;
                             Loading.FadeTo(1, 200);
-                            
+
                         });
                         break;
                     }
                 case PlayerStates.Play:
                     {
-                        if(MainLogo.Opacity != 0)
+                        if (MainLogo.Opacity != 0)
                         {
                             Device.BeginInvokeOnMainThread(() =>
                             {
