@@ -23,6 +23,7 @@
                 </Grid.ColumnDefinitions>
                 
                 <Image Grid.Column="1" Grid.Row="1" Source="logo.png" x:Name="MainLogo" />
+                <Image Grid.Column="1" Grid.Row="1" Source="icons/share200.gif" x:Name="Loading" />
             </Grid>
             <modal:NotificationControl x:Name="NotificationArea" />
             <StackLayout x:Name="MainContent" Grid.Row="0" Grid.Column="0"  >

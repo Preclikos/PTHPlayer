@@ -66,7 +66,7 @@ namespace PTHPlayer.Controllers
                 CancellationTokenSrc = new CancellationTokenSource();
             }
 
-             _ = SubscriptionProcess(channelId);
+             Task.Run(() => _= SubscriptionProcess(channelId));
         }
 
         async Task SubscriptionProcess(int channelId)
@@ -103,7 +103,8 @@ namespace PTHPlayer.Controllers
                     await PlayerService.PacketReady();
                     Status = SubscriptionStatus.Play;
 
-                    await playerPrepare;
+                    //Wait block packet for a while this do scratch on start -- maybe
+                    playerPrepare.Wait();
                     SubtitlePlayer.Start();
                 }
                 else
@@ -147,25 +148,28 @@ namespace PTHPlayer.Controllers
             return PlayerService.GetSubtitleConfigs();
         }
 
-        public async Task ChangeAudioTrack(int indexId)
+        public void ChangeAudioTrack(int indexId)
         {
-            Status = SubscriptionStatus.Pause;
-
-            PlayerService.ChangeAudioTrack(indexId);
-
-            CalculationFps = new TaskCompletionSource<bool>();
-            CalculationSampleRate = new TaskCompletionSource<bool>();
-
-            var results = Task.WaitAll(new[] { CalculationFps.Task, CalculationSampleRate.Task }, 5000);
-            if (results)
+            Task.Run(async () =>
             {
-                var playerPrepare = PlayerService.PreparePlayer();
+                Status = SubscriptionStatus.Pause;
 
-                await PlayerService.PacketReady();
-                Status = SubscriptionStatus.Play;
+                PlayerService.ChangeAudioTrack(indexId);
 
-                await playerPrepare;
-            }
+                CalculationFps = new TaskCompletionSource<bool>();
+                CalculationSampleRate = new TaskCompletionSource<bool>();
+
+                var results = Task.WaitAll(new[] { CalculationFps.Task, CalculationSampleRate.Task }, 5000);
+                if (results)
+                {
+                    var playerPrepare = PlayerService.PreparePlayer();
+
+                    await PlayerService.PacketReady();
+                    Status = SubscriptionStatus.Play;
+
+                    playerPrepare.Wait();
+                }
+            });
         }
 
         public void OnSubscriptionStart(HTSMessage message)

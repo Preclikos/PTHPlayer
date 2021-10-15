@@ -102,17 +102,25 @@ namespace PTHPlayer.Pages
                     {
                         Device.BeginInvokeOnMainThread(() =>
                         {
-                            MainLogo.Source = ImageSource.FromFile("icons/share200.gif");
-                            MainLogo.IsAnimationPlaying = true;
-                            MainLogo.FadeTo(1, 200);
+                            Loading.IsAnimationPlaying = true;
+                            Loading.FadeTo(1, 200);
+                            
                         });
                         break;
                     }
                 case PlayerStates.Play:
                     {
+                        if(MainLogo.Opacity != 0)
+                        {
+                            Device.BeginInvokeOnMainThread(() =>
+                            {
+                                MainLogo.FadeTo(0, 1000);
+                            });
+                        }
+
                         Device.BeginInvokeOnMainThread(() =>
                         {
-                            MainLogo.FadeTo(0, 1000);
+                            Loading.FadeTo(0, 1000);
                         });
                         break;
                     }

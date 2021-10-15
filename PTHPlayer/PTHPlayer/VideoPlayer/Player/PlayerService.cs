@@ -31,7 +31,7 @@ namespace PTHPlayer.VideoPlayer.Player
         int videoPacketCount = -1;
         int audioPacketCount = -1;
 
-        const int bufferedSeconds = 3;
+        const int bufferedSeconds = 5;
 
         int videoBufferSizeInFrames = 0;
         int audioBufferSizeInFrames = 0;
