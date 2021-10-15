@@ -55,13 +55,13 @@ namespace PTHPlayer.HTSP.Listeners
                         var nextEventId = response.getInt("nextEventId");
                         var channName = response.getString("channelName");
                         var channNumber = response.getInt("channelNumber");
-                        App.DataService.Channels.Add(new ChannelModel() { Label = channName, Id = channId, Number = channNumber, EventId = eventId, NextEventId = nextEventId });
+                        App.DataStorageService.Channels.Add(new ChannelModel() { Label = channName, Id = channId, Number = channNumber, EventId = eventId, NextEventId = nextEventId });
                         break;
                     }
                 case "channelUpdate":
                     {
                         var channId = response.getInt("channelId");
-                        var channel = App.DataService.Channels.SingleOrDefault(s => s.Id == channId);
+                        var channel = App.DataStorageService.Channels.SingleOrDefault(s => s.Id == channId);
                         if (channel != null)
                         {
                             if (response.containsField("eventId"))
@@ -82,8 +82,8 @@ namespace PTHPlayer.HTSP.Listeners
                 case "channelDelete":
                     {
                         var channId = response.getInt("channelId");
-                        App.DataService.Channels.RemoveAll(r => r.Id == channId);
-                        App.DataService.EPGs.RemoveAll(r => r.ChannelId == channId);
+                        App.DataStorageService.Channels.RemoveAll(r => r.Id == channId);
+                        App.DataStorageService.EPGs.RemoveAll(r => r.ChannelId == channId);
                         break;
                     }
                 case "initialSyncCompleted":
@@ -128,7 +128,7 @@ namespace PTHPlayer.HTSP.Listeners
 
                         var epg = new EPGModel() { EventId = eventId, ChannelId = channelId, Title = title, Summary = summary, Description = description, Start = UnixTimeStampToDateTime(start), End = UnixTimeStampToDateTime(stop) };
 
-                        App.DataService.EPGs.Add(epg);
+                        App.DataStorageService.EPGs.Add(epg);
 
                         break;
                     }
@@ -155,7 +155,7 @@ namespace PTHPlayer.HTSP.Listeners
                 case "signalStatus":
                     {
                         var parsedSignal = new SignalStatusParser(response);
-                        App.DataService.SingnalStatus = parsedSignal.Response();
+                        App.DataStorageService.SingnalStatus = parsedSignal.Response();
                         break;
                     }
             }

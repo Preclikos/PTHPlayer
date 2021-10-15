@@ -202,12 +202,12 @@ namespace PTHPlayer
 
         private void OnAppearing()
         {
-            Channels = App.DataService.GetChannels();
-            EPGs = App.DataService.GetEPGs();
+            Channels = App.DataStorageService.GetChannels();
+            EPGs = App.DataStorageService.GetEPGs();
 
-            if (App.DataService.SelectedChannelId != -1)
+            if (App.DataStorageService.SelectedChannelId != -1)
             {
-                PlayerViewModel.Id = App.DataService.SelectedChannelId;
+                PlayerViewModel.Id = App.DataStorageService.SelectedChannelId;
             }
 
             ParseChannelToModel(PlayerViewModel.Id);
@@ -298,12 +298,12 @@ namespace PTHPlayer
 
         async void Handle_PlayButton(object sender, EventArgs e)
         {
-            if (PlayerViewModel.Id == App.DataService.SelectedChannelId)
+            if (PlayerViewModel.Id == App.DataStorageService.SelectedChannelId)
             {
                 return;
             }
             VideoPlayerController.Subscription(PlayerViewModel.Id);
-            App.DataService.SelectedChannelId = PlayerViewModel.Id;
+            App.DataStorageService.SelectedChannelId = PlayerViewModel.Id;
         }
 
         void HideModals()

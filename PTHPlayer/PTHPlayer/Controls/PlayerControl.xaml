@@ -7,7 +7,7 @@
       HorizontalOptions="FillAndExpand"
       ColumnSpacing="0"
           RowSpacing="0"
-      xmlns:tizen="clr-namespace:Xamarin.Forms.PlatformConfiguration.TizenSpecific;assembly=Xamarin.Forms.Core">
+      xmlns:component="clr-namespace:PTHPlayer.Components">
 
     <Grid.BindingContext>
         <local:PlayerViewModel/>
@@ -65,11 +65,11 @@
         </StackLayout>
         <ProgressBar Margin="0" Progress="{Binding Progress}" ScaleY="3" BackgroundColor="DarkSlateBlue" />
         <StackLayout Orientation="Horizontal">
-            <Button Margin="0, 15" ImageSource="icons/multimedia.png" WidthRequest="100" Clicked="Handle_PlayButton" tizen:VisualElement.Style="default" HorizontalOptions="Start" BackgroundColor="Transparent" />
+            <component:PlayerButton Margin="0, 15" ImageSource="icons/multimedia.png" WidthRequest="100" Clicked="Handle_PlayButton" HorizontalOptions="Start" BackgroundColor="Transparent" />
             <Label HorizontalOptions="CenterAndExpand"/>
-            <Button Margin="0, 15" ImageSource="icons/messages.png" WidthRequest="100" tizen:VisualElement.Style="default" Clicked="Handle_SubtitleSelection" HorizontalOptions="End" BackgroundColor="Transparent" />
-            <Button Margin="0, 15" ImageSource="icons/loudspeaker_fixedColor.png" WidthRequest="100" tizen:VisualElement.Style="default" Clicked="Handle_AudioSelection" HorizontalOptions="End" BackgroundColor="Transparent" />
-            <Button Margin="0, 15" ImageSource="icons/settings.png" WidthRequest="100" tizen:VisualElement.Style="default" HorizontalOptions="End" BackgroundColor="Transparent" />
+            <component:PlayerButton Margin="0, 15" ImageSource="icons/messages.png" WidthRequest="100" Clicked="Handle_SubtitleSelection" HorizontalOptions="End" BackgroundColor="Transparent" />
+            <component:PlayerButton Margin="0, 15" ImageSource="icons/loudspeaker_fixedColor.png" WidthRequest="100"  Clicked="Handle_AudioSelection" HorizontalOptions="End" BackgroundColor="Transparent" />
+            <component:PlayerButton Margin="0, 15" ImageSource="icons/settings.png" WidthRequest="100" HorizontalOptions="End" BackgroundColor="Transparent" />
         </StackLayout>
         <StackLayout Orientation="Horizontal" IsVisible="false">
             <Label Text="{Binding PlayerTime}" HorizontalOptions="StartAndExpand"/>

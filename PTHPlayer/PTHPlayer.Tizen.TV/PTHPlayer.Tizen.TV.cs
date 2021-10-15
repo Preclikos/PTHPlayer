@@ -23,7 +23,7 @@ namespace PTHPlayer
             _keyDown = new EcoreEvent<EcoreKeyEventArgs>(EcoreEventType.KeyDown, EcoreKeyEventArgs.Create);
             _keyDown.On += (s, e) =>
             {
-                //MessagingCenter.Send<IKeyEventSender, string>(this, "KeyDown", e.KeyName);
+                MessagingCenter.Send<IKeyEventSender, string>(this, "KeyDown", e.KeyName);
             };
             LoadApplication(new App());
         }

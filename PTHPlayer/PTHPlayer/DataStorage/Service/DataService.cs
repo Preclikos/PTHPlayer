@@ -22,6 +22,12 @@ namespace PTHPlayer.DataStorage.Service
             NativeDataService = DependencyService.Get<IDataStorage>();
         }
 
+        public void CleanChannelsAndEPGs()
+        {
+            Channels.Clear();
+            EPGs.Clear();
+        }
+
         public List<ChannelModel> GetChannels()
         {
             return Channels.ToList();
@@ -35,6 +41,11 @@ namespace PTHPlayer.DataStorage.Service
         public CredentialsModel GetCredentials()
         {
             return NativeDataService.GetCredentials();
+        }
+
+        public void SetCredentials(CredentialsModel credentials)
+        {
+            NativeDataService.SaveCredentials(credentials);
         }
 
         public bool IsCredentialsExist()

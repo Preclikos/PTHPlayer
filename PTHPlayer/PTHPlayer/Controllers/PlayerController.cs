@@ -103,7 +103,7 @@ namespace PTHPlayer.Controllers
                     await PlayerService.PacketReady();
                     Status = SubscriptionStatus.Play;
 
-                    playerPrepare.Wait();
+                    await playerPrepare;
                     SubtitlePlayer.Start();
                 }
                 else
@@ -125,12 +125,14 @@ namespace PTHPlayer.Controllers
             HTSPClient.UnSubscribe(SubscriptionId);
             if (Status != SubscriptionStatus.New || forceStop)
             {
+
                 if (!forceStop)
                 {
                     SubscriptionStop.Task.Wait(2000);
                 }
                 SubtitlePlayer.Stop();
                 PlayerService.SubscriptionStop();
+
             }
 
         }
@@ -162,7 +164,7 @@ namespace PTHPlayer.Controllers
                 await PlayerService.PacketReady();
                 Status = SubscriptionStatus.Play;
 
-                playerPrepare.Wait();
+                await playerPrepare;
             }
         }
 

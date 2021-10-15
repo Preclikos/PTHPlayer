@@ -15,8 +15,8 @@ namespace PTHPlayer.Components.Renderers
         protected override void OnElementChanged(ElementChangedEventArgs<Button> e)
         {
             base.OnElementChanged(e);
-
-            Control.SetPartColor("bg_focused", ElmSharp.Color.Transparent);
+            
+            Control.SetPartColor("bg_focused", new ElmSharp.Color(255, 255, 255, 75));
 
         }
         protected override void UpdateThemeStyle()

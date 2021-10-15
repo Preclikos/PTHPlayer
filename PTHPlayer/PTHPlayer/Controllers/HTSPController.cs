@@ -38,7 +38,7 @@ namespace PTHPlayer.Controllers
 
         public void Close()
         {
-
+            HTSPClient.Close();
         }
     }
 }

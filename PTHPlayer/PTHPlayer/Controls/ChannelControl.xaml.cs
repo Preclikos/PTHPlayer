@@ -36,8 +36,8 @@ namespace PTHPlayer
 
             var channelView = new List<ChannelViewModel>();
 
-            var channels = App.DataService.GetChannels().OrderBy(o => o.Number);
-            var EPGs = App.DataService.GetEPGs();
+            var channels = App.DataStorageService.GetChannels().OrderBy(o => o.Number);
+            var EPGs = App.DataStorageService.GetEPGs();
             foreach (var channel in channels)
             {
                 var newChannel = new ChannelViewModel();
@@ -64,7 +64,7 @@ namespace PTHPlayer
 
             ChannelListView.ItemsSource = channelView;
 
-            var channelId = App.DataService.SelectedChannelId;
+            var channelId = App.DataStorageService.SelectedChannelId;
             if (channelId != -1)
             {
                 var selecteditem = channelView.SingleOrDefault(s => s.Id == channelId);
@@ -84,7 +84,7 @@ namespace PTHPlayer
 
             VideoPlayerController.Subscription(channelModel.Id);
 
-            App.DataService.SelectedChannelId = channelModel.Id;
+            App.DataStorageService.SelectedChannelId = channelModel.Id;
 
             ((ListView)sender).SelectedItem = null;
 

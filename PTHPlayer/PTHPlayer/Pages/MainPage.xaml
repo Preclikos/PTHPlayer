@@ -1,7 +1,7 @@
 ﻿<ContentPage  xmlns="http://xamarin.com/schemas/2014/forms"
               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
               NavigationPage.HasNavigationBar="False"
-              x:Class="PTHPlayer.MainPage"
+              x:Class="PTHPlayer.Pages.MainPage"
               xmlns:local="clr-namespace:PTHPlayer"
               xmlns:modal="clr-namespace:PTHPlayer.Modals">
 
@@ -25,7 +25,6 @@
                 <Image Grid.Column="1" Grid.Row="1" Source="logo.png" x:Name="MainLogo" />
             </Grid>
             <modal:NotificationControl x:Name="NotificationArea" />
-            <Label x:Name="SubtitleCount" TextColor="Red" />
             <StackLayout x:Name="MainContent" Grid.Row="0" Grid.Column="0"  >
                 <!-- VideoPlayer Interface -->
             </StackLayout>

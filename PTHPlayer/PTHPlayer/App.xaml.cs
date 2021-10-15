@@ -1,8 +1,8 @@
 ﻿using PTHPlayer.Controllers;
-using PTHPlayer.Controls;
 using PTHPlayer.DataStorage.Service;
 using PTHPlayer.HTSP;
 using PTHPlayer.HTSP.Listeners;
+using PTHPlayer.Pages;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -11,9 +11,7 @@ namespace PTHPlayer
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class App : Application
     {
-        public static HTSPService HTSPService;
-        public static HTSPListener HTPListener;
-        public static DataService DataService;
+        public static DataService DataStorageService;
         private static int LastChannelId = -1;
 
         private PlayerController VideoPlayerController;
@@ -26,15 +24,15 @@ namespace PTHPlayer
 
         protected override void OnStart()
         {
-            DataService = new DataService();
+            DataStorageService = new DataService();
 
-            HTSPService = new HTSPService();
+            var HTSPService = new HTSPService();
 
             VideoPlayerController = new PlayerController(HTSPService);
 
-            HTPListener = new HTSPListener(VideoPlayerController);
+            var HTPListener = new HTSPListener(VideoPlayerController);
 
-            HTSPConnectionController = new HTSPController(HTSPService, DataService, HTPListener);
+            HTSPConnectionController = new HTSPController(HTSPService, DataStorageService, HTPListener);
 
             MainPage = new NavigationPage(new MainPage(VideoPlayerController));
 
@@ -42,42 +40,38 @@ namespace PTHPlayer
 
         protected override void OnSleep()
         {
-            LastChannelId = App.DataService.SelectedChannelId;
+            LastChannelId = DataStorageService.SelectedChannelId;
 
             VideoPlayerController.UnSubscribe(true);
 
-            HTSPService.Close();
+            HTSPConnectionController.Close();
         }
 
         protected override void OnResume()
         {
+            DataStorageService.CleanChannelsAndEPGs();
 
-            if (!DataService.IsCredentialsExist())
+            if (!DataStorageService.IsCredentialsExist())
             {
-                MainPage.Navigation.PushAsync(new CredentialsPage());
+                var credentialPage = new CredentialsPage(DataStorageService);
+                credentialPage.Disappearing += CredentialPage_Disappearing;
+                MainPage.Navigation.PushAsync(credentialPage);
             }
-            /*
-                var credentials = DataService.GetCredentials();
-
-                if (HTSPService.NeedRestart())
+            else
+            {
+                HTSPConnectionController.Connect();
+                if (LastChannelId != -1)
                 {
+                    VideoPlayerController.Subscription(LastChannelId);
 
-                    HTSPService.Open(credentials.Server, credentials.Port, HTPListener);
+                    DataStorageService.SelectedChannelId = LastChannelId;
+                }
+            }
+        }
 
-                    HTSPService.Login(credentials.UserName, credentials.Password);
-
-                    HTSPService.EnableAsyncMetadata();
-
-                    if (LastChannelId != -1)
-                    {
-
-
-                        VideoPlayerController.Subscription(LastChannelId);
-
-                        App.DataService.SelectedChannelId = LastChannelId;
-                    }
-                }*/
-
+        private void CredentialPage_Disappearing(object sender, System.EventArgs e)
+        {
+            HTSPConnectionController.Connect();
         }
     }
 }
