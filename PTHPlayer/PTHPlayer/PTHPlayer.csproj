@@ -1,16 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Tizen.NET.Sdk/1.1.6">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>tizen50</TargetFramework>
+    </PropertyGroup>
 
-  <ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="SkiaSharp.Views.Forms" Version="1.60.3">
+		  <ExcludeAssets>Runtime</ExcludeAssets>
+	  </PackageReference>
     <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
     <PackageReference Include="Tizen.NET.TV" Version="5.5.0.4997532" />
     <PackageReference Include="Xamarin.Forms" Version="4.7.0.1351" />
-	  <PackageReference Include="SkiaSharp" Version="1.60.3">
-		  <ExcludeAssets>Runtime</ExcludeAssets>
-	  </PackageReference>
+		<PackageReference Include="SkiaSharp" Version="1.60.3">
+			<ExcludeAssets>Runtime</ExcludeAssets>
+		</PackageReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -38,6 +41,7 @@
 
 	<PropertyGroup>
 		<TizenTpkExcludePattern Condition="'$(TargetFramework)' == 'tizen50'">runtimes\*\native\libSkiaSharp.so;</TizenTpkExcludePattern>
+		<UserSecretsId>313d1670-7305-4a96-9fb9-d18b3c49437c</UserSecretsId>
 	</PropertyGroup>
 
 
@@ -54,6 +58,9 @@
     <EmbeddedResource Update="App.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Controls\CredentialsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="MainPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
@@ -64,5 +71,11 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Controls\CredentialsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	</ItemGroup>
 
 </Project>

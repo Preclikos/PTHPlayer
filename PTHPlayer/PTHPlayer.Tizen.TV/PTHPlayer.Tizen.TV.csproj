@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>tizen5.0</TargetFramework>
+    <TargetFrameworks>tizen50;tizen60</TargetFrameworks>
       <AssemblyName>PTHPlayer.Tizen.TV</AssemblyName>
   </PropertyGroup>
 
@@ -26,9 +26,10 @@
 
     <ItemGroup>
     <Folder Include="lib\" />
-		<PackageReference Include="SkiaSharp" Version="1.60.3">
+		<PackageReference Condition="'$(TargetFramework)' == 'tizen50'" Include="SkiaSharp" Version="1.60.3">
 			<ExcludeAssets>Runtime</ExcludeAssets>
 		</PackageReference>
+		<PackageReference Condition="'$(TargetFramework)' == 'tizen60'" Include="SkiaSharp" Version="2.80.2" GeneratePathProperty="true" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -19,6 +19,7 @@ namespace PTHPlayer
 
         public MainPage(PlayerController videoPlayerController)
         {
+
             InitializeComponent();
             VideoPlayerController = videoPlayerController;
 
@@ -102,7 +103,7 @@ namespace PTHPlayer
                         Device.BeginInvokeOnMainThread(() =>
                         {
                             MainLogo.Source = ImageSource.FromFile("icons/share200.gif");
-                            MainLogo.IsAnimationPlaying = true;
+                            //MainLogo.IsAnimationPlaying = true;
                             MainLogo.FadeTo(1, 200);
                         });
                         break;

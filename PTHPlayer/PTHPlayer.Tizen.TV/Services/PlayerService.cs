@@ -18,6 +18,7 @@ namespace PTHPlayer.Tizen.TV.Services
 
         public void Init(EventHandler<PlayerErrorEventArgs> errorEvent)
         {
+
             ErrorEvent = errorEvent;
             if (player != null)
             {

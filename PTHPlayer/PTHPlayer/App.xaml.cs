@@ -1,4 +1,5 @@
 ﻿using PTHPlayer.Controllers;
+using PTHPlayer.Controls;
 using PTHPlayer.DataStorage.Service;
 using PTHPlayer.HTSP;
 using PTHPlayer.HTSP.Listeners;
@@ -12,10 +13,11 @@ namespace PTHPlayer
     {
         public static HTSPService HTSPService;
         public static HTSPListener HTPListener;
-        public static DataModel DataService;
+        public static DataService DataService;
         private static int LastChannelId = -1;
 
         private PlayerController VideoPlayerController;
+        private HTSPController HTSPConnectionController;
         public App()
         {
             InitializeComponent();
@@ -24,7 +26,7 @@ namespace PTHPlayer
 
         protected override void OnStart()
         {
-            DataService = new DataModel();
+            DataService = new DataService();
 
             HTSPService = new HTSPService();
 
@@ -32,7 +34,9 @@ namespace PTHPlayer
 
             HTPListener = new HTSPListener(VideoPlayerController);
 
-            MainPage = new MainPage(VideoPlayerController);
+            HTSPConnectionController = new HTSPController(HTSPService, DataService, HTPListener);
+
+            MainPage = new NavigationPage(new MainPage(VideoPlayerController));
 
         }
 
@@ -40,42 +44,40 @@ namespace PTHPlayer
         {
             LastChannelId = App.DataService.SelectedChannelId;
 
-            // Handle when your app sleeps
-            //PlayerService.Stop();
-
             VideoPlayerController.UnSubscribe(true);
+
             HTSPService.Close();
-
-            //VideoPlayerController.UnSubscribe();
-
-
-
-            //PlayerService.CleanUp();
         }
 
         protected override void OnResume()
         {
-            //VideoPlayerController.ResetState();
 
-            if (HTSPService.NeedRestart())
+            if (!DataService.IsCredentialsExist())
             {
-                DataService = new DataModel();
+                MainPage.Navigation.PushAsync(new CredentialsPage());
+            }
+            /*
+                var credentials = DataService.GetCredentials();
 
-                HTSPService.Open("192.168.1.210", 9982, HTPListener);
-
-                HTSPService.Login("test", "test");
-
-                HTSPService.EnableAsyncMetadata();
-
-                if (LastChannelId != -1)
+                if (HTSPService.NeedRestart())
                 {
 
+                    HTSPService.Open(credentials.Server, credentials.Port, HTPListener);
 
-                    VideoPlayerController.Subscription(LastChannelId);
+                    HTSPService.Login(credentials.UserName, credentials.Password);
 
-                    App.DataService.SelectedChannelId = LastChannelId;
-                }
-            }
+                    HTSPService.EnableAsyncMetadata();
+
+                    if (LastChannelId != -1)
+                    {
+
+
+                        VideoPlayerController.Subscription(LastChannelId);
+
+                        App.DataService.SelectedChannelId = LastChannelId;
+                    }
+                }*/
+
         }
     }
 }

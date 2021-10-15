@@ -10,6 +10,7 @@ namespace PTHPlayer
 {
     class Program : global::Xamarin.Forms.Platform.Tizen.FormsApplication, IKeyEventSender
     {
+
         public static Window ParentMainWindow;
 
         EcoreEvent<EcoreKeyEventArgs> _keyDown;
@@ -22,7 +23,7 @@ namespace PTHPlayer
             _keyDown = new EcoreEvent<EcoreKeyEventArgs>(EcoreEventType.KeyDown, EcoreKeyEventArgs.Create);
             _keyDown.On += (s, e) =>
             {
-                MessagingCenter.Send<IKeyEventSender, string>(this, "KeyDown", e.KeyName);
+                //MessagingCenter.Send<IKeyEventSender, string>(this, "KeyDown", e.KeyName);
             };
             LoadApplication(new App());
         }
@@ -76,7 +77,7 @@ namespace PTHPlayer
 
         static void Main(string[] args)
         {
-            
+
             var app = new Program();
             Forms.Init(app);
             app.Run(args);
