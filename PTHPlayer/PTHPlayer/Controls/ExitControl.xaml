@@ -1,12 +1,12 @@
 ﻿<Grid xmlns="http://xamarin.com/schemas/2014/forms"
-            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-            NavigationPage.HasNavigationBar="False"
-            x:Class="PTHPlayer.Controls.ExitControl"
-            VerticalOptions="FillAndExpand"
-            HorizontalOptions="FillAndExpand"
-            ColumnSpacing="0"
-            RowSpacing="0"
-            xmlns:resx="clr-namespace:PTHPlayer.Resources;">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    NavigationPage.HasNavigationBar="False"
+    x:Class="PTHPlayer.Controls.ExitControl"
+    VerticalOptions="FillAndExpand"
+    HorizontalOptions="FillAndExpand"
+    ColumnSpacing="0"
+    RowSpacing="0"
+    xmlns:resx="clr-namespace:PTHPlayer.Resources;">
 
     <Grid.RowDefinitions>
         <RowDefinition Height="*"/>
