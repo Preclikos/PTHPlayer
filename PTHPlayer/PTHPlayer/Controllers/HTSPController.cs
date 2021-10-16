@@ -1,24 +1,38 @@
-﻿using PTHPlayer.DataStorage.Service;
+﻿using PTHPlayer.Controllers.Listeners;
+using PTHPlayer.DataStorage.Service;
 using PTHPlayer.HTSP;
 using PTHPlayer.HTSP.Listeners;
+using PTHPlayer.HTSP.Models;
+using System;
 
 namespace PTHPlayer.Controllers
 {
-    public class HTSPController
+    public class HTSPController : IHTSPListener
     {
         private HTSPService HTSPClient { get; }
         private DataService DataStorageClient { get; }
-        private HTSPListener HTSListener { get; }
+        private HTSPListener HTSListener { get; set; }
 
-        public HTSPController(HTSPService hTSPClient, DataService dataStorageClient, HTSPListener hTSListener)
+        public event EventHandler<ChannelUpdateEventArgs> ChannelUpdateEvent;
+
+        public HTSPController(HTSPService hTSPClient, DataService dataStorageClient)
         {
             HTSPClient = hTSPClient;
-            DataStorageClient = dataStorageClient;
-            HTSListener = hTSListener;
+            DataStorageClient = dataStorageClient; 
+        }
+
+        public void SetListener(HTSPListener hTSPListener)
+        {
+            HTSListener = hTSPListener;
         }
 
         public void Connect()
         {
+            if(HTSListener == null)
+            {
+                throw new ArgumentNullException(nameof(HTSListener));
+            }
+
             if (DataStorageClient.IsCredentialsExist())
             {
 
@@ -39,6 +53,25 @@ namespace PTHPlayer.Controllers
         public void Close()
         {
             HTSPClient.Close();
+        }
+
+        protected void DelegateChannelUpdate(object sender, ChannelUpdateEventArgs e)
+        {
+            EventHandler<ChannelUpdateEventArgs> handler = ChannelUpdateEvent;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        public void ChannelUpdate(int channelId)
+        {
+            var eventArgs = new ChannelUpdateEventArgs
+            {
+                ChannelId = channelId
+            };
+
+            DelegateChannelUpdate(this, eventArgs);
         }
     }
 }

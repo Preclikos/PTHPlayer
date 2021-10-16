@@ -5,7 +5,8 @@
             VerticalOptions="FillAndExpand"
             HorizontalOptions="FillAndExpand"
             ColumnSpacing="0"
-            RowSpacing="0">
+            RowSpacing="0"
+            xmlns:resx="clr-namespace:PTHPlayer.Resources;">
 
     <Grid.RowDefinitions>
         <RowDefinition Height="*"/>
@@ -19,10 +20,10 @@
     </Grid.ColumnDefinitions>
 
     <StackLayout Grid.Column="1" Grid.Row="1" BackgroundColor="#73000000" Padding="20">
-        <Label Text="Are you sure?"  FontSize="Large"/>
+        <Label Text="{x:Static resx:LangResources.Exit_Question}"  FontSize="Large"/>
         <StackLayout Orientation="Horizontal">
-            <Button x:Name="YesButton" Text="Yes" MinimumWidthRequest="80" Clicked="Yes_Clicked" HorizontalOptions="StartAndExpand" />
-            <Button x:Name="NoButton" Text="No" MinimumWidthRequest="80" Clicked="No_Clicked" HorizontalOptions="EndAndExpand" />
+            <Button x:Name="YesButton" Text="{x:Static resx:LangResources.Yes}" MinimumWidthRequest="80" Clicked="Yes_Clicked" HorizontalOptions="StartAndExpand" />
+            <Button x:Name="NoButton" Text="{x:Static resx:LangResources.No}" MinimumWidthRequest="80" Clicked="No_Clicked" HorizontalOptions="EndAndExpand" />
         </StackLayout>
     </StackLayout>
 </Grid>

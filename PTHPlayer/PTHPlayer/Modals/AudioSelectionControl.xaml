@@ -1,14 +1,14 @@
-﻿<StackLayout 
-            xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PTHPlayer.Modals.AudioSelectionControl"
-             xmlns:local="clr-namespace:PTHPlayer.Modals.ModalViewModels"
-    xmlns:tizen="clr-namespace:Xamarin.Forms.PlatformConfiguration.TizenSpecific;assembly=Xamarin.Forms.Core">
+﻿<StackLayout xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="PTHPlayer.Modals.AudioSelectionControl"
+    xmlns:local="clr-namespace:PTHPlayer.Modals.ModalViewModels"
+    xmlns:resx="clr-namespace:PTHPlayer.Resources;">
+    
     <StackLayout.BindingContext>
         <local:AudioSelectionViewModel/>
     </StackLayout.BindingContext>
-    <Grid>
 
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
             <RowDefinition Height="*" />
@@ -22,18 +22,19 @@
         </Grid.ColumnDefinitions>
 
         <StackLayout Grid.Row="1" Grid.Column="1" BackgroundColor="#9F000000">
-        <Label  Text="Audio Stopy" FontSize="Large" />
-            <ListView tizen:VisualElement.Style="default"
+            <Label FontSize="Large" Text="{x:Static resx:LangResources.AudioSelecton_Title}" />
+            <ListView
                 x:Name="AudioSelectionList"
                 ItemsSource="{Binding AudioConfig}"
                 ItemTapped="Handle_ItemTapped"
                 BackgroundColor="Transparent">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                        <TextCell tizen:VisualElement.Style="default" Text="{Binding Language}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding Language}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackLayout>
     </Grid>
+    
 </StackLayout>

@@ -1,13 +1,14 @@
 ﻿<Grid xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             NavigationPage.HasNavigationBar="False"
-             x:Class="PTHPlayer.PlayerControl"
-             xmlns:local="clr-namespace:PTHPlayer.ViewModels" 
-      VerticalOptions="FillAndExpand"
-      HorizontalOptions="FillAndExpand"
-      ColumnSpacing="0"
-          RowSpacing="0"
-      xmlns:component="clr-namespace:PTHPlayer.Components">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    NavigationPage.HasNavigationBar="False"
+    x:Class="PTHPlayer.PlayerControl"
+    xmlns:local="clr-namespace:PTHPlayer.ViewModels" 
+    VerticalOptions="FillAndExpand"
+    HorizontalOptions="FillAndExpand"
+    ColumnSpacing="0"
+    RowSpacing="0"
+    xmlns:component="clr-namespace:PTHPlayer.Components"
+    xmlns:resx="clr-namespace:PTHPlayer.Resources;">
 
     <Grid.BindingContext>
         <local:PlayerViewModel/>
@@ -42,8 +43,8 @@
             <StackLayout Grid.Column="1">
                 <Label Text="{Binding Time}" FontSize="74"  HorizontalOptions="End" FontAttributes="Bold" />
                 <StackLayout HorizontalOptions="End" Orientation="Horizontal">
-                    <Label x:Name="EndAt" Text="Končí v:" FontSize="52" />
-                    <Label Text="{Binding EndTime}" FontAttributes="Bold" FontSize="52"/>
+                    <Label x:Name="EndAt" Text="{x:Static resx:LangResources.Player_EndAt}" FontSize="52" />
+                    <Label Text="{Binding EndTime}" FontAttributes="Bold" FontSize="52"/> 
                 </StackLayout>
             </StackLayout>
 

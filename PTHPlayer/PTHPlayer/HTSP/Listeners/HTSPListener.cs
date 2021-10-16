@@ -1,7 +1,6 @@
 ﻿using PTHPlayer.Controllers.Listeners;
 using PTHPlayer.DataStorage.Models;
 using PTHPlayer.HTSP.Parsers;
-using PTHPlayer.VideoPlayer.Player;
 using System;
 using System.Linq;
 
@@ -10,11 +9,12 @@ namespace PTHPlayer.HTSP.Listeners
     public class HTSPListener : HTSConnectionListener
     {
 
-        PlayerService PlayerService;
         private IPlayerListener SubcriptionListener;
-        public HTSPListener(IPlayerListener subscriptionListener)
+        private IHTSPListener HTSPControllerListener;
+        public HTSPListener(IPlayerListener subscriptionListener, IHTSPListener hTSPListener)
         {
             SubcriptionListener = subscriptionListener;
+            HTSPControllerListener = hTSPListener;
         }
 
         public void onError(Exception ex)
@@ -56,6 +56,7 @@ namespace PTHPlayer.HTSP.Listeners
                         var channName = response.getString("channelName");
                         var channNumber = response.getInt("channelNumber");
                         App.DataStorageService.Channels.Add(new ChannelModel() { Label = channName, Id = channId, Number = channNumber, EventId = eventId, NextEventId = nextEventId });
+                        HTSPControllerListener.ChannelUpdate(channId);
                         break;
                     }
                 case "channelUpdate":
@@ -77,6 +78,7 @@ namespace PTHPlayer.HTSP.Listeners
                                 channel.Number = response.getInt("channelNumber");
                             }
                         }
+                        HTSPControllerListener.ChannelUpdate(channId);
                         break;
                     }
                 case "channelDelete":

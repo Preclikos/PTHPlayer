@@ -14,17 +14,19 @@ namespace PTHPlayer.Pages
     public partial class MainPage : ContentPage
     {
         private PlayerController VideoPlayerController;
+        private HTSPController HTSPConnectionController;
 
         private PlayerControl VideoPlayerControl;
         private ChannelControl ChannelSelectionControl;
 
-        public MainPage(PlayerController videoPlayerController)
+        public MainPage(PlayerController videoPlayerController, HTSPController hTSPController)
         {
 
             InitializeComponent();
             VideoPlayerController = videoPlayerController;
+            HTSPConnectionController = hTSPController;
 
-            VideoPlayerControl = new PlayerControl(VideoPlayerController) { IsVisible = false };
+            VideoPlayerControl = new PlayerControl(VideoPlayerController, HTSPConnectionController) { IsVisible = false };
             MainContent.Children.Add(VideoPlayerControl);
 
             ChannelSelectionControl = new ChannelControl(VideoPlayerController) { IsVisible = false };

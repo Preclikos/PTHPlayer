@@ -55,15 +55,6 @@ namespace PTHPlayer.HTSP
             //lbrh.getResponse();
         }
 
-        /*
-        public async Task ChannelSwitch(int channelId)
-        {
-
-            await UnSubscribe();
-
-            Subscribe(channelId);
-        }*/
-
         public void EnableAsyncMetadata()
         {
             HTSMessage getTicketMessage = new HTSMessage();

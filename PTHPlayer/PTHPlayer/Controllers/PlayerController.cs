@@ -1,7 +1,6 @@
 ﻿using PTHPlayer.Controllers.Enums;
 using PTHPlayer.Controllers.Listeners;
 using PTHPlayer.HTSP;
-using PTHPlayer.Models;
 using PTHPlayer.Subtitles.Player;
 using PTHPlayer.VideoPlayer.Models;
 using PTHPlayer.VideoPlayer.Player;
@@ -66,7 +65,7 @@ namespace PTHPlayer.Controllers
                 CancellationTokenSrc = new CancellationTokenSource();
             }
 
-             Task.Run(() => _= SubscriptionProcess(channelId));
+            Task.Run(() => _ = SubscriptionProcess(channelId));
         }
 
         async Task SubscriptionProcess(int channelId)

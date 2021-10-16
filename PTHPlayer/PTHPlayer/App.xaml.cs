@@ -29,12 +29,14 @@ namespace PTHPlayer
             var HTSPService = new HTSPService();
 
             VideoPlayerController = new PlayerController(HTSPService);
+            HTSPConnectionController = new HTSPController(HTSPService, DataStorageService);
 
-            var HTPListener = new HTSPListener(VideoPlayerController);
+            var HTPListener = new HTSPListener(VideoPlayerController, HTSPConnectionController);
 
-            HTSPConnectionController = new HTSPController(HTSPService, DataStorageService, HTPListener);
+            HTSPConnectionController.SetListener(HTPListener);
 
-            MainPage = new NavigationPage(new MainPage(VideoPlayerController));
+
+            MainPage = new NavigationPage(new MainPage(VideoPlayerController, HTSPConnectionController));
 
         }
 

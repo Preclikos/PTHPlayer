@@ -1,6 +1,7 @@
 ﻿using PTHPlayer.Controllers;
 using PTHPlayer.DataStorage.Models;
 using PTHPlayer.Enums;
+using PTHPlayer.HTSP.Models;
 using PTHPlayer.Interfaces;
 using PTHPlayer.Modals;
 using PTHPlayer.ViewModels;
@@ -17,6 +18,7 @@ namespace PTHPlayer
     public partial class PlayerControl : Grid
     {
         PlayerController VideoPlayerController;
+        private HTSPController HTSPConnectionController;
 
         AudioSelectionControl AudioSelection;
         SubtitleSelectionControl SubtitleSelection;
@@ -25,11 +27,12 @@ namespace PTHPlayer
         List<ChannelModel> Channels = new List<ChannelModel>();
         List<EPGModel> EPGs = new List<EPGModel>();
 
-        public PlayerControl(PlayerController videoPlayerController)
+        public PlayerControl(PlayerController videoPlayerController, HTSPController hTSPController)
         {
             InitializeComponent();
 
-            VideoPlayerController = videoPlayerController;     
+            VideoPlayerController = videoPlayerController;
+            HTSPConnectionController = hTSPController;
 
             this.BindingContext = PlayerViewModel;
 
@@ -212,6 +215,8 @@ namespace PTHPlayer
 
             ParseChannelToModel(PlayerViewModel.Id);
 
+            HTSPConnectionController.ChannelUpdateEvent += HTSPConnectionController_ChannelUpdateEvent;
+
             MessagingCenter.Subscribe<IKeyEventSender, string>(this, "KeyDown",
              async (sender, arg) =>
              {
@@ -283,6 +288,17 @@ namespace PTHPlayer
              });
         }
 
+        private void HTSPConnectionController_ChannelUpdateEvent(object sender, ChannelUpdateEventArgs e)
+        {
+            if(e.ChannelId == PlayerViewModel.Id)
+            {
+                Channels = App.DataStorageService.GetChannels();
+                EPGs = App.DataStorageService.GetEPGs();
+
+                ParseChannelToModel(e.ChannelId);
+            }
+        }
+
         async void Handle_AudioSelection(object sender, EventArgs e)
         {
             HideModals();
@@ -318,6 +334,7 @@ namespace PTHPlayer
 
         private void OnDisappearing()
         {
+            HTSPConnectionController.ChannelUpdateEvent -= HTSPConnectionController_ChannelUpdateEvent;
             MessagingCenter.Unsubscribe<IKeyEventSender, string>(this, "KeyDown");
             this.IsVisible = false;
         }
