@@ -34,7 +34,7 @@ namespace PTHPlayer.VideoPlayer.Player
         const int bufferedSeconds = 5;
 
         int videoBufferSizeInFrames = 0;
-        int audioBufferSizeInFrames = 0;
+        //int audioBufferSizeInFrames = 0;
 
         public Queue<SubtitleElement> SubtitleElemnts = new Queue<SubtitleElement>();
 

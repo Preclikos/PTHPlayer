@@ -1,5 +1,6 @@
 ﻿using PTHPlayer.Controllers.Listeners;
 using PTHPlayer.DataStorage.Models;
+using PTHPlayer.Forms.Modals;
 using PTHPlayer.HTSP.Parsers;
 using System;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace PTHPlayer.HTSP.Listeners
 
         public void onError(Exception ex)
         {
-            //throw new NotImplementedException();
+            //NotificationControl.OnError(this, ex);
         }
 
         public void onMessage(HTSMessage response)

@@ -105,13 +105,13 @@ namespace PTHPlayer.Subtitles.Player
                                     }
                                 }
                             }
-                            catch (Exception ex)
+                            catch
                             {
 
                             }
                         }, cancellationToken);
                     }
-                    catch (Exception ex)
+                    catch
                     {
                     }
 

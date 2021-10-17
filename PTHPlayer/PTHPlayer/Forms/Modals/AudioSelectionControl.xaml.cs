@@ -44,7 +44,7 @@ namespace PTHPlayer.Forms.Modals
             }
         }
 
-        async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
+        void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             if (e.Item == null)
                 return;
@@ -61,7 +61,7 @@ namespace PTHPlayer.Forms.Modals
 
             AudioSelectionModel.AudioConfig = VideoPlayerController.GetAudioConfigs();
             MessagingCenter.Subscribe<IKeyEventSender, string>(this, "KeyDown",
-             async (sender, arg) =>
+             (sender, arg) =>
              {
 
                  if (arg == "XF86Back")

@@ -42,7 +42,7 @@ namespace PTHPlayer.Forms.Pages
             VideoPlayerController.PlayerStateChange += PlayerService_StateChange;
 
             MessagingCenter.Subscribe<IKeyEventSender, string>(this, "KeyDown",
-             async (sender, arg) =>
+             (sender, arg) =>
              {
                  if (MainContent.Children.Any(a => a.IsVisible))
                  {

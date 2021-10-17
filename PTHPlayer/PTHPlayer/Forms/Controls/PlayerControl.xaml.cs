@@ -151,8 +151,7 @@ namespace PTHPlayer.Forms.Controls
             }
         }
 
-
-        async void Handle_ChannelClicked(object sender, ItemTappedEventArgs e)
+        void Handle_ChannelClicked(object sender, ItemTappedEventArgs e)
         {
             if (e.Item == null)
                 return;
@@ -299,21 +298,21 @@ namespace PTHPlayer.Forms.Controls
             }
         }
 
-        async void Handle_AudioSelection(object sender, EventArgs e)
+        void Handle_AudioSelection(object sender, EventArgs e)
         {
             HideModals();
             AudioSelection.IsVisible = true;
             AudioSelection.Focus();
         }
 
-        async void Handle_SubtitleSelection(object sender, EventArgs e)
+        void Handle_SubtitleSelection(object sender, EventArgs e)
         {
             HideModals();
             SubtitleSelection.IsVisible = true;
             SubtitleSelection.Focus();
         }
 
-        async void Handle_PlayButton(object sender, EventArgs e)
+        void Handle_PlayButton(object sender, EventArgs e)
         {
             if (PlayerViewModel.Id == App.DataStorageService.SelectedChannelId)
             {

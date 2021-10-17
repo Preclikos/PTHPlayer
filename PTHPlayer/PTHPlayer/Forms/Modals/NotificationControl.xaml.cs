@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms;
+﻿using System;
+using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace PTHPlayer.Forms.Modals
@@ -9,6 +10,11 @@ namespace PTHPlayer.Forms.Modals
         public NotificationControl()
         {
             InitializeComponent();
+        }
+
+        public void OnError(object sender, Exception ex)
+        {
+            //NotificationLayout.Children.Add();
         }
     }
 }

@@ -19,7 +19,6 @@ namespace PTHPlayer
         public App()
         {
             InitializeComponent();
-
         }
 
         protected override void OnStart()
@@ -34,7 +33,6 @@ namespace PTHPlayer
             var HTPListener = new HTSPListener(VideoPlayerController, HTSPConnectionController);
 
             HTSPConnectionController.SetListener(HTPListener);
-
 
             MainPage = new NavigationPage(new MainPage(VideoPlayerController, HTSPConnectionController));
 

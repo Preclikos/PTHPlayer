@@ -35,7 +35,7 @@ namespace PTHPlayer.Forms.Controls
             YesButton.Focus();
 
             MessagingCenter.Subscribe<IKeyEventSender, string>(this, "KeyDown",
-             async (sender, arg) =>
+             (sender, arg) =>
              {
                  if (arg == "XF86Back")
                  {
