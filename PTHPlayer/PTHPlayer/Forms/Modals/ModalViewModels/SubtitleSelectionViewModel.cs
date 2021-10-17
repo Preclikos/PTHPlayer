@@ -1,5 +1,5 @@
 ﻿using PTHPlayer.Forms.ViewModels;
-using PTHPlayer.VideoPlayer.Models;
+using PTHPlayer.Player.Models;
 using System.Collections.Generic;
 
 namespace PTHPlayer.Forms.Modals.ModalViewModels

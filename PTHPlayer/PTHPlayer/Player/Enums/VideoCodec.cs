@@ -1,4 +1,4 @@
-﻿namespace PTHPlayer.VideoPlayer.Enums
+﻿namespace PTHPlayer.Player.Enums
 {
     public enum VideoCodec
     {

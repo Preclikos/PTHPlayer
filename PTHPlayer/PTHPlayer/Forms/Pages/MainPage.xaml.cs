@@ -1,13 +1,12 @@
-﻿using System;
-using System.Linq;
-using PTHPlayer.Controllers;
+﻿using PTHPlayer.Controllers;
 using PTHPlayer.Enums;
 using PTHPlayer.Event;
 using PTHPlayer.Event.Models;
 using PTHPlayer.Forms.Controls;
 using PTHPlayer.Interfaces;
-using PTHPlayer.VideoPlayer.Enums;
+using PTHPlayer.Player.Enums;
 using PTHPlayer.VideoPlayer.Models;
+using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 

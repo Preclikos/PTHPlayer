@@ -1,8 +1,9 @@
 ﻿using PTHPlayer.HTSP;
+using PTHPlayer.Player.Enums;
+using PTHPlayer.Player.Interfaces;
+using PTHPlayer.Player.Models;
 using PTHPlayer.Subtitles.Decoder;
 using PTHPlayer.Subtitles.Models;
-using PTHPlayer.VideoPlayer.Enums;
-using PTHPlayer.VideoPlayer.Interfaces;
 using PTHPlayer.VideoPlayer.Models;
 using SkiaSharp;
 using System;

@@ -1,6 +1,7 @@
-﻿using PTHPlayer.Tizen.TV.Services;
-using PTHPlayer.VideoPlayer.Enums;
-using PTHPlayer.VideoPlayer.Interfaces;
+﻿using PTHPlayer.Player.Enums;
+using PTHPlayer.Player.Interfaces;
+using PTHPlayer.Player.Models;
+using PTHPlayer.Tizen.TV.Services;
 using PTHPlayer.VideoPlayer.Models;
 using System;
 using System.Threading.Tasks;
@@ -89,7 +90,7 @@ namespace PTHPlayer.Tizen.TV.Services
             {
                 ErrorMessage = bufferArgs.BufferStatus.ToString()
             };
-            switch(bufferArgs.StreamType)
+            switch (bufferArgs.StreamType)
             {
                 case StreamType.Video:
                     {

@@ -1,8 +1,9 @@
-﻿using PTHPlayer.VideoPlayer.Models;
+﻿using PTHPlayer.Player.Models;
+using PTHPlayer.VideoPlayer.Models;
 using System;
 using System.Threading.Tasks;
 
-namespace PTHPlayer.VideoPlayer.Interfaces
+namespace PTHPlayer.Player.Interfaces
 {
     public interface IPlayerService
     {

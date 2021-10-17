@@ -1,4 +1,4 @@
-﻿namespace PTHPlayer.VideoPlayer.Models
+﻿namespace PTHPlayer.Player.Models
 {
     public class VideoConfigModel
     {

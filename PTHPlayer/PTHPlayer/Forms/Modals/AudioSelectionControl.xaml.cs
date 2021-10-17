@@ -2,7 +2,7 @@
 using PTHPlayer.Controllers;
 using PTHPlayer.Forms.Modals.ModalViewModels;
 using PTHPlayer.Interfaces;
-using PTHPlayer.VideoPlayer.Models;
+using PTHPlayer.Player.Models;
 using System.Runtime.CompilerServices;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;

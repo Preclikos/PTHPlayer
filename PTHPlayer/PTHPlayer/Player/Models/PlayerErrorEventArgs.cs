@@ -1,4 +1,4 @@
-﻿using PTHPlayer.VideoPlayer.Enums;
+﻿using PTHPlayer.Player.Enums;
 using System;
 
 namespace PTHPlayer.VideoPlayer.Models

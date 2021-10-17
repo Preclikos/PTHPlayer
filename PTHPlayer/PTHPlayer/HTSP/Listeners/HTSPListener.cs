@@ -94,7 +94,7 @@ namespace PTHPlayer.HTSP.Listeners
                     }
                 case "initialSyncCompleted":
                     {
-
+                        EvenetNotificationListener.SendNotification(nameof(HTSPListener), "Init Sync Completed");
                         break;
                     }
                 case "eventAdd":

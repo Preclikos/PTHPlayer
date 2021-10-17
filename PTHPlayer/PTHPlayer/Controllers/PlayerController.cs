@@ -2,6 +2,7 @@
 using PTHPlayer.Controllers.Listeners;
 using PTHPlayer.Event.Listeners;
 using PTHPlayer.HTSP;
+using PTHPlayer.Player.Models;
 using PTHPlayer.Subtitles.Player;
 using PTHPlayer.VideoPlayer;
 using PTHPlayer.VideoPlayer.Models;
@@ -236,7 +237,7 @@ namespace PTHPlayer.Controllers
 
         protected void DelegatePlayerError(object sender, PlayerErrorEventArgs e)
         {
-            if(string.IsNullOrEmpty(e.ErrorMessage))
+            if (string.IsNullOrEmpty(e.ErrorMessage))
             {
                 return;
             }
