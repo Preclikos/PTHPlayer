@@ -6,6 +6,7 @@
         Submitted,
         WaitForPlay,
         Play,
-        Pause
+        Pause,
+        Close
     }
 }

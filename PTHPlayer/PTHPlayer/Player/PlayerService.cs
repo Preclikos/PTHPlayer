@@ -29,13 +29,7 @@ namespace PTHPlayer.VideoPlayer
         List<AudioConfigModel> audioConfigs = new List<AudioConfigModel>();
         List<SubtitleConfigModel> subtitleConfigs = new List<SubtitleConfigModel>();
 
-        int videoPacketCount = -1;
-        int audioPacketCount = -1;
-
-        const int bufferedSeconds = 5;
-
-        int videoBufferSizeInFrames = 0;
-        //int audioBufferSizeInFrames = 0;
+        public const int bufferedSeconds = 3;
 
         public Queue<SubtitleElement> SubtitleElemnts = new Queue<SubtitleElement>();
 
@@ -217,7 +211,7 @@ namespace PTHPlayer.VideoPlayer
         public void PushToBuffer(HTSMessage muxPkt)
         {
             var packet = ParsePacket(muxPkt);
-            if (videoConfig.Index != packet.StreamId && audioConfig.Index != packet.StreamId && subtitleConfig.Index != packet.StreamId)
+            if (videoConfig.Index != packet.StreamId && audioConfig.Index != packet.StreamId)// && subtitleConfig.Index != packet.StreamId)
             {
                 return;
             }
@@ -232,8 +226,6 @@ namespace PTHPlayer.VideoPlayer
             {
                 videoConfig.Num = 1000000 / (int)duration;
                 videoConfig.Den = 1;
-
-                videoBufferSizeInFrames = videoConfig.Num * videoConfig.Den * bufferedSeconds;
 
                 calculationCompletetion.SetResult(true);
 
@@ -269,35 +261,33 @@ namespace PTHPlayer.VideoPlayer
 
             var packet = ParsePacket(muxPkt);
 
-            if (streamIndex == videoConfig.Index)
+            if (bufferedPackets.Count != 0)
             {
 
-                if (bufferedPackets.Any(a => a.StreamId == videoConfig.Index))
+                foreach (var bufferedPacket in bufferedPackets)
                 {
-                    foreach (var bufferedPacket in bufferedPackets.Where(a => a.StreamId == videoConfig.Index))
+                    if (bufferedPacket.StreamId == videoConfig.Index)
                     {
-                        audioPacketCount++;
                         NativePlayerService.VideoPacket(bufferedPacket);
                     }
-                    bufferedPackets.RemoveAll(r => r.StreamId == videoConfig.Index);
+                    if (bufferedPacket.StreamId == audioConfig.Index)
+                    {
+                        NativePlayerService.AudioPacket(bufferedPacket);
+                    }
+
                 }
-                videoPacketCount++;
+
+                bufferedPackets.Clear();
+            }
+
+            if (streamIndex == videoConfig.Index)
+            {
                 NativePlayerService.VideoPacket(packet);
 
             }
 
             if (streamIndex == audioConfig.Index)
             {
-                if (bufferedPackets.Any(a => a.StreamId == audioConfig.Index))
-                {
-                    foreach (var bufferedPacket in bufferedPackets.Where(a => a.StreamId == audioConfig.Index))
-                    {
-                        audioPacketCount++;
-                        NativePlayerService.AudioPacket(bufferedPacket);
-                    }
-                    bufferedPackets.RemoveAll(r => r.StreamId == audioConfig.Index);
-                }
-                audioPacketCount++;
                 NativePlayerService.AudioPacket(packet);
             }
 
@@ -307,23 +297,14 @@ namespace PTHPlayer.VideoPlayer
             }
 
 
-            if (NativePlayerService.GetPlayerState() == 2 && videoPacketCount > videoBufferSizeInFrames)
+            if (NativePlayerService.GetPlayerState() == 2)
             {
                 NativePlayerService.Play();
-                videoPacketCount = 0;
-                audioPacketCount = 0;
                 if (NativePlayerService.GetPlayerState() == 3)
                 {
                     DelegatePlayerStateChange(new PlayerStateChangeEventArgs() { State = PlayerStates.Play });
                 }
             }
-
-            if (videoPacketCount > videoBufferSizeInFrames)
-            {
-                videoPacketCount = 0;
-                audioPacketCount = 0;
-            }
-
         }
 
         void SubtitlePacket(PacketModel packet)
@@ -378,9 +359,9 @@ namespace PTHPlayer.VideoPlayer
 
             DelegatePlayerStateChange(new PlayerStateChangeEventArgs() { State = PlayerStates.Stop });
 
-            CleanUp();
-
             Stop();
+
+            CleanUp();
         }
 
         public void CleanUp()
@@ -397,9 +378,6 @@ namespace PTHPlayer.VideoPlayer
 
         public void Stop()
         {
-            videoPacketCount = 0;
-            audioPacketCount = 0;
-
             NativePlayerService.Close();
         }
 

@@ -216,8 +216,8 @@ namespace PTHPlayer.Tizen.TV.Services
             if (player != null)
             {
 
-                //player.Stop();
-                //player.Close();
+                player.Stop();
+                player.Close();
                 try
                 {
                     player?.Dispose();

@@ -1,7 +1,9 @@
 ﻿using PTHPlayer.Controllers.Enums;
 using PTHPlayer.Controllers.Listeners;
+using PTHPlayer.Event.Enums;
 using PTHPlayer.Event.Listeners;
 using PTHPlayer.HTSP;
+using PTHPlayer.Player.Enums;
 using PTHPlayer.Player.Models;
 using PTHPlayer.Subtitles.Player;
 using PTHPlayer.VideoPlayer;
@@ -94,12 +96,14 @@ namespace PTHPlayer.Controllers
                 CalculationSampleRate = new TaskCompletionSource<bool>();
 
                 Status = SubscriptionStatus.Submitted;
+
                 PlayerService.Subscription(SubscriptionStart.Task.Result);
 
                 var results = Task.WaitAll(new[] { CalculationFps.Task, CalculationSampleRate.Task }, 5000, CancellationTokenSrc.Token);
 
                 if (results)
                 {
+                    await Task.Delay(PlayerService.bufferedSeconds * 1000);
 
                     Status = SubscriptionStatus.WaitForPlay;
 
@@ -127,10 +131,14 @@ namespace PTHPlayer.Controllers
 
         public void UnSubscribe(bool forceStop = false)
         {
-            SubtitlePlayer.Stop();
+
             PlayerService.SubscriptionStop();
+            SubtitlePlayer.Stop();
+            Status = SubscriptionStatus.Close;
+
             SubscriptionStop = new TaskCompletionSource<HTSMessage>();
             HTSPClient.UnSubscribe(SubscriptionId);
+            SubscriptionId = -1;
             if (Status != SubscriptionStatus.New || forceStop)
             {
                 if (!forceStop)
@@ -195,9 +203,16 @@ namespace PTHPlayer.Controllers
 
         public void OnMuxPkt(HTSMessage message)
         {
+            var subscriptionId = message.getInt("subscriptionId");
+            if (subscriptionId != SubscriptionId)
+            {
+                return;
+            }
+
             switch (Status)
             {
                 case SubscriptionStatus.Pause:
+                case SubscriptionStatus.WaitForPlay:
                 case SubscriptionStatus.Submitted:
                     {
                         PlayerService.PushToBuffer(message);
@@ -237,11 +252,29 @@ namespace PTHPlayer.Controllers
 
         protected void DelegatePlayerError(object sender, PlayerErrorEventArgs e)
         {
-            if (string.IsNullOrEmpty(e.ErrorMessage))
+            if (string.IsNullOrEmpty(e.ErrorMessage) || Status == SubscriptionStatus.Close)
             {
                 return;
             }
-            EventNotificationListener.SendNotification(e.Source.ToString(), e.ErrorMessage);
+            switch(e.Source)
+            {
+                case PlayerErrorSource.Video:
+                    {
+                        EventNotificationListener.SendNotification(e.Source.ToString(), e.ErrorMessage, EventId.VideoBuffer);
+                        break;
+                    }
+                case PlayerErrorSource.Audio:
+                    {
+                        EventNotificationListener.SendNotification(e.Source.ToString(), e.ErrorMessage, EventId.AudioBuffer);
+                        break;
+                    }
+                default:
+                    {
+                        EventNotificationListener.SendNotification(e.Source.ToString(), e.ErrorMessage);
+                        break;
+                    }
+            }
+            
         }
     }
 }
