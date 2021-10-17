@@ -333,6 +333,7 @@ namespace PTHPlayer.Forms.Controls
 
         private void OnDisappearing()
         {
+            HideModals();
             HTSPConnectionController.ChannelUpdateEvent -= HTSPConnectionController_ChannelUpdateEvent;
             MessagingCenter.Unsubscribe<IKeyEventSender, string>(this, "KeyDown");
             this.IsVisible = false;

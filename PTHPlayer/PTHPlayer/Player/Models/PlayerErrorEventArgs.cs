@@ -5,7 +5,7 @@ namespace PTHPlayer.VideoPlayer.Models
 {
     public class PlayerErrorEventArgs : EventArgs
     {
-        public PlayerErrorSource Source { get; set; }
+        public PlayerErrorType Type { get; set; }
         public string ErrorMessage { get; set; }
     }
 }

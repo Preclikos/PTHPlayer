@@ -244,9 +244,9 @@ namespace PTHPlayer.Controllers
         protected void DelegatePlayerError(object sender, PlayerErrorEventArgs e)
         {
 
-            if (e.Source == PlayerErrorSource.Player)
+            if (e.Type != PlayerErrorType.BufferChange)
             {
-                EventNotificationListener.SendNotification(e.Source.ToString(), e.ErrorMessage);
+                EventNotificationListener.SendNotification(e.Type.ToString(), e.ErrorMessage);
             }
 
         }

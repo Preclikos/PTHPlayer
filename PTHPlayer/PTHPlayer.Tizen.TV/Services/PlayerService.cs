@@ -67,7 +67,7 @@ namespace PTHPlayer.Tizen.TV.Services
         {
             var errorEvent = new PlayerErrorEventArgs
             {
-                Source = PlayerErrorSource.Player,
+                Type = PlayerErrorType.EndOfStream,
                 ErrorMessage = "EosError"
             };
             DelegatePlayerError(errorEvent);
@@ -77,7 +77,7 @@ namespace PTHPlayer.Tizen.TV.Services
         {
             var errorEvent = new PlayerErrorEventArgs
             {
-                Source = PlayerErrorSource.Player,
+                Type = PlayerErrorType.PlayerError,
                 ErrorMessage = errorArgs.ErrorType.ToString()
             };
             DelegatePlayerError(errorEvent);
@@ -87,21 +87,9 @@ namespace PTHPlayer.Tizen.TV.Services
         {
             var errorEvent = new PlayerErrorEventArgs
             {
+                Type = PlayerErrorType.BufferChange,
                 ErrorMessage = bufferArgs.BufferStatus.ToString()
             };
-            switch (bufferArgs.StreamType)
-            {
-                case StreamType.Video:
-                    {
-                        errorEvent.Source = PlayerErrorSource.Video;
-                        break;
-                    }
-                case StreamType.Audio:
-                    {
-                        errorEvent.Source = PlayerErrorSource.Audio;
-                        break;
-                    }
-            }
             DelegatePlayerError(errorEvent);
         }
 
@@ -236,10 +224,13 @@ namespace PTHPlayer.Tizen.TV.Services
                 }
                 catch
                 {
-                    var errorEvent = new PlayerErrorEventArgs();
-                    errorEvent.Source = PlayerErrorSource.Player;
-                    errorEvent.ErrorMessage = "DisposeError";
+                    var errorEvent = new PlayerErrorEventArgs
+                    {
+                        Type = PlayerErrorType.PlayerError,
+                        ErrorMessage = "DisposeError"
+                    };
                     DelegatePlayerError(errorEvent);
+
                     //Say cant stop player but player already stopped
                 }
                 player = null;

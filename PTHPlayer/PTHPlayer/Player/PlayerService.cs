@@ -391,7 +391,7 @@ namespace PTHPlayer.VideoPlayer
         }
         private void PlayerService_PlayerError(object sender, PlayerErrorEventArgs e)
         {
-            if (e.Source == PlayerErrorSource.Video || e.Source == PlayerErrorSource.Audio)
+            if (e.Type == PlayerErrorType.BufferChange)
             {
                 NativePlayerService.Pause();
                 WaitToBuffer = (DateTime.Now + TimeSpan.FromSeconds(1)).Ticks;
