@@ -2,8 +2,7 @@
 {
     public enum EventId
     {
-        VideoBuffer,
-        AudioBuffer,
-        Generic
+        Generic,
+        MetaData
     }
 }

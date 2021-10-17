@@ -50,7 +50,8 @@ namespace PTHPlayer.Forms.Modals
 
         public void GenerateNotification(string title, string message, EventId typeId = EventId.Generic, EventType eventType = EventType.Info)
         {
-            /*
+            Device.BeginInvokeOnMainThread(() =>
+            {
                 if (typeId != EventId.Generic)
                 {
                     foreach (var notificationChild in NotificationLayout.Children)
@@ -59,16 +60,15 @@ namespace PTHPlayer.Forms.Modals
                         if (existingNotification.TypeId == typeId)
                         {
 
-                            existingNotification.UpdateNotification(message, 5);
+                            existingNotification.UpdateNotification(eventType, message, 5);
                             return;
                         }
                     }
-                }*/
+                }
 
-                var notification = new NotificationItem(typeId, title, message, 5);
+                var notification = new NotificationItem(typeId, eventType, title, message, 5);
 
-            Device.BeginInvokeOnMainThread(() =>
-            {
+
                 NotificationLayout.Children.Insert(0, notification);
             });
         }

@@ -1,4 +1,5 @@
-﻿using PTHPlayer.Player.Models;
+﻿using PTHPlayer.Player.Enums;
+using PTHPlayer.Player.Models;
 using PTHPlayer.VideoPlayer.Models;
 using System;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace PTHPlayer.Player.Interfaces
         int VideoPacket(PacketModel response);
         int AudioPacket(PacketModel response);
         void Close();
-        int GetPlayerState();
+        PlayerState GetPlayerState();
         void Play();
         void Pause();
         void Resume();

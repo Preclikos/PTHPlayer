@@ -297,20 +297,20 @@ namespace PTHPlayer.VideoPlayer
             }
 
             var playerState = NativePlayerService.GetPlayerState();
-            if (playerState == 2 && playerState != 4)
+            if (playerState == PlayerState.Ready && playerState != PlayerState.Paused)
             {
                 NativePlayerService.Play();
-                if (NativePlayerService.GetPlayerState() == 3)
+                if (NativePlayerService.GetPlayerState() == PlayerState.Playing)
                 {
-                    DelegatePlayerStateChange(new PlayerStateChangeEventArgs() { State = PlayerStates.Play });
+                    DelegatePlayerStateChange(new PlayerStateChangeEventArgs() { State = PlayerState.Playing });
                 }
             }
-            if (playerState == 4 && WaitToBuffer < DateTime.Now.Ticks)
+            if (playerState == PlayerState.Paused && WaitToBuffer < DateTime.Now.Ticks)
             {
                 NativePlayerService.Resume();
-                if (NativePlayerService.GetPlayerState() == 3)
+                if (NativePlayerService.GetPlayerState() == PlayerState.Playing)
                 {
-                    DelegatePlayerStateChange(new PlayerStateChangeEventArgs() { State = PlayerStates.Play });
+                    DelegatePlayerStateChange(new PlayerStateChangeEventArgs() { State = PlayerState.Playing });
                 }
             }
         }
@@ -365,7 +365,7 @@ namespace PTHPlayer.VideoPlayer
         public void SubscriptionStop()
         {
 
-            DelegatePlayerStateChange(new PlayerStateChangeEventArgs() { State = PlayerStates.Stop });
+            DelegatePlayerStateChange(new PlayerStateChangeEventArgs() { State = PlayerState.Stop });
 
             Stop();
 
@@ -392,22 +392,11 @@ namespace PTHPlayer.VideoPlayer
         {
             if (e.Type == PlayerErrorType.BufferChange)
             {
-                if(NativePlayerService.GetPlayerState() == 3)
-                { 
+                if (NativePlayerService.GetPlayerState() == PlayerState.Playing)
+                {
                     NativePlayerService.Pause();
                 }
                 WaitToBuffer = (DateTime.Now + TimeSpan.FromSeconds(1)).Ticks;
-            }
-        }
-
-        protected void DelegatePlayerError(PlayerErrorEventArgs e)
-        {
-
-
-            EventHandler<PlayerErrorEventArgs> handler = PlayerError;
-            if (handler != null)
-            {
-                handler(this, e);
             }
         }
 

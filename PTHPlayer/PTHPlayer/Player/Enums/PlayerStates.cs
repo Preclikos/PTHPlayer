@@ -1,9 +1,12 @@
 ﻿namespace PTHPlayer.Player.Enums
 {
-    public enum PlayerStates
+    public enum PlayerState
     {
-        Stop,
-        Prepare,
-        Play
+        None = 0,
+        Idle = 1,
+        Ready = 2,
+        Playing = 3,
+        Paused = 4,
+        Stop
     }
 }

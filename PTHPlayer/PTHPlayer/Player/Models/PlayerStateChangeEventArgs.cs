@@ -5,6 +5,6 @@ namespace PTHPlayer.VideoPlayer.Models
 {
     public class PlayerStateChangeEventArgs : EventArgs
     {
-        public PlayerStates State { get; set; }
+        public PlayerState State { get; set; }
     }
 }

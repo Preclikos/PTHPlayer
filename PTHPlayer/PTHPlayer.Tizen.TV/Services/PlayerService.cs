@@ -6,6 +6,7 @@ using PTHPlayer.VideoPlayer.Models;
 using System;
 using System.Threading.Tasks;
 using Tizen.TV.Multimedia;
+using BufferStatus = PTHPlayer.Player.Enums.BufferStatus;
 
 [assembly: Xamarin.Forms.Dependency(typeof(PlayerService))]
 namespace PTHPlayer.Tizen.TV.Services
@@ -67,8 +68,7 @@ namespace PTHPlayer.Tizen.TV.Services
         {
             var errorEvent = new PlayerErrorEventArgs
             {
-                Type = PlayerErrorType.EndOfStream,
-                ErrorMessage = "EosError"
+                Type = PlayerErrorType.EndOfStream
             };
             DelegatePlayerError(errorEvent);
         }
@@ -78,7 +78,7 @@ namespace PTHPlayer.Tizen.TV.Services
             var errorEvent = new PlayerErrorEventArgs
             {
                 Type = PlayerErrorType.PlayerError,
-                ErrorMessage = errorArgs.ErrorType.ToString()
+                PlayerError = (PlayerError)errorArgs.ErrorType
             };
             DelegatePlayerError(errorEvent);
         }
@@ -88,7 +88,7 @@ namespace PTHPlayer.Tizen.TV.Services
             var errorEvent = new PlayerErrorEventArgs
             {
                 Type = PlayerErrorType.BufferChange,
-                ErrorMessage = bufferArgs.BufferStatus.ToString()
+                BufferStatus = (BufferStatus)bufferArgs.BufferStatus
             };
             DelegatePlayerError(errorEvent);
         }
@@ -183,13 +183,21 @@ namespace PTHPlayer.Tizen.TV.Services
             return -1;
         }
 
-        public int GetPlayerState()
+        public PlayerState GetPlayerState()
         {
             if (player != null)
             {
-                return (int)player.GetState();
+                try
+                {
+                    return (PlayerState)player.GetState();
+                }
+                catch(ObjectDisposedException)
+                {
+                    //Disposed error
+                    return PlayerState.None;
+                }
             }
-            return -1;
+            return PlayerState.None;
         }
 
         public void Play()
@@ -225,8 +233,7 @@ namespace PTHPlayer.Tizen.TV.Services
                 {
                     var errorEvent = new PlayerErrorEventArgs
                     {
-                        Type = PlayerErrorType.PlayerError,
-                        ErrorMessage = "DisposeError"
+                        Type = PlayerErrorType.DisposeError,
                     };
                     DelegatePlayerError(errorEvent);
 

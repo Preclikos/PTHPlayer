@@ -245,7 +245,25 @@ namespace PTHPlayer.Controllers
 
             if (e.Type != PlayerErrorType.BufferChange)
             {
-                EventNotificationListener.SendNotification(e.Type.ToString(), e.ErrorMessage);
+                switch(e.Type)
+                {
+                    case PlayerErrorType.EndOfStream:
+                        {
+                            EventNotificationListener.SendNotification(nameof(PlayerController), e.Type.ToString());
+                            break;
+                        }
+                    case PlayerErrorType.DisposeError:
+                        {
+                            EventNotificationListener.SendNotification(nameof(PlayerController), e.Type.ToString());
+                            break;
+                        }
+                    case PlayerErrorType.PlayerError:
+                        {
+                            EventNotificationListener.SendNotification(e.Type.ToString(), e.PlayerError.ToString());
+                            break;
+                        }
+                }
+                
             }
 
         }

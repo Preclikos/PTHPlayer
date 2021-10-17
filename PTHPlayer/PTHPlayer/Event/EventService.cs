@@ -13,6 +13,8 @@ namespace PTHPlayer.Event
         {
             var eventArgs = new NotificationEventArgs
             {
+                Id = eventId,
+                Type = eventType,
                 Title = title,
                 Message = message
             };

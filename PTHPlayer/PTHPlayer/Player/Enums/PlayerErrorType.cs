@@ -4,6 +4,7 @@
     {
         EndOfStream,
         BufferChange,
-        PlayerError
+        PlayerError,
+        DisposeError
     }
 }

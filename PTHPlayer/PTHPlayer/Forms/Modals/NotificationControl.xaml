@@ -4,13 +4,13 @@
 
     <Grid.RowDefinitions>
         <RowDefinition Height="*"/>
-        <RowDefinition Height="700" />
+        <RowDefinition Height="800" />
         <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*"/>
-        <ColumnDefinition Width="300"/>
+        <ColumnDefinition Width="450"/>
     </Grid.ColumnDefinitions>
 
     <StackLayout Grid.Column="1" Grid.Row="1" x:Name="NotificationLayout">

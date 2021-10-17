@@ -1,5 +1,6 @@
 ﻿using PTHPlayer.Controllers.Listeners;
 using PTHPlayer.DataStorage.Models;
+using PTHPlayer.Event.Enums;
 using PTHPlayer.Event.Listeners;
 using PTHPlayer.HTSP.Parsers;
 using System;
@@ -23,7 +24,7 @@ namespace PTHPlayer.HTSP.Listeners
 
         public void onError(Exception ex)
         {
-            EvenetNotificationListener.SendNotification(nameof(HTSPListener), ex.Message);
+            EvenetNotificationListener.SendNotification(nameof(HTSPListener), ex.Message, eventType: Event.Enums.EventType.Error);
         }
 
         public void onMessage(HTSMessage response)
@@ -94,7 +95,7 @@ namespace PTHPlayer.HTSP.Listeners
                     }
                 case "initialSyncCompleted":
                     {
-                        EvenetNotificationListener.SendNotification(nameof(HTSPListener), "Init Sync Completed");
+                        EvenetNotificationListener.SendNotification(nameof(HTSPListener), "Init Sync Completed", EventId.MetaData ,EventType.Success);
                         break;
                     }
                 case "eventAdd":

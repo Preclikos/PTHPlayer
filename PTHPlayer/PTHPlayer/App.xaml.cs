@@ -31,7 +31,7 @@ namespace PTHPlayer
             var HTSPService = new HTSPService();
 
             VideoPlayerController = new PlayerController(HTSPService, eventService);
-            HTSPConnectionController = new HTSPController(HTSPService, DataStorageService);
+            HTSPConnectionController = new HTSPController(HTSPService, DataStorageService, eventService);
 
             var HTPListener = new HTSPListener(VideoPlayerController, HTSPConnectionController, eventService);
 

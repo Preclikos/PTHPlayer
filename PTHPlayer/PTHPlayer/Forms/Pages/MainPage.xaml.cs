@@ -109,7 +109,7 @@ namespace PTHPlayer.Forms.Pages
         {
             switch (e.State)
             {
-                case PlayerStates.Stop:
+                case PlayerState.Stop:
                     {
                         Device.BeginInvokeOnMainThread(() =>
                         {
@@ -119,7 +119,7 @@ namespace PTHPlayer.Forms.Pages
                         });
                         break;
                     }
-                case PlayerStates.Play:
+                case PlayerState.Playing:
                     {
                         if (MainLogo.Opacity != 0)
                         {

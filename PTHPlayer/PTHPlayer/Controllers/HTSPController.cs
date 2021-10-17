@@ -1,5 +1,7 @@
 ﻿using PTHPlayer.Controllers.Listeners;
 using PTHPlayer.DataStorage.Service;
+using PTHPlayer.Event.Enums;
+using PTHPlayer.Event.Listeners;
 using PTHPlayer.HTSP;
 using PTHPlayer.HTSP.Listeners;
 using PTHPlayer.HTSP.Models;
@@ -9,16 +11,19 @@ namespace PTHPlayer.Controllers
 {
     public class HTSPController : IHTSPListener
     {
-        private HTSPService HTSPClient { get; }
-        private DataService DataStorageClient { get; }
+        private HTSPService HTSPClient;
+        private DataService DataStorageClient;
+        private IEventListener EventNotificationListener;
+
         private HTSPListener HTSListener { get; set; }
 
         public event EventHandler<ChannelUpdateEventArgs> ChannelUpdateEvent;
 
-        public HTSPController(HTSPService hTSPClient, DataService dataStorageClient)
+        public HTSPController(HTSPService hTSPClient, DataService dataStorageClient, IEventListener eventNotificationListener)
         {
             HTSPClient = hTSPClient;
-            DataStorageClient = dataStorageClient; 
+            DataStorageClient = dataStorageClient;
+            EventNotificationListener = eventNotificationListener;
         }
 
         public void SetListener(HTSPListener hTSPListener)
@@ -46,6 +51,7 @@ namespace PTHPlayer.Controllers
                     HTSPClient.Login(credentials.UserName, credentials.Password);
 
                     HTSPClient.EnableAsyncMetadata();
+                    EventNotificationListener.SendNotification(nameof(HTSPController), "Start Async Load", EventId.MetaData, EventType.Loading);
                 }
             }
         }
