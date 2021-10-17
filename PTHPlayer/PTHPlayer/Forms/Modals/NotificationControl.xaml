@@ -4,7 +4,7 @@
 
     <Grid.RowDefinitions>
         <RowDefinition Height="*"/>
-        <RowDefinition Height="200" />
+        <RowDefinition Height="700" />
         <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
@@ -14,6 +14,5 @@
     </Grid.ColumnDefinitions>
 
     <StackLayout Grid.Column="1" Grid.Row="1" x:Name="NotificationLayout">
-        <!-- <Label Text="Test" /> -->
     </StackLayout>
 </Grid>

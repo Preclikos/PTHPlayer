@@ -1,5 +1,6 @@
 ﻿using PTHPlayer.Controllers;
 using PTHPlayer.DataStorage.Service;
+using PTHPlayer.Event;
 using PTHPlayer.Forms.Pages;
 using PTHPlayer.HTSP;
 using PTHPlayer.HTSP.Listeners;
@@ -23,28 +24,33 @@ namespace PTHPlayer
 
         protected override void OnStart()
         {
+            var eventService = new EventService();
+
             DataStorageService = new DataService();
 
             var HTSPService = new HTSPService();
 
-            VideoPlayerController = new PlayerController(HTSPService);
+            VideoPlayerController = new PlayerController(HTSPService, eventService);
             HTSPConnectionController = new HTSPController(HTSPService, DataStorageService);
 
-            var HTPListener = new HTSPListener(VideoPlayerController, HTSPConnectionController);
+            var HTPListener = new HTSPListener(VideoPlayerController, HTSPConnectionController, eventService);
 
             HTSPConnectionController.SetListener(HTPListener);
 
-            MainPage = new NavigationPage(new MainPage(VideoPlayerController, HTSPConnectionController));
+            MainPage = new NavigationPage(new MainPage(VideoPlayerController, HTSPConnectionController, eventService));
 
         }
 
         protected override void OnSleep()
         {
-            LastChannelId = DataStorageService.SelectedChannelId;
+            if (DataStorageService.IsCredentialsExist())
+            {
+                LastChannelId = DataStorageService.SelectedChannelId;
 
-            VideoPlayerController.UnSubscribe(true);
+                VideoPlayerController.UnSubscribe(true);
 
-            HTSPConnectionController.Close();
+                HTSPConnectionController.Close();
+            }
         }
 
         protected override void OnResume()

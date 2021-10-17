@@ -1,9 +1,10 @@
 ﻿using PTHPlayer.Controllers.Enums;
 using PTHPlayer.Controllers.Listeners;
+using PTHPlayer.Event.Listeners;
 using PTHPlayer.HTSP;
 using PTHPlayer.Subtitles.Player;
+using PTHPlayer.VideoPlayer;
 using PTHPlayer.VideoPlayer.Models;
-using PTHPlayer.VideoPlayer.Player;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -16,7 +17,9 @@ namespace PTHPlayer.Controllers
     {
         public event EventHandler<PlayerStateChangeEventArgs> PlayerStateChange;
 
-        HTSPService HTSPClient { get; }
+        private HTSPService HTSPClient;
+        private IEventListener EventNotificationListener;
+
         PlayerService PlayerService { get; }
         SubtitlePlayer SubtitlePlayer { get; }
 
@@ -33,14 +36,16 @@ namespace PTHPlayer.Controllers
 
         SubscriptionStatus Status = SubscriptionStatus.New;
 
-        public PlayerController(HTSPService hTSPClient)
+        public PlayerController(HTSPService hTSPClient, IEventListener eventNotificationListener)
         {
             HTSPClient = hTSPClient;
+            EventNotificationListener = eventNotificationListener;
 
             PlayerService = new PlayerService();
             SubtitlePlayer = new SubtitlePlayer(PlayerService);
 
             PlayerService.PlayerStateChange += DelegatePlayerStateChange;
+            PlayerService.PlayerError += DelegatePlayerError;
         }
 
         public void SetSubtitleDisplay(Image image)
@@ -121,18 +126,16 @@ namespace PTHPlayer.Controllers
 
         public void UnSubscribe(bool forceStop = false)
         {
+            SubtitlePlayer.Stop();
+            PlayerService.SubscriptionStop();
             SubscriptionStop = new TaskCompletionSource<HTSMessage>();
             HTSPClient.UnSubscribe(SubscriptionId);
             if (Status != SubscriptionStatus.New || forceStop)
             {
-
                 if (!forceStop)
                 {
                     SubscriptionStop.Task.Wait(2000);
                 }
-                SubtitlePlayer.Stop();
-                PlayerService.SubscriptionStop();
-
             }
 
         }
@@ -229,6 +232,15 @@ namespace PTHPlayer.Controllers
             {
                 handler(this, e);
             }
+        }
+
+        protected void DelegatePlayerError(object sender, PlayerErrorEventArgs e)
+        {
+            if(string.IsNullOrEmpty(e.ErrorMessage))
+            {
+                return;
+            }
+            EventNotificationListener.SendNotification(e.Source.ToString(), e.ErrorMessage);
         }
     }
 }

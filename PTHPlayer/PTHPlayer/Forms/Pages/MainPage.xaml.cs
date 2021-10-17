@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using PTHPlayer.Controllers;
 using PTHPlayer.Enums;
+using PTHPlayer.Event;
+using PTHPlayer.Event.Models;
 using PTHPlayer.Forms.Controls;
 using PTHPlayer.Interfaces;
 using PTHPlayer.VideoPlayer.Enums;
@@ -13,16 +16,21 @@ namespace PTHPlayer.Forms.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : ContentPage
     {
+        private EventService EventNotificationService;
+
         private PlayerController VideoPlayerController;
         private HTSPController HTSPConnectionController;
 
         private PlayerControl VideoPlayerControl;
         private ChannelControl ChannelSelectionControl;
 
-        public MainPage(PlayerController videoPlayerController, HTSPController hTSPController)
+        public MainPage(PlayerController videoPlayerController, HTSPController hTSPController, EventService eventNotificationService)
         {
 
             InitializeComponent();
+
+            EventNotificationService = eventNotificationService;
+
             VideoPlayerController = videoPlayerController;
             HTSPConnectionController = hTSPController;
 
@@ -39,6 +47,7 @@ namespace PTHPlayer.Forms.Pages
         {
             base.OnAppearing();
 
+            EventNotificationService.EventHandler += EventNotificationService_EventHandler;
             VideoPlayerController.PlayerStateChange += PlayerService_StateChange;
 
             MessagingCenter.Subscribe<IKeyEventSender, string>(this, "KeyDown",
@@ -130,6 +139,11 @@ namespace PTHPlayer.Forms.Pages
             }
         }
 
+        private void EventNotificationService_EventHandler(object sender, NotificationEventArgs e)
+        {
+            NotificationArea.GenerateNotification(e.Title, e.Message, e.Id, e.Type);
+        }
+
         protected override bool OnBackButtonPressed()
         {
             return true;
@@ -138,6 +152,8 @@ namespace PTHPlayer.Forms.Pages
 
         protected override void OnDisappearing()
         {
+            EventNotificationService.EventHandler -= EventNotificationService_EventHandler;
+            VideoPlayerController.PlayerStateChange -= PlayerService_StateChange;
             MessagingCenter.Unsubscribe<IKeyEventSender, string>(this, "KeyDown");
             base.OnDisappearing();
 

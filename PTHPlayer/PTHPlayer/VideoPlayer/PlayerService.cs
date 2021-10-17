@@ -12,7 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-namespace PTHPlayer.VideoPlayer.Player
+namespace PTHPlayer.VideoPlayer
 {
     public class PlayerService
     {

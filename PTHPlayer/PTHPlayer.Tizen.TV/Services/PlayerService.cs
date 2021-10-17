@@ -1,4 +1,5 @@
 ﻿using PTHPlayer.Tizen.TV.Services;
+using PTHPlayer.VideoPlayer.Enums;
 using PTHPlayer.VideoPlayer.Interfaces;
 using PTHPlayer.VideoPlayer.Models;
 using System;
@@ -34,7 +35,6 @@ namespace PTHPlayer.Tizen.TV.Services
             player.BufferStatusChanged += OnBufferStatusChanged;
             player.ErrorOccurred += OnError;
             player.EOSEmitted += OnEos;
-            //player.SetDisplayRoi(200, 100, 320, 240);        
         }
 
         protected virtual void DelegatePlayerError(PlayerErrorEventArgs e)
@@ -52,7 +52,7 @@ namespace PTHPlayer.Tizen.TV.Services
             {
                 case StreamType.Video:
                     {
-                        VideoPrepareReady.SetResult(true); 
+                        VideoPrepareReady.SetResult(true);
                         break;
                     }
                 case StreamType.Audio:
@@ -65,22 +65,43 @@ namespace PTHPlayer.Tizen.TV.Services
 
         private void OnEos(object sender, EOSEventArgs eosArgs)
         {
-            var errorEvent = new PlayerErrorEventArgs();
-            errorEvent.ErrorMsg = "EosError";
+            var errorEvent = new PlayerErrorEventArgs
+            {
+                Source = PlayerErrorSource.Player,
+                ErrorMessage = "EosError"
+            };
             DelegatePlayerError(errorEvent);
         }
 
         private void OnError(object sender, ErrorEventArgs errorArgs)
         {
-            var errorEvent = new PlayerErrorEventArgs();
-            errorEvent.ErrorMsg = errorArgs.ErrorType.ToString();
+            var errorEvent = new PlayerErrorEventArgs
+            {
+                Source = PlayerErrorSource.Player,
+                ErrorMessage = errorArgs.ErrorType.ToString()
+            };
             DelegatePlayerError(errorEvent);
         }
 
         private void OnBufferStatusChanged(object sender, BufferStatusEventArgs bufferArgs)
         {
-            var errorEvent = new PlayerErrorEventArgs();
-            errorEvent.ErrorMsg = bufferArgs.BufferStatus.ToString();
+            var errorEvent = new PlayerErrorEventArgs
+            {
+                ErrorMessage = bufferArgs.BufferStatus.ToString()
+            };
+            switch(bufferArgs.StreamType)
+            {
+                case StreamType.Video:
+                    {
+                        errorEvent.Source = PlayerErrorSource.Video;
+                        break;
+                    }
+                case StreamType.Audio:
+                    {
+                        errorEvent.Source = PlayerErrorSource.Audio;
+                        break;
+                    }
+            }
             DelegatePlayerError(errorEvent);
         }
 
@@ -128,13 +149,13 @@ namespace PTHPlayer.Tizen.TV.Services
         }
 
         public async Task PacketReady()
-        {         
+        {
             await Task.WhenAll(new[] { VideoPrepareReady.Task, AudioPrepareReady.Task });
         }
 
         public Task PreparePlayer()
         {
-           return player.PrepareAsync(onPlayerPrepareReady);
+            return player.PrepareAsync(onPlayerPrepareReady);
         }
 
         private ESPacket ParsePacket(PacketModel packet)
@@ -203,7 +224,8 @@ namespace PTHPlayer.Tizen.TV.Services
                 catch
                 {
                     var errorEvent = new PlayerErrorEventArgs();
-                    errorEvent.ErrorMsg = "DisposeError";
+                    errorEvent.Source = PlayerErrorSource.Player;
+                    errorEvent.ErrorMessage = "DisposeError";
                     DelegatePlayerError(errorEvent);
                     //Say cant stop player but player already stopped
                 }

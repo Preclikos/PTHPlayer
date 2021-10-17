@@ -1,5 +1,4 @@
-﻿using PTHPlayer.VideoPlayer.Player;
-using System;
+﻿using PTHPlayer.VideoPlayer;
 using System.IO;
 using System.Linq;
 using System.Threading;

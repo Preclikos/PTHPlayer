@@ -30,6 +30,9 @@
     <Compile Update="Forms\Controls\PlayerControl.xaml.cs">
       <DependentUpon>PlayerControl.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Forms\Modals\NotificationItem.xaml.cs">
+      <DependentUpon>NotificationItem.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Forms\Modals\SubtitleSelectionControl.xaml.cs">
       <DependentUpon>SubtitleSelectionControl.xaml</DependentUpon>
     </Compile>
@@ -72,6 +75,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Forms\Controls\ExitControl.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Forms\Modals\NotificationItem.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Forms\Pages\CredentialsPage.xaml">

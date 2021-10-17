@@ -1,6 +1,6 @@
 ﻿using PTHPlayer.Controllers.Listeners;
 using PTHPlayer.DataStorage.Models;
-using PTHPlayer.Forms.Modals;
+using PTHPlayer.Event.Listeners;
 using PTHPlayer.HTSP.Parsers;
 using System;
 using System.Linq;
@@ -9,18 +9,21 @@ namespace PTHPlayer.HTSP.Listeners
 {
     public class HTSPListener : HTSConnectionListener
     {
+        private IEventListener EvenetNotificationListener;
 
         private IPlayerListener SubcriptionListener;
         private IHTSPListener HTSPControllerListener;
-        public HTSPListener(IPlayerListener subscriptionListener, IHTSPListener hTSPListener)
+
+        public HTSPListener(IPlayerListener subscriptionListener, IHTSPListener hTSPListener, IEventListener evenetNotificationListener)
         {
             SubcriptionListener = subscriptionListener;
             HTSPControllerListener = hTSPListener;
+            EvenetNotificationListener = evenetNotificationListener;
         }
 
         public void onError(Exception ex)
         {
-            //NotificationControl.OnError(this, ex);
+            EvenetNotificationListener.SendNotification(nameof(HTSPListener), ex.Message);
         }
 
         public void onMessage(HTSMessage response)
