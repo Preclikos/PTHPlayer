@@ -1,8 +1,8 @@
 ﻿using PTHPlayer.Controllers;
 using PTHPlayer.DataStorage.Service;
+using PTHPlayer.Forms.Pages;
 using PTHPlayer.HTSP;
 using PTHPlayer.HTSP.Listeners;
-using PTHPlayer.Pages;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 

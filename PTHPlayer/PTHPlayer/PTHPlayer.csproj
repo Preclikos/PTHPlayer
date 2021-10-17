@@ -24,19 +24,27 @@
     <Compile Update="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Controls\ChannelControl.xaml.cs">
+    <Compile Update="Forms\Controls\ChannelControl.xaml.cs">
       <DependentUpon>ChannelControl.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Controls\PlayerControl.xaml.cs">
+    <Compile Update="Forms\Controls\PlayerControl.xaml.cs">
       <DependentUpon>PlayerControl.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Modals\SubtitleSelectionControl.xaml.cs">
+    <Compile Update="Forms\Modals\SubtitleSelectionControl.xaml.cs">
       <DependentUpon>SubtitleSelectionControl.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Modals\AudioSelectionControl.xaml.cs">
+    <Compile Update="Forms\Modals\AudioSelectionControl.xaml.cs">
       <DependentUpon>AudioSelectionControl.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Resources\LangResources.Designer.cs">
+    <Compile Update="Forms\Pages\CredentialsPage.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Forms\Pages\MainPage.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Forms\Resources\LangResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>LangResources.resx</DependentUpon>
@@ -63,34 +71,30 @@
     <EmbeddedResource Update="App.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Controls\ExitControl.xaml">
+    <EmbeddedResource Update="Forms\Controls\ExitControl.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\CredentialsPage.xaml">
+    <EmbeddedResource Update="Forms\Pages\CredentialsPage.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\MainPage.xaml">
+    <EmbeddedResource Update="Forms\Pages\MainPage.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Modals\AudioSelectionControl.xaml">
+    <EmbeddedResource Update="Forms\Modals\AudioSelectionControl.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Modals\NotificationControl.xaml">
+    <EmbeddedResource Update="Forms\Modals\NotificationControl.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\LangResources.cs-CZ.resx">
+    <EmbeddedResource Update="Forms\Resources\LangResources.cs-CZ.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\LangResources.resx">
+    <EmbeddedResource Update="Forms\Resources\LangResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>LangResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-
-	<ItemGroup>
-	  <None Update="Controls\CredentialsPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	</ItemGroup>
 
 </Project>
