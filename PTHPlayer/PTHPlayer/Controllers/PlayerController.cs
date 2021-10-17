@@ -96,14 +96,11 @@ namespace PTHPlayer.Controllers
                 CalculationSampleRate = new TaskCompletionSource<bool>();
 
                 Status = SubscriptionStatus.Submitted;
-
                 PlayerService.Subscription(SubscriptionStart.Task.Result);
 
                 var results = Task.WaitAll(new[] { CalculationFps.Task, CalculationSampleRate.Task }, 5000, CancellationTokenSrc.Token);
-
                 if (results)
                 {
-                    await Task.Delay(PlayerService.bufferedSeconds * 1000);
 
                     Status = SubscriptionStatus.WaitForPlay;
 
@@ -116,10 +113,6 @@ namespace PTHPlayer.Controllers
                     playerPrepare.Wait();
                     SubtitlePlayer.Start();
                 }
-                else
-                {
-                    UnSubscribe();
-                }
             }
 
             //Flow one SubscriptionSkip Nothing to do reset state
@@ -131,10 +124,8 @@ namespace PTHPlayer.Controllers
 
         public void UnSubscribe(bool forceStop = false)
         {
-
             PlayerService.SubscriptionStop();
             SubtitlePlayer.Stop();
-            Status = SubscriptionStatus.Close;
 
             SubscriptionStop = new TaskCompletionSource<HTSMessage>();
             HTSPClient.UnSubscribe(SubscriptionId);
@@ -143,7 +134,7 @@ namespace PTHPlayer.Controllers
             {
                 if (!forceStop)
                 {
-                    SubscriptionStop.Task.Wait(2000);
+                    SubscriptionStop.Task.Wait(10000);
                 }
             }
 
@@ -252,29 +243,12 @@ namespace PTHPlayer.Controllers
 
         protected void DelegatePlayerError(object sender, PlayerErrorEventArgs e)
         {
-            if (string.IsNullOrEmpty(e.ErrorMessage) || Status == SubscriptionStatus.Close)
+
+            if (e.Source == PlayerErrorSource.Player)
             {
-                return;
+                EventNotificationListener.SendNotification(e.Source.ToString(), e.ErrorMessage);
             }
-            switch(e.Source)
-            {
-                case PlayerErrorSource.Video:
-                    {
-                        EventNotificationListener.SendNotification(e.Source.ToString(), e.ErrorMessage, EventId.VideoBuffer);
-                        break;
-                    }
-                case PlayerErrorSource.Audio:
-                    {
-                        EventNotificationListener.SendNotification(e.Source.ToString(), e.ErrorMessage, EventId.AudioBuffer);
-                        break;
-                    }
-                default:
-                    {
-                        EventNotificationListener.SendNotification(e.Source.ToString(), e.ErrorMessage);
-                        break;
-                    }
-            }
-            
+
         }
     }
 }

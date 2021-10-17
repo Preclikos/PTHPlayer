@@ -29,7 +29,7 @@ namespace PTHPlayer.VideoPlayer
         List<AudioConfigModel> audioConfigs = new List<AudioConfigModel>();
         List<SubtitleConfigModel> subtitleConfigs = new List<SubtitleConfigModel>();
 
-        public const int bufferedSeconds = 3;
+        private long WaitToBuffer = 0;
 
         public Queue<SubtitleElement> SubtitleElemnts = new Queue<SubtitleElement>();
 
@@ -37,6 +37,7 @@ namespace PTHPlayer.VideoPlayer
         public PlayerService()
         {
             NativePlayerService = DependencyService.Get<IPlayerService>();
+            PlayerError += PlayerService_PlayerError;
         }
 
         public double GetPlayerTime()
@@ -296,10 +297,18 @@ namespace PTHPlayer.VideoPlayer
                 SubtitlePacket(packet);
             }
 
-
-            if (NativePlayerService.GetPlayerState() == 2)
+            var playerState = NativePlayerService.GetPlayerState();
+            if (playerState == 2 && playerState != 4)
             {
                 NativePlayerService.Play();
+                if (NativePlayerService.GetPlayerState() == 3)
+                {
+                    DelegatePlayerStateChange(new PlayerStateChangeEventArgs() { State = PlayerStates.Play });
+                }
+            }
+            if (playerState == 4 && WaitToBuffer < DateTime.Now.Ticks)
+            {
+                NativePlayerService.Resume();
                 if (NativePlayerService.GetPlayerState() == 3)
                 {
                     DelegatePlayerStateChange(new PlayerStateChangeEventArgs() { State = PlayerStates.Play });
@@ -380,9 +389,19 @@ namespace PTHPlayer.VideoPlayer
         {
             NativePlayerService.Close();
         }
+        private void PlayerService_PlayerError(object sender, PlayerErrorEventArgs e)
+        {
+            if (e.Source == PlayerErrorSource.Video || e.Source == PlayerErrorSource.Audio)
+            {
+                NativePlayerService.Pause();
+                WaitToBuffer = (DateTime.Now + TimeSpan.FromSeconds(1)).Ticks;
+            }
+        }
 
         protected void DelegatePlayerError(PlayerErrorEventArgs e)
         {
+
+
             EventHandler<PlayerErrorEventArgs> handler = PlayerError;
             if (handler != null)
             {

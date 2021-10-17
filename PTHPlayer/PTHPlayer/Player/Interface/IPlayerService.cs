@@ -16,6 +16,8 @@ namespace PTHPlayer.Player.Interfaces
         void Close();
         int GetPlayerState();
         void Play();
+        void Pause();
+        void Resume();
         TimeSpan GetPlayerTime();
     }
 }

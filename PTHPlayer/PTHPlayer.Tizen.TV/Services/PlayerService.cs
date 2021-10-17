@@ -26,7 +26,6 @@ namespace PTHPlayer.Tizen.TV.Services
             {
                 return;
             }
-
             player = new ESPlayer();
 
             player.Open();
@@ -208,6 +207,16 @@ namespace PTHPlayer.Tizen.TV.Services
             player.Start();
         }
 
+        public void Pause()
+        {
+            player.Pause();
+        }
+
+        public void Resume()
+        {
+            player.Resume();
+        }
+
         public void Close()
         {
             VideoPrepareReady = new TaskCompletionSource<bool>();
@@ -215,9 +224,12 @@ namespace PTHPlayer.Tizen.TV.Services
 
             if (player != null)
             {
+                player.BufferStatusChanged -= OnBufferStatusChanged;
+                player.ErrorOccurred -= OnError;
+                player.EOSEmitted -= OnEos;
 
-                player.Stop();
-                player.Close();
+                //player.Stop();
+                //player.Close();
                 try
                 {
                     player?.Dispose();
