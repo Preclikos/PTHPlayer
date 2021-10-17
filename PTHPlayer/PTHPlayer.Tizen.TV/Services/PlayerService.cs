@@ -143,6 +143,8 @@ namespace PTHPlayer.Tizen.TV.Services
 
         public Task PreparePlayer()
         {
+            VideoPrepareReady = new TaskCompletionSource<bool>();
+            AudioPrepareReady = new TaskCompletionSource<bool>();
             return player.PrepareAsync(onPlayerPrepareReady);
         }
 
@@ -207,9 +209,6 @@ namespace PTHPlayer.Tizen.TV.Services
 
         public void Close()
         {
-            VideoPrepareReady = new TaskCompletionSource<bool>();
-            AudioPrepareReady = new TaskCompletionSource<bool>();
-
             if (player != null)
             {
                 player.BufferStatusChanged -= OnBufferStatusChanged;

@@ -215,7 +215,6 @@ namespace PTHPlayer.Controllers
                     }
                 case SubscriptionStatus.Play:
                     {
-
                         PlayerService.Packet(message);
                         break;
                     }

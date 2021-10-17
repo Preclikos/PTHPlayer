@@ -284,7 +284,6 @@ namespace PTHPlayer.VideoPlayer
             if (streamIndex == videoConfig.Index)
             {
                 NativePlayerService.VideoPacket(packet);
-
             }
 
             if (streamIndex == audioConfig.Index)
@@ -393,7 +392,10 @@ namespace PTHPlayer.VideoPlayer
         {
             if (e.Type == PlayerErrorType.BufferChange)
             {
-                NativePlayerService.Pause();
+                if(NativePlayerService.GetPlayerState() == 3)
+                { 
+                    NativePlayerService.Pause();
+                }
                 WaitToBuffer = (DateTime.Now + TimeSpan.FromSeconds(1)).Ticks;
             }
         }
