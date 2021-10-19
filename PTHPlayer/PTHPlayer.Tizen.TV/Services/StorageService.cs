@@ -38,5 +38,13 @@ namespace PTHPlayer.Tizen.TV.Services
             DataManager.Save("UserName", Encoding.UTF8.GetBytes(credentials.UserName), new Policy());
             DataManager.Save("Password", Encoding.UTF8.GetBytes(credentials.Password), new Policy());
         }
+
+        public void ClearCredentials()
+        {
+            DataManager.RemoveAlias("Server");
+            DataManager.RemoveAlias("Port");
+            DataManager.RemoveAlias("UserName");
+            DataManager.RemoveAlias("Password");
+        }
     }
 }

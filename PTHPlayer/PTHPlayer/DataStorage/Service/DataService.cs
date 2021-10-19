@@ -48,6 +48,11 @@ namespace PTHPlayer.DataStorage.Service
             NativeDataService.SaveCredentials(credentials);
         }
 
+        public void ClearCredentials()
+        {
+            NativeDataService.ClearCredentials();
+        }
+
         public bool IsCredentialsExist()
         {
             var credentials = NativeDataService.GetCredentials();

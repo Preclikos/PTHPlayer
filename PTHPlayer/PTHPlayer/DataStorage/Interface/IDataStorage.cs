@@ -6,5 +6,6 @@ namespace PTHPlayer.DataStorage
     {
         CredentialsModel GetCredentials();
         void SaveCredentials(CredentialsModel credentials);
+        void ClearCredentials();
     }
 }
