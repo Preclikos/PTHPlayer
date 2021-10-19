@@ -9,7 +9,7 @@
 		  <ExcludeAssets>Runtime</ExcludeAssets>
 	  </PackageReference>
     <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
-    <PackageReference Include="Tizen.NET.TV" Version="5.5.0.4997532" />
+    <PackageReference Include="Tizen.NET.TV" Version="6.6.0.5599517" />
     <PackageReference Include="Xamarin.Forms" Version="4.7.0.1351" />
 		<PackageReference Include="SkiaSharp" Version="1.60.3">
 			<ExcludeAssets>Runtime</ExcludeAssets>

@@ -59,20 +59,31 @@ namespace PTHPlayer
 
             if (!DataStorageService.IsCredentialsExist())
             {
-                var credentialPage = new CredentialsPage(DataStorageService);
-                credentialPage.Disappearing += CredentialPage_Disappearing;
-                MainPage.Navigation.PushAsync(credentialPage);
+                OpenCredentials(false);
             }
             else
             {
-                HTSPConnectionController.Connect();
-                if (LastChannelId != -1)
+                try
                 {
-                    VideoPlayerController.Subscription(LastChannelId);
+                    HTSPConnectionController.Connect();
+                    if (LastChannelId != -1)
+                    {
+                        VideoPlayerController.Subscription(LastChannelId);
 
-                    DataStorageService.SelectedChannelId = LastChannelId;
+                        DataStorageService.SelectedChannelId = LastChannelId;
+                    }
+                }
+                catch
+                {
+                    OpenCredentials(true);
                 }
             }
+        }
+        private void OpenCredentials(bool invalidLogin)
+        {
+            var credentialPage = new CredentialsPage(DataStorageService, HTSPConnectionController, invalidLogin);
+            credentialPage.Disappearing += CredentialPage_Disappearing;
+            MainPage.Navigation.PushAsync(credentialPage);
         }
 
         private void CredentialPage_Disappearing(object sender, System.EventArgs e)
@@ -80,10 +91,6 @@ namespace PTHPlayer
             if (!DataStorageService.IsCredentialsExist())
             {
                 Current.Quit();
-            }
-            else
-            {
-                HTSPConnectionController.Connect();
             }
         }
     }

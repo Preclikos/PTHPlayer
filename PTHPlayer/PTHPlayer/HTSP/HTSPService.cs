@@ -14,12 +14,12 @@ namespace PTHPlayer.HTSP
         public void Open(string address, int port, HTSPListener HTPListener)
         {
             HTPClient = new HTSConnectionAsync(HTPListener, "Tizen C#", "Beta");
-            HTPClient.open(address, port);
+            HTPClient.Open(address, port);
         }
 
-        public void Login(string userName, string password)
+        public bool Login(string userName, string password)
         {
-            HTPClient.authenticate(userName, password);
+            return HTPClient.Authenticate(userName, password);
         }
 
         public int Subscribe(int channelId)
@@ -82,7 +82,7 @@ namespace PTHPlayer.HTSP
 
         public void Close()
         {
-            HTPClient.stop();
+            HTPClient.Stop();
         }
 
         public bool NeedRestart()
@@ -92,7 +92,7 @@ namespace PTHPlayer.HTSP
                 return true;
             }
 
-            return HTPClient.needsRestart();
+            return HTPClient.NeedsRestart();
         }
     }
 }

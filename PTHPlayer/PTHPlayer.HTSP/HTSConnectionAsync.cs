@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,14 +38,14 @@ namespace PTHPlayer.HTSP
     {
         private const long BytesPerGiga = 1024 * 1024 * 1024;
 
-        private volatile Boolean _needsRestart = false;
-        private volatile Boolean _connected;
+        private volatile bool _needsRestart = false;
+        private volatile bool _connected;
         private volatile int _seq = 0;
 
         private readonly object _lock;
         private readonly HTSConnectionListener _listener;
-        private readonly String _clientName;
-        private readonly String _clientVersion;
+        private readonly string _clientName;
+        private readonly string _clientVersion;
 
         private int _serverProtocolVersion;
         private string _servername;
@@ -67,8 +66,6 @@ namespace PTHPlayer.HTSP
 
         public HTSConnectionAsync(HTSConnectionListener listener, String clientName, String clientVersion)
         {
-            //_logger = logger;
-
             _connected = false;
             _lock = new object();
 
@@ -82,9 +79,9 @@ namespace PTHPlayer.HTSP
             _responseHandlers = new Dictionary<int, HTSResponseHandler>();
         }
 
-        public void stop()
+        public void Stop()
         {
-            
+
             if (_receiveHandlerThread != null && _receiveHandlerThread.IsAlive)
             {
                 _receiveHandlerThread = null;//.Interrupt();
@@ -109,12 +106,12 @@ namespace PTHPlayer.HTSP
             _connected = false;
         }
 
-        public Boolean needsRestart()
+        public bool NeedsRestart()
         {
             return _needsRestart;
         }
 
-        public void open(String hostname, int port)
+        public void Open(string hostname, int port)
         {
             if (_connected)
             {
@@ -154,22 +151,22 @@ namespace PTHPlayer.HTSP
                 catch (Exception ex)
                 {
                     ////_logger.Error("[TVHclient] HTSConnectionAsync.open: caught exception : {0}", ex.Message);
-
-                    Thread.Sleep(2000);
+                    throw ex;
+                    //Thread.Sleep(2000);
                 }
             }
 
-            
+
             ThreadStart ReceiveHandlerRef = new ThreadStart(ReceiveHandler);
             _receiveHandlerThread = new Thread(ReceiveHandlerRef);
             _receiveHandlerThread.IsBackground = true;
             _receiveHandlerThread.Start();
-            
+
             ThreadStart MessageBuilderRef = new ThreadStart(MessageBuilder);
             _messageBuilderThread = new Thread(MessageBuilderRef);
             _messageBuilderThread.IsBackground = true;
             _messageBuilderThread.Start();
-            
+
             ThreadStart SendingHandlerRef = new ThreadStart(SendingHandler);
             _sendingHandlerThread = new Thread(SendingHandlerRef);
             _sendingHandlerThread.IsBackground = true;
@@ -179,11 +176,11 @@ namespace PTHPlayer.HTSP
             _messageDistributorThread = new Thread(MessageDistributorRef);
             _messageDistributorThread.IsBackground = true;
             _messageDistributorThread.Start();
-            
+
             Monitor.Exit(_lock);
         }
 
-        public Boolean authenticate(String username, String password)
+        public bool Authenticate(String username, String password)
         {
             //_logger.Info("[TVHclient] HTSConnectionAsync.authenticate: start");
 
@@ -339,7 +336,7 @@ namespace PTHPlayer.HTSP
         private void SendingHandler()
 
         {
-            Boolean threadOk = true;
+            bool threadOk = true;
             while (_connected && threadOk)
             {
                 try
@@ -374,11 +371,11 @@ namespace PTHPlayer.HTSP
         }
         private void ReceiveHandler()
         {
-            Boolean threadOk = true;
+            bool threadOk = true;
             byte[] readBuffer = new byte[8192];
             while (_connected && threadOk)
             {
-                
+
                 try
                 {
                     int bytesReveived = _socket.Receive(readBuffer);
@@ -438,7 +435,7 @@ namespace PTHPlayer.HTSP
 
         private void MessageDistributor()
         {
-            Boolean threadOk = true;
+            bool threadOk = true;
             while (_connected && threadOk)
             {
                 try

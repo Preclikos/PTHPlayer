@@ -33,7 +33,7 @@ namespace PTHPlayer.Controllers
 
         public void Connect()
         {
-            if(HTSListener == null)
+            if (HTSListener == null)
             {
                 throw new ArgumentNullException(nameof(HTSListener));
             }
@@ -47,11 +47,16 @@ namespace PTHPlayer.Controllers
                 {
 
                     HTSPClient.Open(credentials.Server, credentials.Port, HTSListener);
+                    if (HTSPClient.Login(credentials.UserName, credentials.Password))
+                    {
 
-                    HTSPClient.Login(credentials.UserName, credentials.Password);
-
-                    HTSPClient.EnableAsyncMetadata();
-                    EventNotificationListener.SendNotification(nameof(HTSPController), "Start Async Load", EventId.MetaData, EventType.Loading);
+                        HTSPClient.EnableAsyncMetadata();
+                        EventNotificationListener.SendNotification(nameof(HTSPController), "Start Async Load", EventId.MetaData, EventType.Loading);
+                    }
+                    else
+                    {
+                        throw new Exception("Invalid Login Credentials");
+                    }
                 }
             }
         }
