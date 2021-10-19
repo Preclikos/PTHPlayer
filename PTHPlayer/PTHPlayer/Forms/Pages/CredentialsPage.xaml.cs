@@ -60,6 +60,7 @@ namespace PTHPlayer.Forms.Pages
             catch (Exception ex)
             {
                 DataStorageService.ClearCredentials();
+                HTSPConnectionController.Close();
                 Status.Text = ex.Message;
                 Status.TextColor = Color.Red;
             }
