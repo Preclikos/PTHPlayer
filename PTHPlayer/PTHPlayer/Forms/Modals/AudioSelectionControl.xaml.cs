@@ -1,5 +1,4 @@
-﻿
-using PTHPlayer.Controllers;
+﻿using PTHPlayer.Controllers;
 using PTHPlayer.Forms.Modals.ModalViewModels;
 using PTHPlayer.Interfaces;
 using PTHPlayer.Player.Models;
@@ -56,9 +55,14 @@ namespace PTHPlayer.Forms.Modals
             ((ListView)sender).SelectedItem = null;
         }
 
+        public class CultureLabel
+        {
+            public string Label { get; set; }
+            public string Code { get; set; }
+        }
+
         void OnAppearing()
         {
-
             AudioSelectionModel.AudioConfig = VideoPlayerController.GetAudioConfigs();
             MessagingCenter.Subscribe<IKeyEventSender, string>(this, "KeyDown",
              (sender, arg) =>

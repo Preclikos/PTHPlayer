@@ -30,7 +30,15 @@
                 BackgroundColor="Transparent">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextCell Text="{Binding Language}" />
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="{Binding Language}" />
+                                <Label Text="(" />
+                                <Label Text="{Binding Codec}" />
+                                <Label Text=") - " />
+                                <Label Text="{Binding Channels}" />
+                            </StackLayout>
+                        </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

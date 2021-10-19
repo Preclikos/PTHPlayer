@@ -22,6 +22,7 @@ namespace PTHPlayer.Forms.Pages
 
         private PlayerControl VideoPlayerControl;
         private ChannelControl ChannelSelectionControl;
+        private EPGControl EPGListControl;
 
         public MainPage(PlayerController videoPlayerController, HTSPController hTSPController, EventService eventNotificationService)
         {
@@ -38,6 +39,9 @@ namespace PTHPlayer.Forms.Pages
 
             ChannelSelectionControl = new ChannelControl(VideoPlayerController) { IsVisible = false };
             MainContent.Children.Add(ChannelSelectionControl);
+
+            EPGListControl = new EPGControl(VideoPlayerController, HTSPConnectionController) { IsVisible = false };
+            MainContent.Children.Add(EPGListControl);
 
             VideoPlayerController.SetSubtitleDisplay(SubtitleImageComponent);
         }
@@ -62,6 +66,11 @@ namespace PTHPlayer.Forms.Pages
                      case "Left":
                          {
                              ChannelSelectionControl.IsVisible = true;
+                             break;
+                         }
+                     case "Right":
+                         {
+                             //EPGListControl.IsVisible = true;
                              break;
                          }
                      case "Return":

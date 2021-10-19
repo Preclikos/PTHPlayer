@@ -1,6 +1,7 @@
 ﻿using PTHPlayer.Controllers;
 using PTHPlayer.Forms.ViewModels;
 using PTHPlayer.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -38,6 +39,8 @@ namespace PTHPlayer.Forms.Controls
 
             var channels = App.DataStorageService.GetChannels().OrderBy(o => o.Number);
             var EPGs = App.DataStorageService.GetEPGs();
+
+            var actualDate = DateTime.Now;
             foreach (var channel in channels)
             {
                 var newChannel = new ChannelViewModel();
@@ -55,7 +58,21 @@ namespace PTHPlayer.Forms.Controls
                         var currentEpg = selectedChannel.SingleOrDefault(s => s.EventId == channel.EventId);
                         if (currentEpg != null)
                         {
+                            
                             newChannel.Title = currentEpg.Title;
+
+                            var start = currentEpg.Start.Ticks;
+                            var end = currentEpg.End.Ticks;
+                            var current = actualDate.Ticks;
+
+                            var range = end - start;
+                            var currentOnRange = end - current;
+
+                            var onePercentOnRange = range / (double)100;
+                            var currentPercent = currentOnRange / onePercentOnRange;
+                            var progressPercent = 1 - currentPercent / (double)100;
+
+                            newChannel.Progress = progressPercent;
                         }
                     }
                 }

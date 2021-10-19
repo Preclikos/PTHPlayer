@@ -149,6 +149,15 @@ namespace PTHPlayer.Forms.Controls
             {
                 EndAt.IsVisible = true;
             }
+
+            if(PlayerViewModel.Id == App.DataStorageService.SelectedChannelId)
+            {
+                PlayStopButton.ImageSource = ImageSource.FromFile("icons/stop.png");
+            }
+            else
+            {
+                PlayStopButton.ImageSource = ImageSource.FromFile("icons/multimedia.png");
+            }
         }
 
         void Handle_ChannelClicked(object sender, ItemTappedEventArgs e)
@@ -243,7 +252,7 @@ namespace PTHPlayer.Forms.Controls
 
                  if (arg == "XF86RaiseChannel" || arg == "XF86LowerChannel")
                  {
-                     PlayButton.Focus();
+                     PlayStopButton.Focus();
                      switch (arg)
                      {
 

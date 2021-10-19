@@ -27,6 +27,9 @@
     <Compile Update="Forms\Controls\ChannelControl.xaml.cs">
       <DependentUpon>ChannelControl.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Forms\Controls\EPGControl.xaml.cs">
+      <DependentUpon>EPGControl.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Forms\Controls\PlayerControl.xaml.cs">
       <DependentUpon>PlayerControl.xaml</DependentUpon>
     </Compile>

@@ -9,6 +9,7 @@ namespace PTHPlayer.Forms.Modals
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class NotificationControl : Grid
     {
+        private readonly object NotificationChildren = new object();
         public NotificationControl()
         {
             InitializeComponent();
@@ -21,7 +22,7 @@ namespace PTHPlayer.Forms.Modals
             {
                 while (true)
                 {
-                    try
+                    lock (NotificationChildren)
                     {
                         var timeOut = DateTime.Now.Ticks;
                         if (NotificationLayout.Children.Count > 0)
@@ -39,10 +40,6 @@ namespace PTHPlayer.Forms.Modals
                             }
                         }
                     }
-                    catch
-                    {
-
-                    }
                     await Task.Delay(1000);
                 }
             });
@@ -50,27 +47,30 @@ namespace PTHPlayer.Forms.Modals
 
         public void GenerateNotification(string title, string message, EventId typeId = EventId.Generic, EventType eventType = EventType.Info)
         {
-            Device.BeginInvokeOnMainThread(() =>
+            lock (NotificationChildren)
             {
-                if (typeId != EventId.Generic)
+                Device.BeginInvokeOnMainThread(() =>
                 {
-                    foreach (var notificationChild in NotificationLayout.Children)
+                    if (typeId != EventId.Generic)
                     {
-                        var existingNotification = (NotificationItem)notificationChild;
-                        if (existingNotification.TypeId == typeId)
+                        foreach (var notificationChild in NotificationLayout.Children)
                         {
+                            var existingNotification = (NotificationItem)notificationChild;
+                            if (existingNotification.TypeId == typeId)
+                            {
 
-                            existingNotification.UpdateNotification(eventType, message, 5);
-                            return;
+                                existingNotification.UpdateNotification(eventType, message, 5);
+                                return;
+                            }
                         }
                     }
-                }
 
-                var notification = new NotificationItem(typeId, eventType, title, message, 5);
+                    var notification = new NotificationItem(typeId, eventType, title, message, 5);
 
 
-                NotificationLayout.Children.Insert(0, notification);
-            });
+                    NotificationLayout.Children.Insert(0, notification);
+                });
+            }
         }
     }
 }
