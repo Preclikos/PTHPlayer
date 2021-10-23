@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest package="cz.preclikos.PTHPlayer.Tizen.TV" version="0.1.1" api-version="5" xmlns="http://tizen.org/ns/packages">
+<manifest package="cz.preclikos.PTHPlayer.TV" version="0.1.0" api-version="5" xmlns="http://tizen.org/ns/packages">
     <author email="pthplayer@preclikos.cz" href="http://preclikos.cz">Jan Husak</author>
     <profile name="tv" />
-    <ui-application appid="cz.preclikos.PTHPlayer.Tizen.TV" exec="PTHPlayer.Tizen.TV.dll" multiple="false" nodisplay="false" taskmanage="true" type="dotnet" hw-acceleration="on" launch_mode="single">
+    <ui-application appid="cz.preclikos.PTHPlayer.TV" exec="PTHPlayer.Tizen.TV.dll" multiple="false" nodisplay="false" taskmanage="true" type="dotnet" hw-acceleration="on" launch_mode="single">
         <label>PTHPlayer</label>
         <icon>Logo_512.png</icon>
         <metadata key="http://tizen.org/metadata/prefer_dotnet_aot" value="true" />
