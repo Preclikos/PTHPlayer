@@ -54,7 +54,7 @@ namespace PTHPlayer.Forms.Pages
             DataStorageService.SetCredentials(credentials);
             try
             {
-                HTSPConnectionController.Connect();
+                HTSPConnectionController.Connect(false);
                 Navigation.RemovePage(this);
             }
             catch (Exception ex)

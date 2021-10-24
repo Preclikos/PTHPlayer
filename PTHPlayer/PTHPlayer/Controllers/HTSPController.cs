@@ -22,8 +22,14 @@ namespace PTHPlayer.Controllers
         public HTSPController(HTSPService hTSPClient, DataService dataStorageClient, IEventListener eventNotificationListener)
         {
             HTSPClient = hTSPClient;
+
+
             DataStorageClient = dataStorageClient;
             EventNotificationListener = eventNotificationListener;
+
+            HTSPClient.ConnectedEvent += AfterConnected;
+            HTSPClient.DisconnectedEvent += Disconnected;
+            HTSPClient.ReconnectingEvent += Reconnecting;
         }
 
         public void SetListener(HTSPListener hTSPListener)
@@ -31,7 +37,7 @@ namespace PTHPlayer.Controllers
             HTSListener = hTSPListener;
         }
 
-        public void Connect()
+        public void Connect(bool withMonitor = true)
         {
             if (HTSListener == null)
             {
@@ -45,20 +51,25 @@ namespace PTHPlayer.Controllers
 
                 if (HTSPClient.NeedRestart())
                 {
-
-                    HTSPClient.Open(credentials.Server, credentials.Port, HTSListener);
-                    if (HTSPClient.Login(credentials.UserName, credentials.Password))
-                    {
-
-                        HTSPClient.EnableAsyncMetadata();
-                        EventNotificationListener.SendNotification(nameof(HTSPController), "Start Async Load", EventId.MetaData, EventType.Loading);
-                    }
-                    else
-                    {
-                        throw new Exception("Invalid Login Credentials");
-                    }
+                    HTSPClient.OpenAndLogin(credentials.Server, credentials.Port, credentials.UserName, credentials.Password, HTSListener, withMonitor);
                 }
             }
+        }
+
+        public void AfterConnected(object sender, EventArgs eventArgs)
+        {
+            EventNotificationListener.SendNotification(nameof(HTSPController), "Connected", EventId.Connection, EventType.Success);
+            HTSPClient.EnableAsyncMetadata();
+        }
+
+        public void Disconnected(object sender, EventArgs eventArgs)
+        {
+            EventNotificationListener.SendNotification(nameof(HTSPController), "Disconnected", EventId.Generic, EventType.Error);
+        }
+
+        public void Reconnecting(object sender, EventArgs eventArgs)
+        {
+            EventNotificationListener.SendNotification(nameof(HTSPController), "Reconnecting", EventId.Connection, EventType.Error);
         }
 
         public void Close()

@@ -9,15 +9,6 @@ using System.Threading.Tasks;
 
 namespace PTHPlayer.HTSP
 {
-    public class StateLenghtObject
-    {
-        // Client socket.  
-        public Socket workSocket = null;
-        // Size of receive buffer.  
-        public const int BufferSize = 4;
-        // Receive buffer.  
-        public byte[] buffer = new byte[BufferSize];
-    }
 
     public class StateDataObject
     {
@@ -63,6 +54,9 @@ namespace PTHPlayer.HTSP
         private Thread _messageDistributorThread;
 
         private Socket _socket = null;
+        //private NetworkStream _stream = null;
+
+        public EventHandler<string> ConnectiongHandler;
 
         public HTSConnectionAsync(HTSConnectionListener listener, String clientName, String clientVersion)
         {
@@ -111,49 +105,41 @@ namespace PTHPlayer.HTSP
             return _needsRestart;
         }
 
-        public void Open(string hostname, int port)
+        public bool Open(string hostname, int port)
         {
+
             if (_connected)
             {
-                return;
+                return true;
             }
 
             Monitor.Enter(_lock);
-            while (!_connected)
+
+            try
             {
-                try
+                // Establish the remote endpoint for the socket.
+                IPAddress ipAddress;
+                if (!IPAddress.TryParse(hostname, out ipAddress))
                 {
-                    // Establish the remote endpoint for the socket.
-
-                    IPAddress ipAddress;
-                    if (!IPAddress.TryParse(hostname, out ipAddress))
-                    {
-                        // no IP --> ask DNS
-                        IPHostEntry ipHostInfo = Dns.GetHostEntry(hostname);
-                        ipAddress = ipHostInfo.AddressList[0];
-                    }
-
-                    IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
-                    /*
-                    //_logger.Info("[TVHclient] HTSConnectionAsync.open: " +
-                        "IPEndPoint = '" + remoteEP.ToString() + "'; " +
-                        "AddressFamily = '" + ipAddress.AddressFamily + "'");
-                    */
-                    // Create a TCP/IP  socket.
-                    _socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
-                    // connect to server
-                    _socket.Connect(remoteEP);
-
-                    _connected = true;
-                    ////_logger.Info("[TVHclient] HTSConnectionAsync.open: socket connected.");
+                    // no IP --> ask DNS
+                    IPHostEntry ipHostInfo = Dns.GetHostEntry(hostname);
+                    ipAddress = ipHostInfo.AddressList[0];
                 }
-                catch (Exception ex)
-                {
-                    ////_logger.Error("[TVHclient] HTSConnectionAsync.open: caught exception : {0}", ex.Message);
-                    throw ex;
-                    //Thread.Sleep(2000);
-                }
+
+                IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
+
+                // Create a TCP/IP  socket.
+                _socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                _socket.SendTimeout = 2000;
+                // connect to server
+                _socket.Connect(remoteEP);
+
+                _connected = true;
+            }
+            catch (Exception ex)
+            {
+                string messg = ex.Message;
+                return false;
             }
 
 
@@ -177,7 +163,38 @@ namespace PTHPlayer.HTSP
             _messageDistributorThread.IsBackground = true;
             _messageDistributorThread.Start();
 
+
             Monitor.Exit(_lock);
+
+            return true;
+        }
+
+        public bool Connected()
+        {
+
+            if (_socket != null)
+            {
+                bool part1 = _socket.Poll(1000, SelectMode.SelectRead);
+                bool part2 = (_socket.Available == 0);
+                if (part1 && part2)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        protected virtual void OnConnected(string e)
+        {
+            EventHandler<string> handler = ConnectiongHandler;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
         }
 
         public bool Authenticate(String username, String password)
@@ -343,9 +360,11 @@ namespace PTHPlayer.HTSP
                 {
                     HTSMessage message = _messagesForSendQueue.Dequeue();
                     byte[] data2send = message.BuildBytes();
+                    //_stream.Write(data2send, 0, data2send.Length);
                     int bytesSent = _socket.Send(data2send);
                     if (bytesSent != data2send.Length)
                     {
+                        var error = true;
                         //_logger.Error("[TVHclient] SendingHandler: Sending not complete! \nBytes sent: " + bytesSent + "\nMessage bytes: " +
                         //    data2send.Length + "\nMessage: " + message.ToString());
                     }
@@ -378,6 +397,7 @@ namespace PTHPlayer.HTSP
 
                 try
                 {
+                    //int bytesReveived = _stream.Read(readBuffer, 0, readBuffer.Length);
                     int bytesReveived = _socket.Receive(readBuffer);
                     _buffer.appendCount(readBuffer, bytesReveived);
                 }

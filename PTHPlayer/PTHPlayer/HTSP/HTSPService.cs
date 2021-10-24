@@ -1,25 +1,139 @@
 ﻿using PTHPlayer.HTSP.HTSP_Responses;
 using PTHPlayer.HTSP.Listeners;
 using System;
+using System.Threading;
 
 namespace PTHPlayer.HTSP
 {
     public class HTSPService
     {
-        public static HTSConnectionAsync HTPClient;
+        public EventHandler<EventArgs> ConnectedEvent;
+        public EventHandler<EventArgs> DisconnectedEvent;
+        public EventHandler<EventArgs> ReconnectingEvent;
+        public EventHandler<EventArgs> WrongLogin;
+
+        Thread Monitor;
+        bool MonitorWhanted;
+
+        public HTSConnectionAsync HTPClient;
         public HTSPService()
         {
+            Monitor = new Thread(new ParameterizedThreadStart(MonitorThread));
         }
 
-        public void Open(string address, int port, HTSPListener HTPListener)
+        public void OpenAndLogin(string address, int port, string userName, string password, HTSPListener HTPListener, bool withMonitor = false)
         {
-            HTPClient = new HTSConnectionAsync(HTPListener, "Tizen C#", "Beta");
-            HTPClient.Open(address, port);
+            if (Monitor.ThreadState == ThreadState.Running)
+            {
+                return;
+            }
+
+            
+
+            if (withMonitor)
+            {
+                MonitorWhanted = true;
+                Monitor.Start(new MonitorConnectionStart { HTPListener = HTPListener, address = address, port = port, userName = userName, password = password });
+            }
+            else
+            {
+                Open(address, port, HTPListener);
+                if (!Login(userName, password))
+                {
+                    throw new Exception("Invalid credentials");
+                }
+            }
+        }
+
+        void MonitorThread(object parameterObj2)
+        {
+            var parameterObj = (MonitorConnectionStart)parameterObj2;
+            while (MonitorWhanted)
+            {
+                try
+                {
+
+                    if (HTPClient == null || !HTPClient.Connected())
+                    {
+                        OnReconnecting(new EventArgs());
+                        if (Open(parameterObj.address, parameterObj.port, parameterObj.HTPListener))
+                        {
+                            
+                            if (Login(parameterObj.userName, parameterObj.password))
+                            {
+                                OnConnected(new EventArgs());
+                            }
+                            else
+                            {
+                                OnWrongLogin(new EventArgs());
+                                //MonitorWhanted = false;
+                                //return;
+                            }
+                        }
+
+                    }
+
+                }
+                catch(Exception ex)
+                {
+                    string msg = ex.Message;
+                    OnDisconnected(new EventArgs());
+                }
+                Thread.Sleep(1000);
+            }
         }
 
         public bool Login(string userName, string password)
         {
             return HTPClient.Authenticate(userName, password);
+        }
+
+        bool Open(string address, int port, HTSPListener HTPListener)
+        {
+            HTPClient = new HTSConnectionAsync(HTPListener, "Tizen C#", "Beta");
+            HTPClient.ConnectiongHandler += ConnResponse;
+            return HTPClient.Open(address, port);
+        }
+
+        public void ConnResponse(object sender, string password)
+        {
+            OnConnected(new EventArgs());
+        }
+
+        protected virtual void OnConnected(EventArgs e)
+        {
+            EventHandler<EventArgs> handler = ConnectedEvent;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        protected virtual void OnReconnecting(EventArgs e)
+        {
+            EventHandler<EventArgs> handler = ReconnectingEvent;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        protected virtual void OnDisconnected(EventArgs e)
+        {
+            EventHandler<EventArgs> handler = DisconnectedEvent;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        protected virtual void OnWrongLogin(EventArgs e)
+        {
+            EventHandler<EventArgs> handler = WrongLogin;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
         }
 
         public int Subscribe(int channelId)
@@ -82,6 +196,7 @@ namespace PTHPlayer.HTSP
 
         public void Close()
         {
+            MonitorWhanted = false;
             HTPClient.Stop();
         }
 
@@ -93,6 +208,15 @@ namespace PTHPlayer.HTSP
             }
 
             return HTPClient.NeedsRestart();
+        }
+
+        class MonitorConnectionStart
+        {
+            public string address;
+            public int port;
+            public string userName;
+            public string password;
+            public HTSPListener HTPListener;
         }
     }
 }

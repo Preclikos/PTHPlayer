@@ -3,6 +3,7 @@
     public enum EventId
     {
         Generic,
+        Connection,
         MetaData
     }
 }
