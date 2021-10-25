@@ -28,8 +28,6 @@ namespace PTHPlayer.HTSP
                 return;
             }
 
-            
-
             if (withMonitor)
             {
                 MonitorWhanted = true;
@@ -45,9 +43,9 @@ namespace PTHPlayer.HTSP
             }
         }
 
-        void MonitorThread(object parameterObj2)
+        void MonitorThread(object connectionParameters)
         {
-            var parameterObj = (MonitorConnectionStart)parameterObj2;
+            var connectionParams = (MonitorConnectionStart)connectionParameters;
             while (MonitorWhanted)
             {
                 try
@@ -56,10 +54,10 @@ namespace PTHPlayer.HTSP
                     if (HTPClient == null || !HTPClient.Connected())
                     {
                         OnReconnecting(new EventArgs());
-                        if (Open(parameterObj.address, parameterObj.port, parameterObj.HTPListener))
+                        if (Open(connectionParams.address, connectionParams.port, connectionParams.HTPListener))
                         {
                             
-                            if (Login(parameterObj.userName, parameterObj.password))
+                            if (Login(connectionParams.userName, connectionParams.password))
                             {
                                 OnConnected(new EventArgs());
                             }
@@ -70,13 +68,10 @@ namespace PTHPlayer.HTSP
                                 //return;
                             }
                         }
-
                     }
-
                 }
-                catch(Exception ex)
+                catch
                 {
-                    string msg = ex.Message;
                     OnDisconnected(new EventArgs());
                 }
                 Thread.Sleep(1000);

@@ -130,15 +130,25 @@ namespace PTHPlayer.HTSP
 
                 // Create a TCP/IP  socket.
                 _socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                _socket.SendTimeout = 2000;
-                // connect to server
-                _socket.Connect(remoteEP);
+                IAsyncResult result = _socket.BeginConnect(remoteEP, null, null);
+
+                bool success = result.AsyncWaitHandle.WaitOne(2000, true);
+
+                if (_socket.Connected)
+                {
+                    _socket.EndConnect(result);
+                }
+                else
+                {
+                    // NOTE, MUST CLOSE THE SOCKET
+                    _socket.Close();
+                    throw new ApplicationException("Failed to connect server.");
+                }
 
                 _connected = true;
             }
             catch (Exception ex)
             {
-                string messg = ex.Message;
                 return false;
             }
 
@@ -361,22 +371,29 @@ namespace PTHPlayer.HTSP
                     HTSMessage message = _messagesForSendQueue.Dequeue();
                     byte[] data2send = message.BuildBytes();
                     //_stream.Write(data2send, 0, data2send.Length);
-                    int bytesSent = _socket.Send(data2send);
+                    //int bytesSent =
+                    var sendResult =  _socket.BeginSend(data2send, 0, data2send.Length, SocketFlags.None, null, null);//.SendAsync();//.Send(data2send);
+
+                    sendResult.AsyncWaitHandle.WaitOne(2000, true);
+
+                    if (sendResult.IsCompleted)
+                    {
+                        
+                        _socket.EndSend(sendResult);
+                    }
+                    else
+                    {
+                        throw new ApplicationException("Send time-out");
+                    }
+                    /*
                     if (bytesSent != data2send.Length)
                     {
-                        var error = true;
                         //_logger.Error("[TVHclient] SendingHandler: Sending not complete! \nBytes sent: " + bytesSent + "\nMessage bytes: " +
                         //    data2send.Length + "\nMessage: " + message.ToString());
-                    }
-                }
-                catch (ThreadAbortException)
-                {
-                    threadOk = false;
-                    Thread.ResetAbort();
+                    }*/
                 }
                 catch (Exception ex)
                 {
-                    //_logger.Error("[TVHclient] SendingHandler caught exception : {0}", ex.ToString());
                     if (_listener != null)
                     {
                         _listener.onError(ex);
