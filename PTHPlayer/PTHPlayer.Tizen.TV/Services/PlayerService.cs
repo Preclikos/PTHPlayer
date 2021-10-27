@@ -95,13 +95,20 @@ namespace PTHPlayer.Tizen.TV.Services
 
         public TimeSpan GetPlayerTime()
         {
-            if (player != null && player.GetState() == ESPlayerState.Playing)
+            try
             {
-                TimeSpan outTime = TimeSpan.Zero;
-                player.GetPlayingTime(out outTime);
-                return outTime;
+                if (player != null && player.GetState() == ESPlayerState.Playing)
+                {
+                    TimeSpan outTime = TimeSpan.Zero;
+                    player.GetPlayingTime(out outTime);
+                    return outTime;
+                }
+                return TimeSpan.Zero;
             }
-            return TimeSpan.Zero;
+            catch
+            {
+                return TimeSpan.Zero;
+            }
         }
 
         public void SetConfig(VideoConfigModel videoConfig, AudioConfigModel audioConfig)
@@ -191,7 +198,7 @@ namespace PTHPlayer.Tizen.TV.Services
                 {
                     return (PlayerState)player.GetState();
                 }
-                catch(ObjectDisposedException)
+                catch (ObjectDisposedException)
                 {
                     //Disposed error
                     return PlayerState.None;
