@@ -10,9 +10,13 @@ namespace PTHPlayer.DataStorage.Service
     {
         public int SelectedChannelId = -1;
 
-        public List<ChannelModel> Channels = new List<ChannelModel>();
+        private readonly object channelLock = new object();
 
-        public List<EPGModel> EPGs = new List<EPGModel>();
+        private List<ChannelModel> Channels = new List<ChannelModel>();
+
+        private readonly object epgLock = new object();
+
+        private List<EPGModel> EPGs = new List<EPGModel>();
 
         public SignalStatusModel SingnalStatus = new SignalStatusModel();
 
@@ -24,18 +28,68 @@ namespace PTHPlayer.DataStorage.Service
 
         public void CleanChannelsAndEPGs()
         {
-            Channels.Clear();
-            EPGs.Clear();
+            lock (channelLock)
+            {
+                lock (epgLock)
+                {
+                    Channels.Clear();
+                    EPGs.Clear();
+                }
+            }
+        }
+
+        public void ChannelAdd(ChannelModel channel)
+        {
+            lock (channelLock)
+            {
+                Channels.RemoveAll(r => r.Id == channel.Id);
+                Channels.Add(channel);
+            }
+        }
+
+        public void ChannelRemove(int channelId)
+        {
+            lock (channelLock)
+            {
+                lock (epgLock)
+                {
+                    Channels.RemoveAll(r => r.Id == channelId);
+                    EPGs.RemoveAll(r => r.ChannelId == channelId);
+                }
+            }
+        }
+
+        public void EPGAdd(EPGModel epg)
+        {
+            lock (epgLock)
+            {
+                EPGs.RemoveAll(r => r.EventId == epg.EventId);
+                EPGs.Add(epg);
+            }
+        }
+
+        public void EPGRemove(int eventId)
+        {
+            lock (epgLock)
+            {
+                EPGs.RemoveAll(r => r.EventId == eventId);;
+            }
         }
 
         public List<ChannelModel> GetChannels()
         {
-            return Channels.ToList();
+            lock (channelLock)
+            {
+                return Channels.ToList();
+            }
         }
 
         public List<EPGModel> GetEPGs()
         {
-            return EPGs.ToList();
+            lock (epgLock)
+            {
+                return EPGs.ToList();
+            }
         }
 
         public CredentialsModel GetCredentials()
@@ -56,9 +110,9 @@ namespace PTHPlayer.DataStorage.Service
         public bool IsCredentialsExist()
         {
             var credentials = NativeDataService.GetCredentials();
-            if (string.IsNullOrEmpty(credentials.Server) || 
-                string.IsNullOrEmpty(credentials.UserName) || 
-                string.IsNullOrEmpty(credentials.Password) || 
+            if (string.IsNullOrEmpty(credentials.Server) ||
+                string.IsNullOrEmpty(credentials.UserName) ||
+                string.IsNullOrEmpty(credentials.Password) ||
                 credentials.Port == 0)
             {
                 return false;

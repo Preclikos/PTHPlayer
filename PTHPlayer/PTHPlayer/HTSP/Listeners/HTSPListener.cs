@@ -5,7 +5,6 @@ using PTHPlayer.Event.Enums;
 using PTHPlayer.Event.Listeners;
 using PTHPlayer.HTSP.Parsers;
 using System;
-using System.Linq;
 
 namespace PTHPlayer.HTSP.Listeners
 {
@@ -65,15 +64,14 @@ namespace PTHPlayer.HTSP.Listeners
                         var channName = response.getString("channelName");
                         var channNumber = response.getInt("channelNumber");
 
-                        DataStorageClient.Channels.RemoveAll(r => r.Id == channId);
-                        DataStorageClient.Channels.Add(new ChannelModel() { Label = channName, Id = channId, Number = channNumber, EventId = eventId, NextEventId = nextEventId });
-                        
-                        
+                        DataStorageClient.ChannelAdd(new ChannelModel() { Label = channName, Id = channId, Number = channNumber, EventId = eventId, NextEventId = nextEventId });
+
                         HTSPControllerListener.ChannelUpdate(channId);
                         break;
                     }
                 case "channelUpdate":
                     {
+                        /*
                         var channId = response.getInt("channelId");
                         var channel = DataStorageClient.Channels.SingleOrDefault(s => s.Id == channId);
                         if (channel != null)
@@ -91,19 +89,20 @@ namespace PTHPlayer.HTSP.Listeners
                                 channel.Number = response.getInt("channelNumber");
                             }
                         }
+                        
                         HTSPControllerListener.ChannelUpdate(channId);
+                        */
                         break;
                     }
                 case "channelDelete":
                     {
                         var channId = response.getInt("channelId");
-                        DataStorageClient.Channels.RemoveAll(r => r.Id == channId);
-                        DataStorageClient.EPGs.RemoveAll(r => r.ChannelId == channId);
+                        DataStorageClient.ChannelRemove(channId);
                         break;
                     }
                 case "initialSyncCompleted":
                     {
-                        EvenetNotificationListener.SendNotification(nameof(HTSPListener), "Init Sync Completed", EventId.MetaData ,EventType.Success);
+                        EvenetNotificationListener.SendNotification(nameof(HTSPListener), "Init Sync Completed", EventId.MetaData, EventType.Success);
                         break;
                     }
                 case "eventAdd":
@@ -142,9 +141,7 @@ namespace PTHPlayer.HTSP.Listeners
                         }
 
                         var epg = new EPGModel() { EventId = eventId, ChannelId = channelId, Title = title, Summary = summary, Description = description, Start = UnixTimeStampToDateTime(start), End = UnixTimeStampToDateTime(stop) };
-                        DataStorageClient.EPGs.RemoveAll(r => r.EventId == eventId);
-                        DataStorageClient.EPGs.Add(epg);
-
+                        DataStorageClient.EPGAdd(epg);
                         break;
                     }
                 case "eventUpdate":
@@ -154,17 +151,16 @@ namespace PTHPlayer.HTSP.Listeners
                     }
                 case "eventDelete":
                     {
-
+                        var eventId = response.getInt("eventId");
+                        DataStorageClient.EPGRemove(eventId);
                         break;
                     }
                 case "subscriptionStatus":
                     {
-
                         break;
                     }
                 case "subscriptionGrace":
                     {
-
                         break;
                     }
                 case "signalStatus":
