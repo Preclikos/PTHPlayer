@@ -12,7 +12,7 @@ namespace PTHPlayer
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class App : Application
     {
-        public static DataService DataStorageService;
+        private DataService DataStorageService;
         private static int LastChannelId = -1;
 
         private PlayerController VideoPlayerController;
@@ -37,7 +37,7 @@ namespace PTHPlayer
 
             HTSPConnectionController.SetListener(HTPListener);
 
-            MainPage = new NavigationPage(new MainPage(VideoPlayerController, HTSPConnectionController, eventService));
+            MainPage = new NavigationPage(new MainPage(DataStorageService, VideoPlayerController, HTSPConnectionController, eventService));
 
         }
 

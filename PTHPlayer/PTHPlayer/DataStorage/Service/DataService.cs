@@ -11,11 +11,9 @@ namespace PTHPlayer.DataStorage.Service
         public int SelectedChannelId = -1;
 
         private readonly object channelLock = new object();
-
         private List<ChannelModel> Channels = new List<ChannelModel>();
 
         private readonly object epgLock = new object();
-
         private List<EPGModel> EPGs = new List<EPGModel>();
 
         public SignalStatusModel SingnalStatus = new SignalStatusModel();

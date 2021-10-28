@@ -55,12 +55,6 @@ namespace PTHPlayer.Forms.Modals
             ((ListView)sender).SelectedItem = null;
         }
 
-        public class CultureLabel
-        {
-            public string Label { get; set; }
-            public string Code { get; set; }
-        }
-
         void OnAppearing()
         {
             AudioSelectionModel.AudioConfig = VideoPlayerController.GetAudioConfigs();

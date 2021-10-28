@@ -1,5 +1,6 @@
 ﻿using PTHPlayer.Controllers;
 using PTHPlayer.DataStorage.Models;
+using PTHPlayer.DataStorage.Service;
 using PTHPlayer.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,16 +13,19 @@ namespace PTHPlayer.Forms.Controls
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class EPGControl : Grid
     {
+        DataService DataStorage;
+
         PlayerController VideoPlayerController;
         private HTSPController HTSPConnectionController;
 
         List<ChannelModel> Channels = new List<ChannelModel>();
         List<EPGModel> EPGs = new List<EPGModel>();
 
-        public EPGControl(PlayerController videoPlayerController, HTSPController hTSPController)
+        public EPGControl(DataService dataStorage, PlayerController videoPlayerController, HTSPController hTSPController)
         {
             InitializeComponent();
 
+            DataStorage = dataStorage;
             VideoPlayerController = videoPlayerController;
             HTSPConnectionController = hTSPController;
 
@@ -57,8 +61,8 @@ namespace PTHPlayer.Forms.Controls
 
         private void OnAppearing()
         {
-            Channels = App.DataStorageService.GetChannels();
-            EPGs = App.DataStorageService.GetEPGs();
+            Channels = DataStorage.GetChannels();
+            EPGs = DataStorage.GetEPGs();
 
             var random = new Random();
 

@@ -1,4 +1,5 @@
 ﻿using PTHPlayer.Controllers;
+using PTHPlayer.DataStorage.Service;
 using PTHPlayer.Enums;
 using PTHPlayer.Event;
 using PTHPlayer.Event.Models;
@@ -15,6 +16,7 @@ namespace PTHPlayer.Forms.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : ContentPage
     {
+        private DataService DataStorage;
         private EventService EventNotificationService;
 
         private PlayerController VideoPlayerController;
@@ -24,23 +26,25 @@ namespace PTHPlayer.Forms.Pages
         private ChannelControl ChannelSelectionControl;
         private EPGControl EPGListControl;
 
-        public MainPage(PlayerController videoPlayerController, HTSPController hTSPController, EventService eventNotificationService)
+        public MainPage(DataService dataStorage, PlayerController videoPlayerController, HTSPController hTSPController, EventService eventNotificationService)
         {
 
             InitializeComponent();
+
+            DataStorage = dataStorage;
 
             EventNotificationService = eventNotificationService;
 
             VideoPlayerController = videoPlayerController;
             HTSPConnectionController = hTSPController;
 
-            VideoPlayerControl = new PlayerControl(VideoPlayerController, HTSPConnectionController) { IsVisible = false };
+            VideoPlayerControl = new PlayerControl(DataStorage, VideoPlayerController, HTSPConnectionController) { IsVisible = false };
             MainContent.Children.Add(VideoPlayerControl);
 
-            ChannelSelectionControl = new ChannelControl(VideoPlayerController) { IsVisible = false };
+            ChannelSelectionControl = new ChannelControl(DataStorage, VideoPlayerController) { IsVisible = false };
             MainContent.Children.Add(ChannelSelectionControl);
 
-            EPGListControl = new EPGControl(VideoPlayerController, HTSPConnectionController) { IsVisible = false };
+            EPGListControl = new EPGControl(DataStorage, VideoPlayerController, HTSPConnectionController) { IsVisible = false };
             MainContent.Children.Add(EPGListControl);
 
             VideoPlayerController.SetSubtitleDisplay(SubtitleImageComponent);

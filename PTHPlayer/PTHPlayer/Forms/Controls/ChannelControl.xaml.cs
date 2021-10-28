@@ -1,4 +1,5 @@
 ﻿using PTHPlayer.Controllers;
+using PTHPlayer.DataStorage.Service;
 using PTHPlayer.Forms.ViewModels;
 using PTHPlayer.Interfaces;
 using System;
@@ -14,13 +15,15 @@ namespace PTHPlayer.Forms.Controls
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ChannelControl : Grid
     {
+        DataService DataStorage;
         PlayerController VideoPlayerController;
         public ObservableCollection<ChannelViewModel> Items { get; set; }
 
-        public ChannelControl(PlayerController videoPlayerController)
+        public ChannelControl(DataService dataStorage, PlayerController videoPlayerController)
         {
             InitializeComponent();
 
+            DataStorage = dataStorage;
             VideoPlayerController = videoPlayerController;
         }
 
@@ -37,8 +40,8 @@ namespace PTHPlayer.Forms.Controls
 
             var channelView = new List<ChannelViewModel>();
 
-            var channels = App.DataStorageService.GetChannels().OrderBy(o => o.Number);
-            var EPGs = App.DataStorageService.GetEPGs();
+            var channels = DataStorage.GetChannels().OrderBy(o => o.Number);
+            var EPGs = DataStorage.GetEPGs();
 
             var actualDate = DateTime.Now;
             foreach (var channel in channels)
@@ -81,7 +84,7 @@ namespace PTHPlayer.Forms.Controls
 
             ChannelListView.ItemsSource = channelView;
 
-            var channelId = App.DataStorageService.SelectedChannelId;
+            var channelId = DataStorage.SelectedChannelId;
             if (channelId != -1)
             {
                 var selecteditem = channelView.SingleOrDefault(s => s.Id == channelId);
@@ -101,7 +104,7 @@ namespace PTHPlayer.Forms.Controls
 
             VideoPlayerController.Subscription(channelModel.Id);
 
-            App.DataStorageService.SelectedChannelId = channelModel.Id;
+            DataStorage.SelectedChannelId = channelModel.Id;
 
             ((ListView)sender).SelectedItem = null;
 

@@ -1,5 +1,6 @@
 ﻿using PTHPlayer.Controllers;
 using PTHPlayer.DataStorage.Models;
+using PTHPlayer.DataStorage.Service;
 using PTHPlayer.Enums;
 using PTHPlayer.Forms.Modals;
 using PTHPlayer.Forms.ViewModels;
@@ -17,8 +18,10 @@ namespace PTHPlayer.Forms.Controls
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PlayerControl : Grid
     {
+        DataService DataStorage;
+
         PlayerController VideoPlayerController;
-        private HTSPController HTSPConnectionController;
+        HTSPController HTSPConnectionController;
 
         AudioSelectionControl AudioSelection;
         SubtitleSelectionControl SubtitleSelection;
@@ -27,9 +30,11 @@ namespace PTHPlayer.Forms.Controls
         List<ChannelModel> Channels = new List<ChannelModel>();
         List<EPGModel> EPGs = new List<EPGModel>();
 
-        public PlayerControl(PlayerController videoPlayerController, HTSPController hTSPController)
+        public PlayerControl(DataService dataStorage, PlayerController videoPlayerController, HTSPController hTSPController)
         {
             InitializeComponent();
+
+            DataStorage = dataStorage;
 
             VideoPlayerController = videoPlayerController;
             HTSPConnectionController = hTSPController;
@@ -160,7 +165,7 @@ namespace PTHPlayer.Forms.Controls
                 EndAt.IsVisible = true;
             }
 
-            if (PlayerViewModel.Id == App.DataStorageService.SelectedChannelId)
+            if (PlayerViewModel.Id == DataStorage.SelectedChannelId)
             {
                 PlayStopButton.ImageSource = ImageSource.FromFile("icons/stop.png");
             }
@@ -223,12 +228,12 @@ namespace PTHPlayer.Forms.Controls
 
         private void OnAppearing()
         {
-            Channels = App.DataStorageService.GetChannels();
-            EPGs = App.DataStorageService.GetEPGs();
+            Channels = DataStorage.GetChannels();
+            EPGs = DataStorage.GetEPGs();
 
-            if (App.DataStorageService.SelectedChannelId != -1)
+            if (DataStorage.SelectedChannelId != -1)
             {
-                PlayerViewModel.Id = App.DataStorageService.SelectedChannelId;
+                PlayerViewModel.Id = DataStorage.SelectedChannelId;
             }
 
             ParseChannelToModel(PlayerViewModel.Id);
@@ -311,8 +316,8 @@ namespace PTHPlayer.Forms.Controls
         {
             if (e.ChannelId == PlayerViewModel.Id)
             {
-                Channels = App.DataStorageService.GetChannels();
-                EPGs = App.DataStorageService.GetEPGs();
+                Channels = DataStorage.GetChannels();
+                EPGs = DataStorage.GetEPGs();
 
                 ParseChannelToModel(e.ChannelId);
             }
@@ -334,12 +339,12 @@ namespace PTHPlayer.Forms.Controls
 
         void Handle_PlayButton(object sender, EventArgs e)
         {
-            if (PlayerViewModel.Id == App.DataStorageService.SelectedChannelId)
+            if (PlayerViewModel.Id == DataStorage.SelectedChannelId)
             {
                 return;
             }
             VideoPlayerController.Subscription(PlayerViewModel.Id);
-            App.DataStorageService.SelectedChannelId = PlayerViewModel.Id;
+            DataStorage.SelectedChannelId = PlayerViewModel.Id;
         }
 
         void HideModals()
