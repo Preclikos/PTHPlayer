@@ -1,7 +1,8 @@
 ﻿using PTHPlayer.HTSP.Helpers;
-using PTHPlayer.HTSP.HTSP_Responses;
+using PTHPlayer.HTSP.Responses;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -9,16 +10,6 @@ using System.Threading.Tasks;
 
 namespace PTHPlayer.HTSP
 {
-    public class StateLenghtObject
-    {
-        // Client socket.  
-        public Socket workSocket = null;
-        // Size of receive buffer.  
-        public const int BufferSize = 4;
-        // Receive buffer.  
-        public byte[] buffer = new byte[BufferSize];
-    }
-
     public class StateDataObject
     {
         public StateDataObject(int bufferSize)
@@ -36,33 +27,70 @@ namespace PTHPlayer.HTSP
 
     public class HTSConnectionAsync
     {
-        private const long BytesPerGiga = 1024 * 1024 * 1024;
+        const long BytesPerGiga = 1024 * 1024 * 1024;
 
-        private volatile bool _needsRestart = false;
-        private volatile bool _connected;
-        private volatile int _seq = 0;
+        volatile bool _needsRestart = false;
+        volatile bool _connected;
+        volatile bool _authenticated;
+        volatile int _seq = 0;
 
-        private readonly object _lock;
-        private readonly HTSConnectionListener _listener;
-        private readonly string _clientName;
-        private readonly string _clientVersion;
+        readonly object _lock;
+        readonly HTSConnectionListener _listener;
+        readonly string _clientName;
+        readonly string _clientVersion;
 
         private int _serverProtocolVersion;
         private string _servername;
         private string _serverversion;
         private string _diskSpace;
 
-        private readonly ByteList _buffer;
-        private readonly SizeQueue<HTSMessage> _receivedMessagesQueue;
-        private readonly SizeQueue<HTSMessage> _messagesForSendQueue;
-        private readonly Dictionary<int, HTSResponseHandler> _responseHandlers;
+        readonly ByteList _buffer;
+        readonly SizeQueue<HTSMessage> _receivedMessagesQueue;
+        readonly SizeQueue<HTSMessage> _messagesForSendQueue;
+        readonly Dictionary<int, HTSResponseHandler> _responseHandlers;
 
-        private Thread _receiveHandlerThread;
-        private Thread _messageBuilderThread;
-        private Thread _sendingHandlerThread;
-        private Thread _messageDistributorThread;
+        Task _monitorHandlerThread;
+        Task _receiveHandlerThread;
+        Task _messageBuilderThread;
+        Task _sendingHandlerThread;
+        Task _messageDistributorThread;
 
-        private Socket _socket = null;
+        Socket _socket = null;
+
+        CancellationTokenSource handlersCancellationSource;
+        CancellationTokenSource monitorCancellationSource;
+
+        Stopwatch sendTimer = new Stopwatch();
+
+        DateTime LastValidPacketReceived = DateTime.UtcNow;
+        volatile bool isSubscribtionStart = false;
+
+        string _hostName = string.Empty;
+        int _port = 0;
+
+        string _userName = string.Empty;
+        string _password = string.Empty;
+
+        public event EventHandler<HTSPConnectionStateChangeArgs> ConnectionStateChange;
+        public event EventHandler<HTSPErrorArgs> ErrorHandler;
+
+        protected virtual void OnConnectionStateChange(HTSPConnectionStateChangeArgs e)
+        {
+            EventHandler<HTSPConnectionStateChangeArgs> handler = ConnectionStateChange;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        protected virtual void OnErrorHandler(HTSPErrorArgs e)
+        {
+            EventHandler<HTSPErrorArgs> handler = ErrorHandler;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
 
         public HTSConnectionAsync(HTSConnectionListener listener, String clientName, String clientVersion)
         {
@@ -79,31 +107,41 @@ namespace PTHPlayer.HTSP
             _responseHandlers = new Dictionary<int, HTSResponseHandler>();
         }
 
-        public void Stop()
+        public void Stop(bool stopMonitor = false)
         {
+            isSubscribtionStart = false;
 
-            if (_receiveHandlerThread != null && _receiveHandlerThread.IsAlive)
+            if (monitorCancellationSource != null && stopMonitor)
             {
-                _receiveHandlerThread = null;//.Interrupt();
+                monitorCancellationSource.Cancel();
             }
-            if (_messageBuilderThread != null && _messageBuilderThread.IsAlive)
+
+            handlersCancellationSource.Cancel();
+            try
             {
-                _messageBuilderThread = null;//.Interrupt();
+                if (Task.WaitAll(new[] { _receiveHandlerThread, _messageBuilderThread, _sendingHandlerThread, _messageDistributorThread }, TimeSpan.FromSeconds(15)))
+                {
+
+                    if (_socket != null && _socket.Connected)
+                    {
+                        _socket.Close();
+                    }
+
+                    _messagesForSendQueue.Clear();
+                    _receivedMessagesQueue.Clear();
+
+                    _needsRestart = true;
+                    _connected = false;
+                }
+                else
+                {
+                    throw new Exception("Fatal close error");
+                }
             }
-            if (_sendingHandlerThread != null && _sendingHandlerThread.IsAlive)
+            catch
             {
-                _sendingHandlerThread = null;//.Interrupt();
+                throw;
             }
-            if (_messageDistributorThread != null && _messageDistributorThread.IsAlive)
-            {
-                _messageDistributorThread = null;//.Interrupt();
-            }
-            if (_socket != null && _socket.Connected)
-            {
-                _socket.Close();
-            }
-            _needsRestart = true;
-            _connected = false;
         }
 
         public bool NeedsRestart()
@@ -111,76 +149,85 @@ namespace PTHPlayer.HTSP
             return _needsRestart;
         }
 
-        public void Open(string hostname, int port)
+        public void Start(string hostName, int port, string userName, string password)
         {
+            _hostName = hostName;
+            _port = port;
+
+            _userName = userName;
+            _password = password;
+
+            monitorCancellationSource = new CancellationTokenSource();
+            _monitorHandlerThread = Task.Run(() => MonitorHandler());
+        }
+
+        public bool Open(string hostName = "", int port = 0)
+        {
+            if (!String.IsNullOrEmpty(hostName) && port != 0)
+            {
+                _hostName = hostName;
+                _port = port;
+            }
+
+            handlersCancellationSource = new CancellationTokenSource();
+
             if (_connected)
             {
-                return;
+                return true;
             }
 
             Monitor.Enter(_lock);
-            while (!_connected)
+
+            try
             {
-                try
+                IPAddress ipAddress;
+                if (!IPAddress.TryParse(_hostName, out ipAddress))
                 {
-                    // Establish the remote endpoint for the socket.
+                    // no IP --> ask DNS
+                    IPHostEntry ipHostInfo = Dns.GetHostEntry(_hostName);
+                    ipAddress = ipHostInfo.AddressList[0];
+                }
 
-                    IPAddress ipAddress;
-                    if (!IPAddress.TryParse(hostname, out ipAddress))
-                    {
-                        // no IP --> ask DNS
-                        IPHostEntry ipHostInfo = Dns.GetHostEntry(hostname);
-                        ipAddress = ipHostInfo.AddressList[0];
-                    }
+                IPEndPoint remoteEP = new IPEndPoint(ipAddress, _port);
 
-                    IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
-                    /*
-                    //_logger.Info("[TVHclient] HTSConnectionAsync.open: " +
-                        "IPEndPoint = '" + remoteEP.ToString() + "'; " +
-                        "AddressFamily = '" + ipAddress.AddressFamily + "'");
-                    */
-                    // Create a TCP/IP  socket.
-                    _socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                _socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                _socket.ReceiveTimeout = 2000;
+                _socket.SendTimeout = 2000;
 
-                    // connect to server
-                    _socket.Connect(remoteEP);
+                IAsyncResult result = _socket.BeginConnect(remoteEP, null, null);
 
+                bool success = result.AsyncWaitHandle.WaitOne(3000, true);
+
+                if (success && _socket.Connected)
+                {
+                    _socket.EndConnect(result);
                     _connected = true;
-                    ////_logger.Info("[TVHclient] HTSConnectionAsync.open: socket connected.");
                 }
-                catch (Exception ex)
+                else
                 {
-                    ////_logger.Error("[TVHclient] HTSConnectionAsync.open: caught exception : {0}", ex.Message);
-                    throw ex;
-                    //Thread.Sleep(2000);
+                    // NOTE, MUST CLOSE THE SOCKET
+                    _socket.Close();
+                    return false;
                 }
+
+            }
+            catch (Exception ex)
+            {
+                OnErrorHandler(new HTSPErrorArgs(ex.Message));
+                return false;
             }
 
-
-            ThreadStart ReceiveHandlerRef = new ThreadStart(ReceiveHandler);
-            _receiveHandlerThread = new Thread(ReceiveHandlerRef);
-            _receiveHandlerThread.IsBackground = true;
-            _receiveHandlerThread.Start();
-
-            ThreadStart MessageBuilderRef = new ThreadStart(MessageBuilder);
-            _messageBuilderThread = new Thread(MessageBuilderRef);
-            _messageBuilderThread.IsBackground = true;
-            _messageBuilderThread.Start();
-
-            ThreadStart SendingHandlerRef = new ThreadStart(SendingHandler);
-            _sendingHandlerThread = new Thread(SendingHandlerRef);
-            _sendingHandlerThread.IsBackground = true;
-            _sendingHandlerThread.Start();
-
-            ThreadStart MessageDistributorRef = new ThreadStart(MessageDistributor);
-            _messageDistributorThread = new Thread(MessageDistributorRef);
-            _messageDistributorThread.IsBackground = true;
-            _messageDistributorThread.Start();
+            _receiveHandlerThread = Task.Run(() => ReceiveHandler());
+            _messageBuilderThread = Task.Run(() => MessageBuilder());
+            _sendingHandlerThread = Task.Run(() => SendingHandler());
+            _messageDistributorThread = Task.Run(() => MessageDistributor());
 
             Monitor.Exit(_lock);
+
+            return true;
         }
 
-        public bool Authenticate(String username, String password)
+        public bool Authenticate(String username, String password, CancellationToken cancellationToken)
         {
             //_logger.Info("[TVHclient] HTSConnectionAsync.authenticate: start");
 
@@ -193,7 +240,7 @@ namespace PTHPlayer.HTSP
 
             LoopBackResponseHandler loopBackResponseHandler = new LoopBackResponseHandler();
             sendMessage(helloMessage, loopBackResponseHandler);
-            HTSMessage helloResponse = loopBackResponseHandler.getResponse();
+            HTSMessage helloResponse = loopBackResponseHandler.getResponse(cancellationToken);
             if (helloResponse != null)
             {
                 if (helloResponse.containsField("htspversion"))
@@ -243,7 +290,7 @@ namespace PTHPlayer.HTSP
                 authMessage.putField("username", username);
                 authMessage.putField("digest", digest);
                 sendMessage(authMessage, loopBackResponseHandler);
-                HTSMessage authResponse = loopBackResponseHandler.getResponse();
+                HTSMessage authResponse = loopBackResponseHandler.getResponse(cancellationToken);
                 if (authResponse != null)
                 {
                     Boolean auth = authResponse.getInt("noaccess", 0) != 1;
@@ -252,7 +299,7 @@ namespace PTHPlayer.HTSP
                         HTSMessage getDiskSpaceMessage = new HTSMessage();
                         getDiskSpaceMessage.Method = "getDiskSpace";
                         sendMessage(getDiskSpaceMessage, loopBackResponseHandler);
-                        HTSMessage diskSpaceResponse = loopBackResponseHandler.getResponse();
+                        HTSMessage diskSpaceResponse = loopBackResponseHandler.getResponse(cancellationToken);
                         if (diskSpaceResponse != null)
                         {
                             long freeDiskSpace = -1;
@@ -333,69 +380,157 @@ namespace PTHPlayer.HTSP
             _responseHandlers.Add(_seq, responseHandler);
         }
 
-        private void SendingHandler()
-
+        private void MonitorHandler()
         {
-            bool threadOk = true;
-            while (_connected && threadOk)
+            while (!monitorCancellationSource.IsCancellationRequested)
             {
                 try
                 {
-                    HTSMessage message = _messagesForSendQueue.Dequeue();
-                    byte[] data2send = message.BuildBytes();
-                    int bytesSent = _socket.Send(data2send);
-                    if (bytesSent != data2send.Length)
+                    var receiveDiff = DateTime.UtcNow - LastValidPacketReceived;
+                    var timeOutSpan = TimeSpan.FromSeconds(8);
+
+                    if (!Connected() || sendTimer.Elapsed > timeOutSpan || (isSubscribtionStart && receiveDiff > timeOutSpan))
                     {
-                        //_logger.Error("[TVHclient] SendingHandler: Sending not complete! \nBytes sent: " + bytesSent + "\nMessage bytes: " +
-                        //    data2send.Length + "\nMessage: " + message.ToString());
+                        _authenticated = false;
+                        sendTimer = new Stopwatch();
+                        if (handlersCancellationSource != null)
+                        {
+
+                            //Kick Disconnected
+                            OnConnectionStateChange(new HTSPConnectionStateChangeArgs(ConnectionState.Disconnected));
+                            Stop();
+                        }
+
+                        //Kick Connecting
+                        OnConnectionStateChange(new HTSPConnectionStateChangeArgs(ConnectionState.Connecting));
+                        if (!Open())
+                        {
+                            OnConnectionStateChange(new HTSPConnectionStateChangeArgs(ConnectionState.ConnectingFail));
+                            //Kick connecting error
+                            Thread.Sleep(5000);
+                            continue;
+                        }
+                        else
+                        {
+                            OnConnectionStateChange(new HTSPConnectionStateChangeArgs(ConnectionState.Connected));
+                        }
+
                     }
-                }
-                catch (ThreadAbortException)
-                {
-                    threadOk = false;
-                    Thread.ResetAbort();
+
+                    if(!_authenticated)
+                    {
+                        OnConnectionStateChange(new HTSPConnectionStateChangeArgs(ConnectionState.Authenticating));
+                        //Kick Login
+                        if (!Authenticate(_userName, _password, monitorCancellationSource.Token))
+                        {
+                            OnConnectionStateChange(new HTSPConnectionStateChangeArgs(ConnectionState.AuthenticatingFail));
+                            //Kick login problem error
+                            Thread.Sleep(5000);
+                            continue;
+                        }
+                        else
+                        {
+                            OnConnectionStateChange(new HTSPConnectionStateChangeArgs(ConnectionState.Authenticated));
+                            _authenticated = true;
+                        }
+                    }
+
+                    Thread.Sleep(2000);
                 }
                 catch (Exception ex)
                 {
-                    //_logger.Error("[TVHclient] SendingHandler caught exception : {0}", ex.ToString());
+                    OnErrorHandler(new HTSPErrorArgs(ex.Message));
+                }
+            }
+        }
+
+        bool Connected()
+        {
+            try
+            {
+                if (_socket != null)
+                {
+                    bool part1 = _socket.Poll(1000, SelectMode.SelectRead);
+                    bool part2 = (_socket.Available == 0);
+                    if (part1 && part2)
+                        return false;
+                    else
+                        return true;
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private void SendingHandler()
+        {
+            while (!handlersCancellationSource.IsCancellationRequested)
+            {
+                try
+                {
+                    HTSMessage message = _messagesForSendQueue.Dequeue(handlersCancellationSource.Token);
+                    if (message != null)
+                    {
+                        byte[] data2send = message.BuildBytes();
+                        sendTimer.Restart();
+                        int bytesSent = _socket.Send(data2send);
+                        if (bytesSent != data2send.Length)
+                        {
+                            OnErrorHandler( new HTSPErrorArgs("[TVHclient] SendingHandler: Sending not complete! \nBytes sent: " + bytesSent + "\nMessage bytes: " +
+                                data2send.Length + "\nMessage: " + message.ToString()));
+                        }
+                    }
+                }
+                catch (SocketException ex)
+                {
+                    OnErrorHandler(new HTSPErrorArgs());
+                    _connected = false;
+                }
+                catch (Exception ex)
+                {
                     if (_listener != null)
                     {
                         _listener.onError(ex);
                     }
                     else
                     {
-                        //_logger.ErrorException("[TVHclient] SendingHandler caught exception : {0} but no error listener is configured!!!", ex, ex.ToString());
+                        OnErrorHandler(new HTSPErrorArgs());
                     }
                 }
             }
         }
+
         private void ReceiveHandler()
         {
-            bool threadOk = true;
             byte[] readBuffer = new byte[8192];
-            while (_connected && threadOk)
+            while (!handlersCancellationSource.IsCancellationRequested)
             {
-
                 try
                 {
                     int bytesReveived = _socket.Receive(readBuffer);
                     _buffer.appendCount(readBuffer, bytesReveived);
                 }
-                catch (ThreadAbortException)
+                catch (SocketException ex)
                 {
-                    threadOk = false;
-                    Thread.ResetAbort();
+                    if (ex.ErrorCode != 10060 && ex.ErrorCode != 110)
+                    {
+                        OnErrorHandler(new HTSPErrorArgs("Receive Socket error"));
+                        _connected = false;
+                    }
+                   // OnErrorHandler(new HTSPErrorArgs("Receive Exception error"));
                 }
                 catch (Exception ex)
                 {
-                    threadOk = false;
                     if (_listener != null)
                     {
                         Task.Factory.StartNew(() => _listener.onError(ex));
                     }
                     else
                     {
-                        //_logger.ErrorException("[TVHclient] ReceiveHandler caught exception : {0} but no error listener is configured!!!", ex, ex.ToString());
+                        OnErrorHandler(new HTSPErrorArgs("Receive Exception error"));
                     }
                 }
             }
@@ -403,21 +538,30 @@ namespace PTHPlayer.HTSP
 
         private void MessageBuilder()
         {
-            Boolean threadOk = true;
-            while (_connected && threadOk)
+            while (!handlersCancellationSource.IsCancellationRequested)
             {
                 try
                 {
-                    byte[] lengthInformation = _buffer.getFromStart(4);
-                    long messageDataLength = HTSMessage.uIntToLong(lengthInformation[0], lengthInformation[1], lengthInformation[2], lengthInformation[3]);
-                    byte[] messageData = _buffer.extractFromStart((long)messageDataLength + 4); // should be long !!!
-                    HTSMessage response = HTSMessage.parse(messageData);//, //_logger);
-                    _receivedMessagesQueue.Enqueue(response);
-                }
-                catch (ThreadAbortException)
-                {
-                    threadOk = false;
-                    Thread.ResetAbort();
+                    byte[] lengthInformation = _buffer.getFromStart(4, handlersCancellationSource.Token);
+                    if (lengthInformation.Length > 0)
+                    {
+                        long messageDataLength = HTSMessage.uIntToLong(lengthInformation[0], lengthInformation[1], lengthInformation[2], lengthInformation[3]);
+                        byte[] messageData = _buffer.extractFromStart((long)messageDataLength + 4); // should be long !!!
+                        HTSMessage response = HTSMessage.parse(messageData);
+                        _receivedMessagesQueue.Enqueue(response);
+                        LastValidPacketReceived = DateTime.UtcNow;
+                        sendTimer.Stop();
+                        //Monitor if receive sub or desub 
+                        if (response.Method == "subscriptionStart")
+                        {
+                            isSubscribtionStart = true;
+                        }
+                        if (response.Method == "subscriptionStop" || response.Method == "subscriptionSkip")
+                        {
+                            isSubscribtionStart = false;
+                        }
+
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -427,7 +571,7 @@ namespace PTHPlayer.HTSP
                     }
                     else
                     {
-                        //_logger.ErrorException("[TVHclient] MessageBuilder caught exception : {0} but no error listener is configured!!!", ex, ex.ToString());
+                        OnErrorHandler(new HTSPErrorArgs());
                     }
                 }
             }
@@ -435,43 +579,39 @@ namespace PTHPlayer.HTSP
 
         private void MessageDistributor()
         {
-            bool threadOk = true;
-            while (_connected && threadOk)
+            while (!handlersCancellationSource.IsCancellationRequested)
             {
                 try
                 {
-                    HTSMessage response = _receivedMessagesQueue.Dequeue();
-                    if (response.containsField("seq"))
+                    HTSMessage response = _receivedMessagesQueue.Dequeue(handlersCancellationSource.Token);
+                    if (response != null)
                     {
-                        int seqNo = response.getInt("seq");
-                        if (_responseHandlers.ContainsKey(seqNo))
+                        if (response.containsField("seq"))
                         {
-                            HTSResponseHandler currHTSResponseHandler = _responseHandlers[seqNo];
-                            if (currHTSResponseHandler != null)
+                            int seqNo = response.getInt("seq");
+                            if (_responseHandlers.ContainsKey(seqNo))
                             {
-                                _responseHandlers.Remove(seqNo);
-                                currHTSResponseHandler.handleResponse(response);
+                                HTSResponseHandler currHTSResponseHandler = _responseHandlers[seqNo];
+                                if (currHTSResponseHandler != null)
+                                {
+                                    _responseHandlers.Remove(seqNo);
+                                    currHTSResponseHandler.handleResponse(response);
+                                }
+                            }
+                            else
+                            {
+                                OnErrorHandler(new HTSPErrorArgs("MessageDistributor: HTSResponseHandler for seq = '" + seqNo + "' not found!"));
                             }
                         }
                         else
                         {
-                            //_logger.Fatal("[TVHclient] MessageDistributor: HTSResponseHandler for seq = '" + seqNo + "' not found!");
+                            // auto update messages
+                            if (_listener != null)
+                            {
+                                _listener.onMessage(response);
+                            }
                         }
                     }
-                    else
-                    {
-                        // auto update messages
-                        if (_listener != null)
-                        {
-                            _listener.onMessage(response);
-                        }
-                    }
-
-                }
-                catch (ThreadAbortException)
-                {
-                    threadOk = false;
-                    Thread.ResetAbort();
                 }
                 catch (Exception ex)
                 {
@@ -481,7 +621,7 @@ namespace PTHPlayer.HTSP
                     }
                     else
                     {
-                        //_logger.ErrorException("[TVHclient] MessageBuilder caught exception : {0} but no error listener is configured!!!", ex, ex.ToString());
+                        OnErrorHandler(new HTSPErrorArgs());
                     }
                 }
             }

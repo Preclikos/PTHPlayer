@@ -44,6 +44,11 @@ namespace PTHPlayer.Forms.Controls
 
         private int ChannelMove(int currentChannel, ChannelMoveDirection channelMove)
         {
+            if(Channels.Count == 0)
+            {
+                return currentChannel;
+            }
+
             var channel = Channels.FirstOrDefault(f => f.Id == currentChannel);
             var orderedChannels = Channels.OrderBy(o => o.Number);
             if (channel != null)
@@ -84,6 +89,11 @@ namespace PTHPlayer.Forms.Controls
 
         private void ParseChannelToModel(int id)
         {
+            if (Channels.Count == 0)
+            {
+                return;
+            }
+
             var actualDate = DateTime.Now;
             PlayerViewModel.Time = actualDate.ToString("HH:mm");
 
@@ -150,7 +160,7 @@ namespace PTHPlayer.Forms.Controls
                 EndAt.IsVisible = true;
             }
 
-            if(PlayerViewModel.Id == App.DataStorageService.SelectedChannelId)
+            if (PlayerViewModel.Id == App.DataStorageService.SelectedChannelId)
             {
                 PlayStopButton.ImageSource = ImageSource.FromFile("icons/stop.png");
             }
@@ -228,6 +238,7 @@ namespace PTHPlayer.Forms.Controls
             MessagingCenter.Subscribe<IKeyEventSender, string>(this, "KeyDown",
              async (sender, arg) =>
              {
+
                  if (ModalSection.Children.Any(a => a.IsVisible) && arg == "XF86Back")
                  {
 

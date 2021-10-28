@@ -44,6 +44,7 @@ namespace PTHPlayer.Forms.Pages
             MainContent.Children.Add(EPGListControl);
 
             VideoPlayerController.SetSubtitleDisplay(SubtitleImageComponent);
+
         }
 
         protected override void OnAppearing()

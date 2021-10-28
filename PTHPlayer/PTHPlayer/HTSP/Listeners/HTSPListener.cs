@@ -1,5 +1,6 @@
 ﻿using PTHPlayer.Controllers.Listeners;
 using PTHPlayer.DataStorage.Models;
+using PTHPlayer.DataStorage.Service;
 using PTHPlayer.Event.Enums;
 using PTHPlayer.Event.Listeners;
 using PTHPlayer.HTSP.Parsers;
@@ -10,13 +11,16 @@ namespace PTHPlayer.HTSP.Listeners
 {
     public class HTSPListener : HTSConnectionListener
     {
+        private DataService DataStorageClient;
+
         private IEventListener EvenetNotificationListener;
 
         private IPlayerListener SubcriptionListener;
         private IHTSPListener HTSPControllerListener;
 
-        public HTSPListener(IPlayerListener subscriptionListener, IHTSPListener hTSPListener, IEventListener evenetNotificationListener)
+        public HTSPListener(DataService dataStorageClient, IPlayerListener subscriptionListener, IHTSPListener hTSPListener, IEventListener evenetNotificationListener)
         {
+            DataStorageClient = dataStorageClient;
             SubcriptionListener = subscriptionListener;
             HTSPControllerListener = hTSPListener;
             EvenetNotificationListener = evenetNotificationListener;
@@ -60,14 +64,18 @@ namespace PTHPlayer.HTSP.Listeners
                         var nextEventId = response.getInt("nextEventId");
                         var channName = response.getString("channelName");
                         var channNumber = response.getInt("channelNumber");
-                        App.DataStorageService.Channels.Add(new ChannelModel() { Label = channName, Id = channId, Number = channNumber, EventId = eventId, NextEventId = nextEventId });
+
+                        DataStorageClient.Channels.RemoveAll(r => r.Id == channId);
+                        DataStorageClient.Channels.Add(new ChannelModel() { Label = channName, Id = channId, Number = channNumber, EventId = eventId, NextEventId = nextEventId });
+                        
+                        
                         HTSPControllerListener.ChannelUpdate(channId);
                         break;
                     }
                 case "channelUpdate":
                     {
                         var channId = response.getInt("channelId");
-                        var channel = App.DataStorageService.Channels.SingleOrDefault(s => s.Id == channId);
+                        var channel = DataStorageClient.Channels.SingleOrDefault(s => s.Id == channId);
                         if (channel != null)
                         {
                             if (response.containsField("eventId"))
@@ -89,8 +97,8 @@ namespace PTHPlayer.HTSP.Listeners
                 case "channelDelete":
                     {
                         var channId = response.getInt("channelId");
-                        App.DataStorageService.Channels.RemoveAll(r => r.Id == channId);
-                        App.DataStorageService.EPGs.RemoveAll(r => r.ChannelId == channId);
+                        DataStorageClient.Channels.RemoveAll(r => r.Id == channId);
+                        DataStorageClient.EPGs.RemoveAll(r => r.ChannelId == channId);
                         break;
                     }
                 case "initialSyncCompleted":
@@ -134,8 +142,8 @@ namespace PTHPlayer.HTSP.Listeners
                         }
 
                         var epg = new EPGModel() { EventId = eventId, ChannelId = channelId, Title = title, Summary = summary, Description = description, Start = UnixTimeStampToDateTime(start), End = UnixTimeStampToDateTime(stop) };
-
-                        App.DataStorageService.EPGs.Add(epg);
+                        DataStorageClient.EPGs.RemoveAll(r => r.EventId == eventId);
+                        DataStorageClient.EPGs.Add(epg);
 
                         break;
                     }
@@ -162,7 +170,7 @@ namespace PTHPlayer.HTSP.Listeners
                 case "signalStatus":
                     {
                         var parsedSignal = new SignalStatusParser(response);
-                        App.DataStorageService.SingnalStatus = parsedSignal.Response();
+                        DataStorageClient.SingnalStatus = parsedSignal.Response();
                         break;
                     }
             }

@@ -1,6 +1,7 @@
 ﻿using PTHPlayer.HTSP.Helpers;
+using System.Threading;
 
-namespace PTHPlayer.HTSP.HTSP_Responses
+namespace PTHPlayer.HTSP.Responses
 {
     public class LoopBackResponseHandler : HTSResponseHandler
     {
@@ -16,9 +17,9 @@ namespace PTHPlayer.HTSP.HTSP_Responses
             _responseDataQueue.Enqueue(response);
         }
 
-        public HTSMessage getResponse()
+        public HTSMessage getResponse(CancellationToken cancellationToken)
         {
-            return _responseDataQueue.Dequeue();
+            return _responseDataQueue.Dequeue(cancellationToken);
         }
     }
 }

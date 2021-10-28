@@ -33,7 +33,7 @@ namespace PTHPlayer
             VideoPlayerController = new PlayerController(HTSPService, eventService);
             HTSPConnectionController = new HTSPController(HTSPService, DataStorageService, eventService);
 
-            var HTPListener = new HTSPListener(VideoPlayerController, HTSPConnectionController, eventService);
+            var HTPListener = new HTSPListener(DataStorageService, VideoPlayerController, HTSPConnectionController, eventService);
 
             HTSPConnectionController.SetListener(HTPListener);
 
@@ -65,7 +65,7 @@ namespace PTHPlayer
             {
                 try
                 {
-                    HTSPConnectionController.Connect();
+                    HTSPConnectionController.Connect(true);
                     if (LastChannelId != -1)
                     {
                         VideoPlayerController.Subscription(LastChannelId);

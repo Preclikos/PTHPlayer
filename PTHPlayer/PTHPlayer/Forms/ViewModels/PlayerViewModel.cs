@@ -4,7 +4,7 @@ namespace PTHPlayer.Forms.ViewModels
 {
     public class PlayerViewModel : ViewModelBase
     {
-        private int id;
+        private int id = -1;
         private string label;
         private int number;
 

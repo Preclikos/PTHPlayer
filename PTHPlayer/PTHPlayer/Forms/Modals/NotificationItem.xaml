@@ -4,7 +4,7 @@
              BackgroundColor="#99000000" MinimumWidthRequest="450" MinimumHeightRequest="100" Padding="10">
     <StackLayout Orientation="Horizontal">
         <StackLayout>
-            <Image x:Name="Icon" HorizontalOptions="Start" WidthRequest="100" HeightRequest="100" />
+            <Image x:Name="Icon" HorizontalOptions="Start" WidthRequest="100" HeightRequest="100" IsAnimationPlaying="true" />
         </StackLayout>
         <StackLayout HorizontalOptions="StartAndExpand">
             <Label FontSize="Large" x:Name="Title" />

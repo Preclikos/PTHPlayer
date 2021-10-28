@@ -13,14 +13,20 @@ namespace PTHPlayer.HTSP.Helpers
             _data = new List<byte>();
         }
 
-        public byte[] getFromStart(int count)
+        public byte[] getFromStart(int count, CancellationToken cancellationToken)
         {
             lock (_data)
             {
-                while (_data.Count < count)
+                while (_data.Count < count && !cancellationToken.IsCancellationRequested)
                 {
-                    Monitor.Wait(_data);
+                    Monitor.Wait(_data, 2000);
                 }
+
+                if(cancellationToken.IsCancellationRequested)
+                {
+                    return new byte[0];
+                }
+
                 //byte[] result = new byte[count];
                 byte[] result = _data.GetRange(0, count).ToArray();
                 /*for (int ii = 0; ii < count; ii++)

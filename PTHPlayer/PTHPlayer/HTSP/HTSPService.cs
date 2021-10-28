@@ -1,25 +1,38 @@
-﻿using PTHPlayer.HTSP.HTSP_Responses;
-using PTHPlayer.HTSP.Listeners;
+﻿using PTHPlayer.HTSP.Listeners;
+using PTHPlayer.HTSP.Responses;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PTHPlayer.HTSP
 {
     public class HTSPService
     {
         public static HTSConnectionAsync HTPClient;
+        public event EventHandler<HTSPConnectionStateChangeArgs> ConnectionStateChange;
+        public event EventHandler<HTSPErrorArgs> ErrorHandler;
         public HTSPService()
         {
         }
 
-        public void Open(string address, int port, HTSPListener HTPListener)
+        public void Open(string address, int port, string userName, string password, HTSPListener HTPListener)
         {
             HTPClient = new HTSConnectionAsync(HTPListener, "Tizen C#", "Beta");
-            HTPClient.Open(address, port);
+            HTPClient.ErrorHandler += this.ErrorHandler;
+            HTPClient.ConnectionStateChange += this.ConnectionStateChange;
+
+            HTPClient.Start(address, port, userName, password);
+        }
+
+        public bool Open(string address, int port, HTSPListener HTPListener)
+        {
+            HTPClient = new HTSConnectionAsync(HTPListener, "Tizen C#", "Beta");
+            return HTPClient.Open(address, port);
         }
 
         public bool Login(string userName, string password)
         {
-            return HTPClient.Authenticate(userName, password);
+            return HTPClient.Authenticate(userName, password, CancellationToken.None);
         }
 
         public int Subscribe(int channelId)
@@ -39,7 +52,7 @@ namespace PTHPlayer.HTSP
             LoopBackResponseHandler lbrh = new LoopBackResponseHandler();
             HTPClient.sendMessage(getTicketMessage, lbrh);
 
-            lbrh.getResponse();
+            lbrh.getResponse(CancellationToken.None);
 
             return subscriptionId;
         }
@@ -77,12 +90,12 @@ namespace PTHPlayer.HTSP
 
             LoopBackResponseHandler lbrh = new LoopBackResponseHandler();
             HTPClient.sendMessage(getTicketMessage, lbrh);
-            lbrh.getResponse();
+            lbrh.getResponse(CancellationToken.None);
         }
 
         public void Close()
         {
-            HTPClient.Stop();
+            Task.Run(() => HTPClient.Stop(true));
         }
 
         public bool NeedRestart()

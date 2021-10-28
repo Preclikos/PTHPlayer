@@ -18,7 +18,7 @@ namespace PTHPlayer.Forms.Pages
             InitializeComponent();
             DataStorageService = dataService;
             HTSPConnectionController = hTSPConnectionController;
-            if(invalidLogin)
+            if (invalidLogin)
             {
                 Status.Text = "Invalid Login Credentials!";
                 Status.TextColor = Color.Red;
@@ -29,7 +29,7 @@ namespace PTHPlayer.Forms.Pages
         private void Button_Clicked(object sender, System.EventArgs e)
         {
 
-            if(string.IsNullOrEmpty(Server.Text) || string.IsNullOrEmpty(Port.Text) || string.IsNullOrEmpty(UserName.Text) || string.IsNullOrEmpty(Password.Text))
+            if (string.IsNullOrEmpty(Server.Text) || string.IsNullOrEmpty(Port.Text) || string.IsNullOrEmpty(UserName.Text) || string.IsNullOrEmpty(Password.Text))
             {
                 Status.Text = "Please fill all fields!";
                 Status.TextColor = Color.Red;
@@ -37,7 +37,7 @@ namespace PTHPlayer.Forms.Pages
             }
 
             int port = 0;
-            if(!int.TryParse(Port.Text, out port))
+            if (!int.TryParse(Port.Text, out port))
             {
                 Status.Text = "Wrong port inserted!";
                 Status.TextColor = Color.Red;
@@ -54,17 +54,16 @@ namespace PTHPlayer.Forms.Pages
             DataStorageService.SetCredentials(credentials);
             try
             {
-                HTSPConnectionController.Connect();
+                HTSPConnectionController.Connect(false);
                 Navigation.RemovePage(this);
             }
             catch (Exception ex)
             {
                 DataStorageService.ClearCredentials();
-                HTSPConnectionController.Close();
                 Status.Text = ex.Message;
                 Status.TextColor = Color.Red;
             }
-            
+            HTSPConnectionController.Close();
         }
 
         protected override void OnAppearing()

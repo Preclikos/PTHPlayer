@@ -76,7 +76,7 @@ namespace PTHPlayer
         }
 
         static void Main(string[] args)
-        {         
+        {
             var app = new Program();
             Xamarin.Forms.Forms.Init(app);
             app.Run(args);
