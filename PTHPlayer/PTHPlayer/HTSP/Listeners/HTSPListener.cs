@@ -87,23 +87,27 @@ namespace PTHPlayer.HTSP.Listeners
                     }
                 case "channelUpdate":
                     {
-                        var fileds = new Dictionary<string, object>();
+                        var fields = new Dictionary<string, object>();
                         var channId = response.getInt("channelId");
 
                         if (response.containsField("eventId"))
                         {
-                            fileds.Add("EventId", response.getInt("eventId"));
+                            fields.Add("EventId", response.getInt("eventId"));
                         }
                         if (response.containsField("nextEventId"))
                         {
-                            fileds.Add("NextEventId", response.getInt("nextEventId"));
+                            fields.Add("NextEventId", response.getInt("nextEventId"));
                         }
                         if (response.containsField("channelNumber"))
                         {
-                            fileds.Add("Number", response.getInt("channelNumber"));
+                            fields.Add("Number", response.getInt("channelNumber"));
+                        }
+                        if (response.containsField("channelIcon"))
+                        {
+                            fields.Add("Icon", response.getString("channelIcon"));
                         }
 
-                        DataStorageClient.ChannelUpdate(channId, fileds);
+                        DataStorageClient.ChannelUpdate(channId, fields);
                         HTSPControllerListener.ChannelUpdate(channId);
 
                         break;
@@ -140,7 +144,7 @@ namespace PTHPlayer.HTSP.Listeners
                         if (response.containsField("description"))
                         {
                             epg.Description = response.getString("description");
-                            if (epg.Summary == string.Empty)
+                            if (String.IsNullOrEmpty(epg.Summary))
                             {
                                 epg.Summary = epg.Description.Replace(Environment.NewLine, " ");
                             }

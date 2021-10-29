@@ -21,6 +21,8 @@ namespace PTHPlayer.Controllers
     {
         public event EventHandler<PlayerStateChangeEventArgs> PlayerStateChange;
 
+        DataService DataStorage;
+
         private HTSPService HTSPClient;
         private IEventListener EventNotificationListener;
 
@@ -40,9 +42,9 @@ namespace PTHPlayer.Controllers
 
         SubscriptionStatus Status = SubscriptionStatus.New;
 
-        public PlayerController(HTSPService hTSPClient, IEventListener eventNotificationListener)
+        public PlayerController(DataService dataStorage, HTSPService hTSPClient, IEventListener eventNotificationListener)
         {
-
+            DataStorage = dataStorage;
             HTSPClient = hTSPClient;
             EventNotificationListener = eventNotificationListener;
 
@@ -51,6 +53,28 @@ namespace PTHPlayer.Controllers
 
             PlayerService.PlayerStateChange += DelegatePlayerStateChange;
             PlayerService.PlayerError += DelegatePlayerError;
+
+            HTSPClient.ConnectionStateChange += HTSPClient_ConnectionStateChange;
+        }
+
+        private void HTSPClient_ConnectionStateChange(object sender, HTSPConnectionStateChangeArgs e)
+        {
+            switch(e.ConnectionChangeState)
+            {
+                case ConnectionState.Disconnected:
+                    {
+                        Stop();
+                        break;
+                    }
+                case ConnectionState.Authenticated:
+                    {
+                        if (DataStorage.SelectedChannelId != -1)
+                        {
+                            Subscription(DataStorage.SelectedChannelId);
+                        }
+                        break;
+                    }
+            }
         }
 
         public void SetSubtitleDisplay(Image image)

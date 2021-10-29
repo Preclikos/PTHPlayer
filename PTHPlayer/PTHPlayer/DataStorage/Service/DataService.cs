@@ -16,6 +16,7 @@ namespace PTHPlayer.DataStorage.Service
         private readonly object epgLock = new object();
         private List<EPGModel> EPGs = new List<EPGModel>();
 
+        public string ServerWebRoot;
         public SignalStatusModel SingnalStatus = new SignalStatusModel();
 
         IDataStorage NativeDataService;
@@ -58,7 +59,10 @@ namespace PTHPlayer.DataStorage.Service
                         var property = properties.SingleOrDefault(s => s.Name == field.Key);
                         if (property != null)
                         {
-                            property.SetValue(channelToUpdate, field.Value);
+                            if (property.PropertyType == typeof(int))
+                            {
+                                property.SetValue(channelToUpdate, (int)field.Value);
+                            }
                         }
                     }
                 }
@@ -90,7 +94,7 @@ namespace PTHPlayer.DataStorage.Service
         {
             lock (epgLock)
             {
-                EPGs.RemoveAll(r => r.EventId == eventId);;
+                EPGs.RemoveAll(r => r.EventId == eventId); ;
             }
         }
 

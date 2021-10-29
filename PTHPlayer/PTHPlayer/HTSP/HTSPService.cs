@@ -41,8 +41,6 @@ namespace PTHPlayer.HTSP
             Random rnd = new Random();
             int subscriptionId = rnd.Next(1, 99999);
 
-            //App.PlayerService.SetSubscriptionId(subscriptionId);
-
             HTSMessage getTicketMessage = new HTSMessage();
             getTicketMessage.Method = "subscribe";
             getTicketMessage.putField("channelId", channelId);
@@ -93,19 +91,17 @@ namespace PTHPlayer.HTSP
             lbrh.getResponse(CancellationToken.None);
         }
 
-        public void Close()
+        public void Close(bool syncClose = false)
         {
-            Task.Run(() => HTPClient.Stop(true));
-        }
-
-        public bool NeedRestart()
-        {
-            if (HTPClient == null)
+            if (syncClose)
             {
-                return true;
+                var closingTask = Task.Run(() => HTPClient.Stop(true));
+                closingTask.Wait();
             }
-
-            return HTPClient.NeedsRestart();
+            else
+            {
+                Task.Run(() => HTPClient.Stop(true));
+            }
         }
     }
 }

@@ -7,5 +7,6 @@
         public int Number { get; set; }
         public string Title { get; set; }
         public double Progress { get; set; }
+        public string Image { get; set; }
     }
 }

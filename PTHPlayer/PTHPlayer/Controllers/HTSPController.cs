@@ -6,24 +6,23 @@ using PTHPlayer.HTSP;
 using PTHPlayer.HTSP.Listeners;
 using PTHPlayer.HTSP.Models;
 using System;
-using System.Threading.Tasks;
 
 namespace PTHPlayer.Controllers
 {
     public class HTSPController : IHTSPListener
     {
         private HTSPService HTSPClient;
-        private DataService DataStorageClient;
+        private DataService DataStorage;
         private IEventListener EventNotificationListener;
 
         private HTSPListener HTSListener { get; set; }
 
         public event EventHandler<ChannelUpdateEventArgs> ChannelUpdateEvent;
 
-        public HTSPController(HTSPService hTSPClient, DataService dataStorageClient, IEventListener eventNotificationListener)
-        { 
+        public HTSPController(DataService dataStorage, HTSPService hTSPClient, IEventListener eventNotificationListener)
+        {
             HTSPClient = hTSPClient;
-            DataStorageClient = dataStorageClient;
+            DataStorage = dataStorage;
             EventNotificationListener = eventNotificationListener;
 
             HTSPClient.ErrorHandler += HTSPClient_ErrorHandler;
@@ -83,48 +82,59 @@ namespace PTHPlayer.Controllers
             HTSListener = hTSPListener;
         }
 
-        public void Connect(bool overMonitor)
+        public bool Connect(bool overMonitor, string server = "", int port = 0, string userName = "", string password = "")
         {
             if (HTSListener == null)
             {
                 throw new ArgumentNullException(nameof(HTSListener));
             }
 
-            if (DataStorageClient.IsCredentialsExist())
+            if (String.IsNullOrEmpty(server) || port == 0 || String.IsNullOrEmpty(userName) || String.IsNullOrEmpty(password))
             {
-
-                var credentials = DataStorageClient.GetCredentials();
-
-                if (HTSPClient.NeedRestart())
+                if (DataStorage.IsCredentialsExist())
                 {
-                    if (overMonitor)
+                    var credentials = DataStorage.GetCredentials();
+                    server = credentials.Server;
+                    port = credentials.Port;
+                    userName = credentials.UserName;
+                    password = credentials.Password;
+                }
+                else
+                {
+                    throw new Exception("No stored credentials error!");
+                }
+            }
+
+            if (overMonitor)
+            {
+                HTSPClient.Open(server, port, userName, password, HTSListener);
+                return true;
+            }
+            else
+            {
+                if (HTSPClient.Open(server, port, HTSListener))
+                {
+
+                    if (HTSPClient.Login(userName, password))
                     {
-                        HTSPClient.Open(credentials.Server, credentials.Port, credentials.UserName, credentials.Password, HTSListener);
+                        return true;
                     }
                     else
                     {
-                        if(HTSPClient.Open(credentials.Server, credentials.Port, HTSListener))
-                        {
-
-                            if (!HTSPClient.Login(credentials.UserName, credentials.Password))
-                            {
-                                throw new Exception("Invalid Login Credentials");
-                            }
-                        }
-                        else
-                        {
-                            throw new Exception("Cannot connect server");
-                            
-                        }
+                        throw new Exception("Invalid Login Credentials");
                     }
+                }
+                else
+                {
+                    throw new Exception("Cannot connect server");
 
                 }
             }
         }
 
-        public void Close()
+        public void Close(bool syncClose = false)
         {
-            HTSPClient.Close();
+            HTSPClient.Close(syncClose);
         }
 
         protected void DelegateChannelUpdate(object sender, ChannelUpdateEventArgs e)

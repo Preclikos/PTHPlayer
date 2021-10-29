@@ -35,8 +35,12 @@
 
                             <Label Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Text="{Binding Number}" LineBreakMode="TailTruncation" FontSize="80"/>
                             <Label Grid.Row="0" Grid.Column="1" Text="{Binding Label}" Font="Medium"  TextColor="Gray" LineBreakMode="TailTruncation"/>
-                            <Image Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Source="{Binding Image}" Aspect="AspectFill"/>
-                            <Label Grid.Row="1" Grid.Column="1" Text="{Binding Title}" Font="Small"  TextColor="Gray" FontSize="36" LineBreakMode="TailTruncation"/>
+                            <Image Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Aspect="AspectFit">
+                                <Image.Source>
+                                    <UriImageSource Uri="{Binding Image}" />
+                                </Image.Source>
+                            </Image>
+                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Title}" Font="Small"  TextColor="Gray" FontSize="36" LineBreakMode="TailTruncation"/>
                             <ProgressBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" x:Name="Progress" Margin="0" Progress="{Binding Progress}" BackgroundColor="DarkSlateBlue" />
                         </Grid>
                     </ViewCell.View>

@@ -30,7 +30,6 @@ namespace PTHPlayer.HTSP
     {
         private readonly ILogger Logger = LoggerManager.GetInstance().GetLogger("PTHPlayer");
 
-        volatile bool _needsRestart = false;
         volatile bool _connected;
         volatile bool _authenticated;
         volatile int _seq = 0;
@@ -110,10 +109,12 @@ namespace PTHPlayer.HTSP
         public void Stop(bool stopMonitor = false)
         {
             isSubscribtionStart = false;
+            _authenticated = false;
 
             if (monitorCancellationSource != null && stopMonitor)
             {
                 monitorCancellationSource.Cancel();
+                _monitorHandlerThread.Wait(15000);
             }
 
             handlersCancellationSource.Cancel();
@@ -130,11 +131,11 @@ namespace PTHPlayer.HTSP
                     _messagesForSendQueue.Clear();
                     _receivedMessagesQueue.Clear();
 
-                    _needsRestart = true;
                     _connected = false;
                 }
                 else
                 {
+                    Logger.Error("Connection close error");
                     throw new Exception("Fatal close error");
                 }
             }
@@ -142,11 +143,6 @@ namespace PTHPlayer.HTSP
             {
                 throw;
             }
-        }
-
-        public bool NeedsRestart()
-        {
-            return _needsRestart;
         }
 
         public void Start(string hostName, int port, string userName, string password)
@@ -229,7 +225,7 @@ namespace PTHPlayer.HTSP
 
         public bool Authenticate(String username, String password, CancellationToken cancellationToken)
         {
-            //_logger.Info("[TVHclient] HTSConnectionAsync.authenticate: start");
+            Logger.Info("Authentication Start");
 
             HTSMessage helloMessage = new HTSMessage();
             helloMessage.Method = "hello";
@@ -250,7 +246,6 @@ namespace PTHPlayer.HTSP
                 else
                 {
                     _serverProtocolVersion = -1;
-                    //_logger.Info("[TVHclient] HTSConnectionAsync.authenticate: hello don't deliver required field 'htspversion' - htsp wrong implemented on tvheadend side.");
                 }
 
                 if (helloResponse.containsField("servername"))
@@ -260,7 +255,6 @@ namespace PTHPlayer.HTSP
                 else
                 {
                     _servername = "n/a";
-                    //_logger.Info("[TVHclient] HTSConnectionAsync.authenticate: hello don't deliver required field 'servername' - htsp wrong implemented on tvheadend side.");
                 }
 
                 if (helloResponse.containsField("serverversion"))
@@ -270,7 +264,6 @@ namespace PTHPlayer.HTSP
                 else
                 {
                     _serverversion = "n/a";
-                    //_logger.Info("[TVHclient] HTSConnectionAsync.authenticate: hello don't deliver required field 'serverversion' - htsp wrong implemented on tvheadend side.");
                 }
 
                 byte[] salt = null;
@@ -281,7 +274,6 @@ namespace PTHPlayer.HTSP
                 else
                 {
                     salt = new byte[0];
-                    //_logger.Info("[TVHclient] HTSConnectionAsync.authenticate: hello don't deliver required field 'challenge' - htsp wrong implemented on tvheadend side.");
                 }
 
                 byte[] digest = SHA1helper.GenerateSaltedSHA1(password, salt);
@@ -350,7 +342,9 @@ namespace PTHPlayer.HTSP
                     var senderTimeOut = sendTimer.Elapsed > timeOutSpan;
                     var subscriptionTimeOut = isSubscribtionStart && receiveDiff > timeOutSpan;
 
-                    if (!connState || senderTimeOut || subscriptionTimeOut)
+                    var disconnected = !connState || senderTimeOut || subscriptionTimeOut;
+
+                    if (disconnected)
                     {
                         _authenticated = false;
                         sendTimer = new Stopwatch();
@@ -388,7 +382,7 @@ namespace PTHPlayer.HTSP
 
                     }
 
-                    if(!_authenticated)
+                    if(!_authenticated && !disconnected)
                     {
                         OnConnectionStateChange(new HTSPConnectionStateChangeArgs(ConnectionState.Authenticating));
                         //Kick Login

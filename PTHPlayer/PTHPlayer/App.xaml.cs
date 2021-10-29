@@ -15,7 +15,7 @@ namespace PTHPlayer
     {
         private readonly ILogger Logger = LoggerManager.GetInstance().GetLogger("PTHPlayer");
 
-        private DataService DataStorageService;
+        private DataService DataStorage;
         private static int LastChannelId = -1;
 
         private PlayerController VideoPlayerController;
@@ -29,26 +29,26 @@ namespace PTHPlayer
         {
             var eventService = new EventService();
 
-            DataStorageService = new DataService();
+            DataStorage = new DataService();
 
             var HTSPService = new HTSPService();
 
-            VideoPlayerController = new PlayerController(HTSPService, eventService);
-            HTSPConnectionController = new HTSPController(HTSPService, DataStorageService, eventService);
+            VideoPlayerController = new PlayerController(DataStorage, HTSPService, eventService);
+            HTSPConnectionController = new HTSPController(DataStorage, HTSPService, eventService);
 
-            var HTPListener = new HTSPListener(DataStorageService, VideoPlayerController, HTSPConnectionController, eventService);
+            var HTPListener = new HTSPListener(DataStorage, VideoPlayerController, HTSPConnectionController, eventService);
 
             HTSPConnectionController.SetListener(HTPListener);
 
-            MainPage = new NavigationPage(new MainPage(DataStorageService, VideoPlayerController, HTSPConnectionController, eventService));
+            MainPage = new NavigationPage(new MainPage(DataStorage, VideoPlayerController, HTSPConnectionController, eventService));
 
         }
 
         protected override void OnSleep()
         {
-            if (DataStorageService.IsCredentialsExist())
+            if (DataStorage.IsCredentialsExist())
             {
-                LastChannelId = DataStorageService.SelectedChannelId;
+                LastChannelId = DataStorage.SelectedChannelId;
 
                 VideoPlayerController.UnSubscribe(true);
 
@@ -60,9 +60,9 @@ namespace PTHPlayer
         {
             Logger.Info("Resume");
 
-            DataStorageService.CleanChannelsAndEPGs();
+            DataStorage.CleanChannelsAndEPGs();
 
-            if (!DataStorageService.IsCredentialsExist())
+            if (!DataStorage.IsCredentialsExist())
             {
                 OpenCredentials(false);
             }
@@ -70,13 +70,11 @@ namespace PTHPlayer
             {
                 try
                 {
-                    HTSPConnectionController.Connect(true);
                     if (LastChannelId != -1)
                     {
-                        VideoPlayerController.Subscription(LastChannelId);
-
-                        DataStorageService.SelectedChannelId = LastChannelId;
+                        DataStorage.SelectedChannelId = LastChannelId;
                     }
+                    HTSPConnectionController.Connect(true);
                 }
                 catch
                 {
@@ -86,16 +84,20 @@ namespace PTHPlayer
         }
         private void OpenCredentials(bool invalidLogin)
         {
-            var credentialPage = new CredentialsPage(DataStorageService, HTSPConnectionController, invalidLogin);
+            var credentialPage = new CredentialsPage(DataStorage, HTSPConnectionController, invalidLogin);
             credentialPage.Disappearing += CredentialPage_Disappearing;
             MainPage.Navigation.PushAsync(credentialPage);
         }
 
         private void CredentialPage_Disappearing(object sender, System.EventArgs e)
         {
-            if (!DataStorageService.IsCredentialsExist())
+            if (!DataStorage.IsCredentialsExist())
             {
                 Current.Quit();
+            }
+            else
+            {
+                HTSPConnectionController.Connect(true);
             }
         }
     }

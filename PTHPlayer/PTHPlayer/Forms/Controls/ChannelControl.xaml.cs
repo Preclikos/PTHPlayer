@@ -61,7 +61,7 @@ namespace PTHPlayer.Forms.Controls
                         var currentEpg = selectedChannel.SingleOrDefault(s => s.EventId == channel.EventId);
                         if (currentEpg != null)
                         {
-                            
+
                             newChannel.Title = currentEpg.Title;
 
                             var start = currentEpg.Start.Ticks;
@@ -91,8 +91,10 @@ namespace PTHPlayer.Forms.Controls
                 if (selecteditem != null)
                 {
                     ChannelListView.SelectedItem = selecteditem;
+
                 }
             }
+            ChannelListView.SelectedItem = null;
         }
 
         void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
