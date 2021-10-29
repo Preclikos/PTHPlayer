@@ -12,6 +12,9 @@ namespace PTHPlayer.Subtitles.Player
         private Image SubtitleDisplayImage { get; set; }
         private CancellationTokenSource CancellationToken { get; set; }
         private PlayerService PlayerService { get; }
+
+        Task SubtitlePlayerTask;
+
         public SubtitlePlayer(PlayerService playerService)
         {
             PlayerService = playerService;
@@ -26,7 +29,7 @@ namespace PTHPlayer.Subtitles.Player
         {
             CancellationToken = new CancellationTokenSource();
             var cancellationToken = CancellationToken.Token;
-            _ = Task.Run(async () =>
+            SubtitlePlayerTask = Task.Run(async () =>
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
@@ -124,6 +127,8 @@ namespace PTHPlayer.Subtitles.Player
             {
                 CancellationToken.Cancel();
             }
+
+            SubtitlePlayerTask.Wait(5000);
         }
     }
 }
