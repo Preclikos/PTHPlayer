@@ -8,16 +8,16 @@ namespace PTHPlayer.HTSP
 {
     public class HTSPService
     {
+        const string ClientName = "Tizen C#";
+        const string ClientVersion = "Beta";
+
         public static HTSConnectionAsync HTPClient;
         public event EventHandler<HTSPConnectionStateChangeArgs> ConnectionStateChange;
         public event EventHandler<HTSPErrorArgs> ErrorHandler;
-        public HTSPService()
-        {
-        }
 
         public void Open(string address, int port, string userName, string password, HTSPListener HTPListener)
         {
-            HTPClient = new HTSConnectionAsync(HTPListener, "Tizen C#", "Beta");
+            HTPClient = new HTSConnectionAsync(HTPListener, ClientName, ClientVersion);
             HTPClient.ErrorHandler += this.ErrorHandler;
             HTPClient.ConnectionStateChange += this.ConnectionStateChange;
 
@@ -26,7 +26,7 @@ namespace PTHPlayer.HTSP
 
         public bool Open(string address, int port, HTSPListener HTPListener)
         {
-            HTPClient = new HTSConnectionAsync(HTPListener, "Tizen C#", "Beta");
+            HTPClient = new HTSConnectionAsync(HTPListener, ClientName, ClientVersion);
             return HTPClient.Open(address, port);
         }
 

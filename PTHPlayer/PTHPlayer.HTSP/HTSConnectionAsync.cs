@@ -28,7 +28,7 @@ namespace PTHPlayer.HTSP
 
     public class HTSConnectionAsync
     {
-        private readonly ILogger Logger = LoggerManager.GetInstance().GetLogger("PTHPlayer");
+        private readonly ILogger Logger = LoggerManager.GetInstance().GetLogger("PTHPlayer.HTSP");
 
         volatile bool _connected;
         volatile bool _authenticated;
@@ -60,13 +60,12 @@ namespace PTHPlayer.HTSP
         CancellationTokenSource monitorCancellationSource;
 
         Stopwatch sendTimer = new Stopwatch();
-
         DateTime LastValidPacketReceived = DateTime.UtcNow;
         volatile bool isSubscribtionStart = false;
 
+        //Monitor credentials
         string _hostName = string.Empty;
         int _port = 0;
-
         string _userName = string.Empty;
         string _password = string.Empty;
 
@@ -225,6 +224,9 @@ namespace PTHPlayer.HTSP
 
         public bool Authenticate(String username, String password, CancellationToken cancellationToken)
         {
+            _userName = username;
+            _password = password;
+
             Logger.Info("Authentication Start");
 
             HTSMessage helloMessage = new HTSMessage();

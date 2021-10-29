@@ -69,9 +69,9 @@ namespace PTHPlayer.Forms.Pages
             {
                 Status.Text = ex.Message;
                 Status.TextColor = Color.Red;
+                HTSPConnectionController.Close(true);
             }
 
-            HTSPConnectionController.Close(true);
             ConfirmButton.IsEnabled = true;
 
         }
