@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PTHLogger\PTHLogger.csproj" />
     <ProjectReference Include="..\PTHPlayer.HTSP\PTHPlayer.HTSP.csproj" />
   </ItemGroup>
 

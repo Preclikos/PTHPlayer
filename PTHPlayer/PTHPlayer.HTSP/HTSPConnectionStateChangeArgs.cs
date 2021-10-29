@@ -16,9 +16,16 @@ namespace PTHPlayer.HTSP
     public class HTSPConnectionStateChangeArgs : EventArgs
     {
         public ConnectionState ConnectionChangeState;
+        public string Message;
+
         public HTSPConnectionStateChangeArgs(ConnectionState connectionState )
         {
             ConnectionChangeState = connectionState;
+        }
+        public HTSPConnectionStateChangeArgs(ConnectionState connectionState, string message)
+        {
+            ConnectionChangeState = connectionState;
+            Message = message;
         }
     }
 }

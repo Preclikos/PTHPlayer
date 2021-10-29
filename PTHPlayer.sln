@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PTHPlayer.Tizen.TV", "PTHPl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PTHPlayer.HTSP", "PTHPlayer\PTHPlayer.HTSP\PTHPlayer.HTSP.csproj", "{77ACE8A8-8A98-4956-BE13-038A2A11BC5B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PTHLogger", "PTHPlayer\PTHLogger\PTHLogger.csproj", "{C29194CA-6619-4739-A0EA-FF0DF9DEC823}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PTHLogger.Udp", "PTHPlayer\PTHLogger.Udp\PTHLogger.Udp.csproj", "{C23781BD-95BA-47B0-823B-C79D4119E8B7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{77ACE8A8-8A98-4956-BE13-038A2A11BC5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77ACE8A8-8A98-4956-BE13-038A2A11BC5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77ACE8A8-8A98-4956-BE13-038A2A11BC5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C29194CA-6619-4739-A0EA-FF0DF9DEC823}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C29194CA-6619-4739-A0EA-FF0DF9DEC823}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C29194CA-6619-4739-A0EA-FF0DF9DEC823}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C29194CA-6619-4739-A0EA-FF0DF9DEC823}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C23781BD-95BA-47B0-823B-C79D4119E8B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C23781BD-95BA-47B0-823B-C79D4119E8B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C23781BD-95BA-47B0-823B-C79D4119E8B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C23781BD-95BA-47B0-823B-C79D4119E8B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

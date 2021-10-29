@@ -293,47 +293,9 @@ namespace PTHPlayer.HTSP
                 HTSMessage authResponse = loopBackResponseHandler.getResponse(cancellationToken);
                 if (authResponse != null)
                 {
-                    Boolean auth = authResponse.getInt("noaccess", 0) != 1;
-                    if (auth)
-                    {
-                        HTSMessage getDiskSpaceMessage = new HTSMessage();
-                        getDiskSpaceMessage.Method = "getDiskSpace";
-                        sendMessage(getDiskSpaceMessage, loopBackResponseHandler);
-                        HTSMessage diskSpaceResponse = loopBackResponseHandler.getResponse(cancellationToken);
-                        if (diskSpaceResponse != null)
-                        {
-                            long freeDiskSpace = -1;
-                            long totalDiskSpace = -1;
-                            if (diskSpaceResponse.containsField("freediskspace"))
-                            {
-                                freeDiskSpace = diskSpaceResponse.getLong("freediskspace") / BytesPerGiga;
-                            }
-                            else
-                            {
-                                //_logger.Info("[TVHclient] HTSConnectionAsync.authenticate: getDiskSpace don't deliver required field 'freediskspace' - htsp wrong implemented on tvheadend side.");
-                            }
-                            if (diskSpaceResponse.containsField("totaldiskspace"))
-                            {
-                                totalDiskSpace = diskSpaceResponse.getLong("totaldiskspace") / BytesPerGiga;
-                            }
-                            else
-                            {
-                                //_logger.Info("[TVHclient] HTSConnectionAsync.authenticate: getDiskSpace don't deliver required field 'totaldiskspace' - htsp wrong implemented on tvheadend side.");
-                            }
-
-                            _diskSpace = freeDiskSpace + "GB / " + totalDiskSpace + "GB";
-                        }
-
-                        HTSMessage enableAsyncMetadataMessage = new HTSMessage();
-                        enableAsyncMetadataMessage.Method = "enableAsyncMetadata";
-                        sendMessage(enableAsyncMetadataMessage, null);
-                    }
-
-                    //_logger.Info("[TVHclient] HTSConnectionAsync.authenticate: authenticated = " + auth);
-                    return auth;
+                    return authResponse.getInt("noaccess", 0) != 1;
                 }
             }
-            //_logger.Error("[TVHclient] HTSConnectionAsync.authenticate: no hello response");
             return false;
         }
 
@@ -389,15 +351,29 @@ namespace PTHPlayer.HTSP
                     var receiveDiff = DateTime.UtcNow - LastValidPacketReceived;
                     var timeOutSpan = TimeSpan.FromSeconds(8);
 
-                    if (!Connected() || sendTimer.Elapsed > timeOutSpan || (isSubscribtionStart && receiveDiff > timeOutSpan))
+                    var connState = Connected();
+                    var senderTimeOut = sendTimer.Elapsed > timeOutSpan;
+                    var subscriptionTimeOut = isSubscribtionStart && receiveDiff > timeOutSpan;
+
+                    if (!connState || senderTimeOut || subscriptionTimeOut)
                     {
                         _authenticated = false;
                         sendTimer = new Stopwatch();
                         if (handlersCancellationSource != null)
                         {
-
                             //Kick Disconnected
-                            OnConnectionStateChange(new HTSPConnectionStateChangeArgs(ConnectionState.Disconnected));
+                            if (!connState)
+                            {
+                                OnConnectionStateChange(new HTSPConnectionStateChangeArgs(ConnectionState.Disconnected, "connection"));
+                            }
+                            if (senderTimeOut)
+                            {
+                                OnConnectionStateChange(new HTSPConnectionStateChangeArgs(ConnectionState.Disconnected, "send"));
+                            }
+                            if (subscriptionTimeOut)
+                            {
+                                OnConnectionStateChange(new HTSPConnectionStateChangeArgs(ConnectionState.Disconnected, "subscription"));
+                            }
                             Stop();
                         }
 
@@ -450,7 +426,7 @@ namespace PTHPlayer.HTSP
             {
                 if (_socket != null)
                 {
-                    bool part1 = _socket.Poll(1000, SelectMode.SelectRead);
+                    bool part1 = _socket.Poll(1000000, SelectMode.SelectRead);
                     bool part2 = (_socket.Available == 0);
                     if (part1 && part2)
                         return false;

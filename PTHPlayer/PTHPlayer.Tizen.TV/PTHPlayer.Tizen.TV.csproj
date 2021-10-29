@@ -33,8 +33,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+    <ProjectReference Include="..\PTHLogger.Udp\PTHLogger.Udp.csproj" />
     <ProjectReference Include="..\PTHPlayer\PTHPlayer.csproj" />
   </ItemGroup>
+
+	<ItemGroup>
+	  <None Update="res\logger.config">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
   
 
 </Project>

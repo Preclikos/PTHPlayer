@@ -1,4 +1,5 @@
-﻿using PTHPlayer.Controllers;
+﻿using PTHLogger;
+using PTHPlayer.Controllers;
 using PTHPlayer.DataStorage.Service;
 using PTHPlayer.Event;
 using PTHPlayer.Forms.Pages;
@@ -12,6 +13,8 @@ namespace PTHPlayer
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class App : Application
     {
+        private readonly ILogger Logger = LoggerManager.GetInstance().GetLogger("PTHPlayer");
+
         private DataService DataStorageService;
         private static int LastChannelId = -1;
 
@@ -55,6 +58,8 @@ namespace PTHPlayer
 
         protected override void OnResume()
         {
+            Logger.Info("Resume");
+
             DataStorageService.CleanChannelsAndEPGs();
 
             if (!DataStorageService.IsCredentialsExist())

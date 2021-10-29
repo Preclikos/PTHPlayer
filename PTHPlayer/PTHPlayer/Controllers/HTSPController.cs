@@ -34,6 +34,11 @@ namespace PTHPlayer.Controllers
         {
             switch (e.ConnectionChangeState)
             {
+                case ConnectionState.Disconnected:
+                    {
+                        EventNotificationListener.SendNotification(nameof(HTSPController), e.Message, EventId.Generic, EventType.Error);
+                        break;
+                    }
                 case ConnectionState.ConnectingFail:
                     {
                         EventNotificationListener.SendNotification(nameof(HTSPController), e.ConnectionChangeState.ToString(), EventId.Connection, EventType.Error);

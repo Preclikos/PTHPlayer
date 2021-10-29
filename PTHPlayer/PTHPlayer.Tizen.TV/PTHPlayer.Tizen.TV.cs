@@ -1,15 +1,20 @@
 using ElmSharp;
+using PTHLogger.Udp;
 using PTHPlayer.Interfaces;
 using System;
 using System.Threading.Tasks;
 using Tizen.Applications;
 using Tizen.System;
 using Xamarin.Forms;
+using Log = Tizen.Log;
 
 namespace PTHPlayer
 {
+
     class Program : global::Xamarin.Forms.Platform.Tizen.FormsApplication, IKeyEventSender
     {
+
+        private const string Tag = "PTHPlayer";
 
         public static Window ParentMainWindow;
 
@@ -69,6 +74,22 @@ namespace PTHPlayer
             return screenSize;
         }
 
+        private static void UnhandledException(object sender, UnhandledExceptionEventArgs evt)
+        {
+            if (evt.ExceptionObject is Exception e)
+            {
+                if (e.InnerException != null)
+                    e = e.InnerException;
+
+                Log.Error(Tag, e.Message);
+                Log.Error(Tag, e.StackTrace);
+            }
+            else
+            {
+                Log.Error(Tag, "Got unhandled exception event: " + evt);
+            }
+        }
+
         protected override async void OnAppControlReceived(AppControlReceivedEventArgs e)
         {
 
@@ -77,9 +98,22 @@ namespace PTHPlayer
 
         static void Main(string[] args)
         {
-            var app = new Program();
-            Xamarin.Forms.Forms.Init(app);
-            app.Run(args);
+            UdpLoggerManager.Configure();
+
+            AppDomain.CurrentDomain.UnhandledException += UnhandledException;
+
+            try
+            {
+                var app = new Program();
+
+                Xamarin.Forms.Forms.Init(app);
+                app.Run(args);
+            }
+            finally
+            {
+                if (UdpLoggerManager.IsRunning)
+                    UdpLoggerManager.Terminate();
+            }
         }
     }
 }
