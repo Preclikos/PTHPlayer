@@ -1,4 +1,5 @@
-﻿using PTHPlayer.HTSP.Helpers;
+﻿using PTHLogger;
+using PTHPlayer.HTSP.Helpers;
 using PTHPlayer.HTSP.Responses;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace PTHPlayer.HTSP
 
     public class HTSConnectionAsync
     {
-        const long BytesPerGiga = 1024 * 1024 * 1024;
+        private readonly ILogger Logger = LoggerManager.GetInstance().GetLogger("PTHPlayer");
 
         volatile bool _needsRestart = false;
         volatile bool _connected;
@@ -42,7 +43,6 @@ namespace PTHPlayer.HTSP
         private int _serverProtocolVersion;
         private string _servername;
         private string _serverversion;
-        private string _diskSpace;
 
         readonly ByteList _buffer;
         readonly SizeQueue<HTSMessage> _receivedMessagesQueue;
@@ -314,11 +314,6 @@ namespace PTHPlayer.HTSP
             return _serverversion;
         }
 
-        public string getDiskspace()
-        {
-            return _diskSpace;
-        }
-
         public void sendMessage(HTSMessage message, HTSResponseHandler responseHandler)
         {
             // loop the sequence number
@@ -349,9 +344,9 @@ namespace PTHPlayer.HTSP
                 try
                 {
                     var receiveDiff = DateTime.UtcNow - LastValidPacketReceived;
-                    var timeOutSpan = TimeSpan.FromSeconds(8);
+                    var timeOutSpan = TimeSpan.FromSeconds(3);
 
-                    var connState = Connected();
+                    var connState = _socket != null ? _socket.Connected : false;
                     var senderTimeOut = sendTimer.Elapsed > timeOutSpan;
                     var subscriptionTimeOut = isSubscribtionStart && receiveDiff > timeOutSpan;
 
@@ -364,15 +359,15 @@ namespace PTHPlayer.HTSP
                             //Kick Disconnected
                             if (!connState)
                             {
-                                OnConnectionStateChange(new HTSPConnectionStateChangeArgs(ConnectionState.Disconnected, "connection"));
+                                OnConnectionStateChange(new HTSPConnectionStateChangeArgs(ConnectionState.Disconnected, "Connection"));
                             }
                             if (senderTimeOut)
                             {
-                                OnConnectionStateChange(new HTSPConnectionStateChangeArgs(ConnectionState.Disconnected, "send"));
+                                OnConnectionStateChange(new HTSPConnectionStateChangeArgs(ConnectionState.Disconnected, "SendTimeOut"));
                             }
                             if (subscriptionTimeOut)
                             {
-                                OnConnectionStateChange(new HTSPConnectionStateChangeArgs(ConnectionState.Disconnected, "subscription"));
+                                OnConnectionStateChange(new HTSPConnectionStateChangeArgs(ConnectionState.Disconnected, "SubscriptionTimeOut"));
                             }
                             Stop();
                         }
@@ -418,27 +413,7 @@ namespace PTHPlayer.HTSP
                     OnErrorHandler(new HTSPErrorArgs(ex.Message));
                 }
             }
-        }
-
-        bool Connected()
-        {
-            try
-            {
-                if (_socket != null)
-                {
-                    bool part1 = _socket.Poll(1000000, SelectMode.SelectRead);
-                    bool part2 = (_socket.Available == 0);
-                    if (part1 && part2)
-                        return false;
-                    else
-                        return true;
-                }
-                return false;
-            }
-            catch
-            {
-                return false;
-            }
+            Logger.Info("MonitorHandler task go to end");
         }
 
         private void SendingHandler()
@@ -477,6 +452,7 @@ namespace PTHPlayer.HTSP
                     }
                 }
             }
+            Logger.Info("SendingHandler task go to end");
         }
 
         private void ReceiveHandler()
@@ -510,6 +486,7 @@ namespace PTHPlayer.HTSP
                     }
                 }
             }
+            Logger.Info("ReceiveHandler task go to end");
         }
 
         private void MessageBuilder()
@@ -531,10 +508,12 @@ namespace PTHPlayer.HTSP
                         if (response.Method == "subscriptionStart")
                         {
                             isSubscribtionStart = true;
+                            Logger.Info("Subscribtion Received");
                         }
                         if (response.Method == "subscriptionStop" || response.Method == "subscriptionSkip")
                         {
                             isSubscribtionStart = false;
+                            Logger.Info("Subscribtion Stop or Skip Received");
                         }
 
                     }
@@ -551,6 +530,7 @@ namespace PTHPlayer.HTSP
                     }
                 }
             }
+            Logger.Info("MessageBuilder task go to end");
         }
 
         private void MessageDistributor()
@@ -601,6 +581,7 @@ namespace PTHPlayer.HTSP
                     }
                 }
             }
+            Logger.Info("MessageDistributor task go to end");
         }
     }
 }
