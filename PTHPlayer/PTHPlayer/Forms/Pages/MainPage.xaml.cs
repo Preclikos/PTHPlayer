@@ -125,12 +125,22 @@ namespace PTHPlayer.Forms.Pages
             {
                 case PlayerState.Stop:
                     {
-                        Device.BeginInvokeOnMainThread(() =>
+                        if (DataStorage.SelectedChannelId == -1)
                         {
-                            Loading.IsAnimationPlaying = true;
-                            Loading.FadeTo(1, 200);
+                            Device.BeginInvokeOnMainThread(() =>
+                            {
+                                MainLogo.FadeTo(1, 1000);
+                            });
+                        }
+                        else
+                        {
+                            Device.BeginInvokeOnMainThread(() =>
+                            {
+                                Loading.IsAnimationPlaying = true;
+                                Loading.FadeTo(1, 200);
 
-                        });
+                            });
+                        }
                         break;
                     }
                 case PlayerState.Playing:

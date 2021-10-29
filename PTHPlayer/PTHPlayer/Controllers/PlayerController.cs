@@ -1,5 +1,6 @@
 ﻿using PTHPlayer.Controllers.Enums;
 using PTHPlayer.Controllers.Listeners;
+using PTHPlayer.DataStorage.Service;
 using PTHPlayer.Event.Enums;
 using PTHPlayer.Event.Listeners;
 using PTHPlayer.HTSP;
@@ -41,6 +42,7 @@ namespace PTHPlayer.Controllers
 
         public PlayerController(HTSPService hTSPClient, IEventListener eventNotificationListener)
         {
+
             HTSPClient = hTSPClient;
             EventNotificationListener = eventNotificationListener;
 
@@ -81,7 +83,7 @@ namespace PTHPlayer.Controllers
             SubscriptionStart = new TaskCompletionSource<HTSMessage>();
             SubscriptionSkip = new TaskCompletionSource<HTSMessage>();
 
-            UnSubscribe();
+            UnSubscribe(SubscriptionId == -1);
 
             var subscriptionId = HTSPClient.Subscribe(channelId);
             Status = SubscriptionStatus.New;

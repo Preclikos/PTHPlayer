@@ -7,5 +7,6 @@
         public int Number { get; set; }
         public int EventId { get; set; }
         public int NextEventId { get; set; }
+        public string Icon { get; set; }
     }
 }

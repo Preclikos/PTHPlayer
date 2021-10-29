@@ -338,13 +338,17 @@ namespace PTHPlayer.Forms.Controls
 
         void Handle_PlayButton(object sender, EventArgs e)
         {
+
             if (PlayerViewModel.Id == DataStorage.SelectedChannelId)
             {
+                DataStorage.SelectedChannelId = -1;
                 VideoPlayerController.UnSubscribe();
+                PlayStopButton.ImageSource = ImageSource.FromFile("icons/multimedia.png");
                 return;
             }
             VideoPlayerController.Subscription(PlayerViewModel.Id);
             DataStorage.SelectedChannelId = PlayerViewModel.Id;
+            PlayStopButton.ImageSource = ImageSource.FromFile("icons/stop.png");
         }
 
         void HideModals()

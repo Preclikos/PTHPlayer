@@ -5,6 +5,7 @@ using PTHPlayer.Event.Enums;
 using PTHPlayer.Event.Listeners;
 using PTHPlayer.HTSP.Parsers;
 using System;
+using System.Collections.Generic;
 
 namespace PTHPlayer.HTSP.Listeners
 {
@@ -58,40 +59,53 @@ namespace PTHPlayer.HTSP.Listeners
                     }
                 case "channelAdd":
                     {
-                        var channId = response.getInt("channelId");
-                        var eventId = response.getInt("eventId");
-                        var nextEventId = response.getInt("nextEventId");
-                        var channName = response.getString("channelName");
-                        var channNumber = response.getInt("channelNumber");
+                        var channel = new ChannelModel();
+                        channel.Id = response.getInt("channelId");
 
-                        DataStorageClient.ChannelAdd(new ChannelModel() { Label = channName, Id = channId, Number = channNumber, EventId = eventId, NextEventId = nextEventId });
+                        channel.Label = response.getString("channelName");
+                        channel.Number = response.getInt("channelNumber");
 
-                        HTSPControllerListener.ChannelUpdate(channId);
+                        if (response.containsField("eventId"))
+                        {
+                            channel.EventId = response.getInt("eventId");
+                        }
+
+                        if (response.containsField("nextEventId"))
+                        {
+                            channel.EventId = response.getInt("nextEventId");
+                        }
+
+                        if (response.containsField("channelIcon"))
+                        {
+                            channel.Icon = response.getString("channelIcon");
+                        }
+
+                        DataStorageClient.ChannelAdd(channel);
+
+                        HTSPControllerListener.ChannelUpdate(channel.Id);
                         break;
                     }
                 case "channelUpdate":
                     {
-                        /*
+                        var fileds = new Dictionary<string, object>();
                         var channId = response.getInt("channelId");
-                        var channel = DataStorageClient.Channels.SingleOrDefault(s => s.Id == channId);
-                        if (channel != null)
+
+                        if (response.containsField("eventId"))
                         {
-                            if (response.containsField("eventId"))
-                            {
-                                channel.EventId = response.getInt("eventId");
-                            }
-                            if (response.containsField("nextEventId"))
-                            {
-                                channel.NextEventId = response.getInt("nextEventId");
-                            }
-                            if (response.containsField("channelNumber"))
-                            {
-                                channel.Number = response.getInt("channelNumber");
-                            }
+                            fileds.Add("EventId", response.getInt("eventId"));
                         }
-                        
+                        if (response.containsField("nextEventId"))
+                        {
+                            fileds.Add("NextEventId", response.getInt("nextEventId"));
+                        }
+                        if (response.containsField("channelNumber"))
+                        {
+                            fileds.Add("Number", response.getInt("channelNumber"));
+                        }
+
+                        DataStorageClient.ChannelUpdate(channId, fileds);
                         HTSPControllerListener.ChannelUpdate(channId);
-                        */
+
                         break;
                     }
                 case "channelDelete":
@@ -107,40 +121,31 @@ namespace PTHPlayer.HTSP.Listeners
                     }
                 case "eventAdd":
                     {
-                        var start = response.getInt("start");
-                        var stop = response.getInt("stop");
-                        var eventId = response.getInt("eventId");
-
-                        var title = string.Empty;
+                        var epg = new EPGModel();
+                        epg.EventId = response.getInt("eventId");
+                        epg.ChannelId = response.getInt("channelId");
+                        epg.Start = UnixTimeStampToDateTime(response.getInt("start"));
+                        epg.End = UnixTimeStampToDateTime(response.getInt("stop"));
 
                         if (response.containsField("title"))
                         {
-                            title = response.getString("title");
+                            epg.Title = response.getString("title");
                         }
 
-                        int channelId = 0;
-                        if (response.containsField("channelId"))
-                        {
-                            channelId = response.getInt("channelId");
-                        }
-
-                        var summary = string.Empty;
                         if (response.containsField("summary"))
                         {
-                            summary = response.getString("summary");
+                            epg.Summary = response.getString("summary");
                         }
 
-                        var description = string.Empty;
                         if (response.containsField("description"))
                         {
-                            description = response.getString("description");
-                            if (summary == string.Empty)
+                            epg.Description = response.getString("description");
+                            if (epg.Summary == string.Empty)
                             {
-                                summary = description.Replace(Environment.NewLine, " ");
+                                epg.Summary = epg.Description.Replace(Environment.NewLine, " ");
                             }
                         }
 
-                        var epg = new EPGModel() { EventId = eventId, ChannelId = channelId, Title = title, Summary = summary, Description = description, Start = UnixTimeStampToDateTime(start), End = UnixTimeStampToDateTime(stop) };
                         DataStorageClient.EPGAdd(epg);
                         break;
                     }

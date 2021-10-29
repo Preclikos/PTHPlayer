@@ -45,6 +45,26 @@ namespace PTHPlayer.DataStorage.Service
             }
         }
 
+        public void ChannelUpdate(int id, Dictionary<string, object> fieldsToUpdate)
+        {
+            var properties = typeof(ChannelModel).GetProperties();
+            lock (channelLock)
+            {
+                var channelToUpdate = Channels.SingleOrDefault(s => s.Id == id);
+                if (channelToUpdate != null)
+                {
+                    foreach (var field in fieldsToUpdate)
+                    {
+                        var property = properties.SingleOrDefault(s => s.Name == field.Key);
+                        if (property != null)
+                        {
+                            property.SetValue(channelToUpdate, field.Value);
+                        }
+                    }
+                }
+            }
+        }
+
         public void ChannelRemove(int channelId)
         {
             lock (channelLock)
