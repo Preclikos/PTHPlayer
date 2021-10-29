@@ -128,7 +128,10 @@ namespace PTHPlayer.Subtitles.Player
                 CancellationToken.Cancel();
             }
 
-            SubtitlePlayerTask.Wait(5000);
+            if (SubtitlePlayerTask != null)
+            {
+                SubtitlePlayerTask.Wait(5000);
+            }
         }
     }
 }

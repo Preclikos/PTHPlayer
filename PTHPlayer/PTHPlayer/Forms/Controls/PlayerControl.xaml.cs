@@ -49,7 +49,7 @@ namespace PTHPlayer.Forms.Controls
 
         private int ChannelMove(int currentChannel, ChannelMoveDirection channelMove)
         {
-            if(Channels.Count == 0)
+            if (Channels.Count == 0)
             {
                 return currentChannel;
             }
@@ -181,7 +181,6 @@ namespace PTHPlayer.Forms.Controls
                 return;
 
             var channelModel = (ChannelViewModel)e.Item;
-
             VideoPlayerController.Subscription(channelModel.Id);
 
             ((ListView)sender).SelectedItem = null;
@@ -341,6 +340,7 @@ namespace PTHPlayer.Forms.Controls
         {
             if (PlayerViewModel.Id == DataStorage.SelectedChannelId)
             {
+                VideoPlayerController.UnSubscribe();
                 return;
             }
             VideoPlayerController.Subscription(PlayerViewModel.Id);
