@@ -33,6 +33,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+    <ProjectReference Include="..\PTHLogger.Tizen\PTHLogger.Tizen.csproj" />
     <ProjectReference Include="..\PTHLogger.Udp\PTHLogger.Udp.csproj" />
     <ProjectReference Include="..\PTHPlayer\PTHPlayer.csproj" />
   </ItemGroup>

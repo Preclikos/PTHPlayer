@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PTHLogger", "PTHPlayer\PTHL
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PTHLogger.Udp", "PTHPlayer\PTHLogger.Udp\PTHLogger.Udp.csproj", "{C23781BD-95BA-47B0-823B-C79D4119E8B7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PTHLogger.Tizen", "PTHPlayer\PTHLogger.Tizen\PTHLogger.Tizen.csproj", "{DD6CB7CA-214C-4CE3-B07B-79453C9F1F51}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{C23781BD-95BA-47B0-823B-C79D4119E8B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C23781BD-95BA-47B0-823B-C79D4119E8B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C23781BD-95BA-47B0-823B-C79D4119E8B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD6CB7CA-214C-4CE3-B07B-79453C9F1F51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD6CB7CA-214C-4CE3-B07B-79453C9F1F51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD6CB7CA-214C-4CE3-B07B-79453C9F1F51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD6CB7CA-214C-4CE3-B07B-79453C9F1F51}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

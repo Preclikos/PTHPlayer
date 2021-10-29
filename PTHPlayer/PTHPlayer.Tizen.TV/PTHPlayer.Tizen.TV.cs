@@ -1,4 +1,5 @@
 using ElmSharp;
+using PTHLogger.Tizen;
 using PTHLogger.Udp;
 using PTHPlayer.Interfaces;
 using System;
@@ -99,6 +100,8 @@ namespace PTHPlayer
         static void Main(string[] args)
         {
             UdpLoggerManager.Configure();
+            if (!UdpLoggerManager.IsRunning)
+                TizenLoggerManager.Configure();
 
             AppDomain.CurrentDomain.UnhandledException += UnhandledException;
 
