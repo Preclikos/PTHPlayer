@@ -310,25 +310,32 @@ namespace PTHPlayer.HTSP
 
         public void sendMessage(HTSMessage message, HTSResponseHandler responseHandler)
         {
-            // loop the sequence number
-            if (_seq == int.MaxValue)
+            try
             {
-                _seq = int.MinValue;
-            }
-            else
-            {
-                _seq++;
-            }
+                // loop the sequence number
+                if (_seq == int.MaxValue)
+                {
+                    _seq = int.MinValue;
+                }
+                else
+                {
+                    _seq++;
+                }
 
-            // housekeeping verry old response handlers
-            if (_responseHandlers.ContainsKey(_seq))
-            {
-                _responseHandlers.Remove(_seq);
-            }
+                // housekeeping verry old response handlers
+                if (_responseHandlers.ContainsKey(_seq))
+                {
+                    _responseHandlers.Remove(_seq);
+                }
 
-            message.putField("seq", _seq);
-            _messagesForSendQueue.Enqueue(message);
-            _responseHandlers.Add(_seq, responseHandler);
+                message.putField("seq", _seq);
+                _messagesForSendQueue.Enqueue(message);
+                _responseHandlers.Add(_seq, responseHandler);
+            }
+            catch (Exception ex)
+            {
+                OnErrorHandler(new HTSPErrorArgs(ex.Message));
+            }
         }
 
         private void MonitorHandler()

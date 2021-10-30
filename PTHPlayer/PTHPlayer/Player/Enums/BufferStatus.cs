@@ -2,5 +2,7 @@
 {
     public enum BufferStatus
     {
+        Underrun = 0,
+        Overrun = 1
     }
 }

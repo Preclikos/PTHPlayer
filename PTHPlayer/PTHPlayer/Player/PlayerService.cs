@@ -401,14 +401,14 @@ namespace PTHPlayer.VideoPlayer
 
         private void PlayerService_PlayerError(object sender, PlayerErrorEventArgs e)
         {
-            if (e.Type == PlayerErrorType.BufferChange)
+            if (e.Type == PlayerErrorType.BufferChange && e.BufferStatus == BufferStatus.Underrun)
             {
                 if (NativePlayerService.GetPlayerState() == PlayerState.Playing)
                 {
                     NativePlayerService.Pause();
                     DelegatePlayerStateChange(new PlayerStateChangeEventArgs() { State = PlayerState.Paused });
                 }
-                WaitToBuffer = (DateTime.Now + TimeSpan.FromSeconds(1)).Ticks;
+                WaitToBuffer = (DateTime.Now + TimeSpan.FromSeconds(2)).Ticks;
             }
         }
 
