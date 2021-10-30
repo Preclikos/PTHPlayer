@@ -1,7 +1,10 @@
 ﻿using PTHPlayer.Controllers;
+using PTHPlayer.Forms.Languages;
 using PTHPlayer.Forms.Modals.ModalViewModels;
 using PTHPlayer.Interfaces;
 using PTHPlayer.Player.Models;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -57,7 +60,38 @@ namespace PTHPlayer.Forms.Modals
 
         void OnAppearing()
         {
-            AudioSelectionModel.AudioConfig = VideoPlayerController.GetAudioConfigs();
+             VideoPlayerController.GetAudioConfigs();
+
+            var audioViews = new List<AudioViewModel>();
+            var audios = VideoPlayerController.GetAudioConfigs();
+
+            foreach (var audio in audios)
+            {
+                var language = ISO639_2.FromAlpha3(audio.Language);
+
+                audioViews.Add(
+                    new AudioViewModel
+                    {
+                        Index = audio.Index,
+                        Language = language != null ? language.Name : audio.Language.ToUpper(),
+                        Channels = audio.Channels.ToString(),
+                        Codec = audio.Codec.ToString()
+                    });
+            }
+
+            AudioSelectionModel.AudioConfig = audioViews;
+
+            var selectedItem = VideoPlayerController.GetSelectedAudioConfig();
+            if (selectedItem != null)
+            {
+                var selectedView = audioViews.SingleOrDefault(s => s.Index == selectedItem.Index);
+                if (selectedView != null)
+                {
+                    AudioSelectionList.SelectedItem = selectedItem;
+                    AudioSelectionList.SelectedItem = null;
+                }
+            }
+
             MessagingCenter.Subscribe<IKeyEventSender, string>(this, "KeyDown",
              (sender, arg) =>
              {

@@ -1,4 +1,5 @@
 using ElmSharp;
+using PTHLogger;
 using PTHLogger.Tizen;
 using PTHLogger.Udp;
 using PTHPlayer.Interfaces;
@@ -14,7 +15,7 @@ namespace PTHPlayer
 
     class Program : global::Xamarin.Forms.Platform.Tizen.FormsApplication, IKeyEventSender
     {
-
+        
         private const string Tag = "PTHPlayer";
 
         public static Window ParentMainWindow;
@@ -77,17 +78,18 @@ namespace PTHPlayer
 
         private static void UnhandledException(object sender, UnhandledExceptionEventArgs evt)
         {
+            ILogger Logger = LoggerManager.GetInstance().GetLogger(Tag);
             if (evt.ExceptionObject is Exception e)
             {
                 if (e.InnerException != null)
                     e = e.InnerException;
 
-                Log.Error(Tag, e.Message);
-                Log.Error(Tag, e.StackTrace);
+                Logger.Error(Tag, e.Message);
+                Logger.Error(Tag, e.StackTrace);
             }
             else
             {
-                Log.Error(Tag, "Got unhandled exception event: " + evt);
+                Logger.Error(Tag, "Got unhandled exception event: " + evt);
             }
         }
 

@@ -1,9 +1,12 @@
 ﻿
 using PTHPlayer.Controllers;
+using PTHPlayer.Forms.Languages;
 using PTHPlayer.Forms.Modals.ModalViewModels;
 using PTHPlayer.Interfaces;
 using PTHPlayer.Player.Models;
 using PTHPlayer.VideoPlayer.Models;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -48,7 +51,7 @@ namespace PTHPlayer.Forms.Modals
             if (e.Item == null)
                 return;
 
-            var subtitleConfig = (SubtitleConfigModel)e.Item;
+            var subtitleConfig = (SubtitleViewModel)e.Item;
             SubtitleSelectionModel.SubtitleEnabled = true;
             VideoPlayerController.EnableSubtitleTrack(true, subtitleConfig.Index);
             SubtitleEnable.IsToggled = SubtitleSelectionModel.SubtitleEnabled;
@@ -57,10 +60,37 @@ namespace PTHPlayer.Forms.Modals
 
         void OnAppearing()
         {
-            SubtitleSelectionModel.SubtitleConfig = VideoPlayerController.GetSubtitleConfigs();
+            var subtitleViews = new List<SubtitleViewModel>();
+            var subtitles = VideoPlayerController.GetSubtitleConfigs();
+
+            foreach(var subtitle in subtitles)
+            {
+                var language = ISO639_2.FromAlpha3(subtitle.Language);
+
+                subtitleViews.Add(
+                    new SubtitleViewModel
+                    {
+                        Index = subtitle.Index,
+                        Language = language != null ? language.Name : subtitle.Language.ToUpper()
+                    });
+            }
+
+            SubtitleSelectionModel.SubtitleConfig = subtitleViews;
+
             SubtitleSelectionModel.SubtitleEnabled = VideoPlayerController.GetSubtitleEnabled();
 
             SubtitleEnable.IsToggled = SubtitleSelectionModel.SubtitleEnabled;
+
+            var selectedItem = VideoPlayerController.GetSelectedSubtitleConfig();
+            if (selectedItem != null)
+            {
+                var selectedView = subtitleViews.SingleOrDefault(s => s.Index == selectedItem.Index);
+                if (selectedView != null)
+                {
+                    SubtitleSelectionList.SelectedItem = selectedView;
+                    SubtitleSelectionList.SelectedItem = null;
+                }
+            }
 
             MessagingCenter.Subscribe<IKeyEventSender, string>(this, "KeyDown",
              (sender, arg) =>

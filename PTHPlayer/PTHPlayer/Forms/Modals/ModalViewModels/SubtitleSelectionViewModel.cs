@@ -6,11 +6,11 @@ namespace PTHPlayer.Forms.Modals.ModalViewModels
 {
     public class SubtitleSelectionViewModel : ViewModelBase
     {
-        private ICollection<SubtitleConfigModel> subtitleConfig = new List<SubtitleConfigModel>();
+        private ICollection<SubtitleViewModel> subtitleConfig = new List<SubtitleViewModel>();
 
         private bool subtitleEnabled;
 
-        public ICollection<SubtitleConfigModel> SubtitleConfig
+        public ICollection<SubtitleViewModel> SubtitleConfig
         {
             set { SetProperty(ref subtitleConfig, value); }
             get { return subtitleConfig; }

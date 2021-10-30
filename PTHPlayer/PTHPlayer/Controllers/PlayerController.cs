@@ -23,13 +23,13 @@ namespace PTHPlayer.Controllers
 
         DataService DataStorage;
 
-        private HTSPService HTSPClient;
-        private IEventListener EventNotificationListener;
+        HTSPService HTSPClient;
+        IEventListener EventNotificationListener;
 
         PlayerService PlayerService { get; }
         SubtitlePlayer SubtitlePlayer { get; }
 
-        private int SubscriptionId = -1;
+        int SubscriptionId = -1;
 
         TaskCompletionSource<HTSMessage> SubscriptionStart;
         TaskCompletionSource<HTSMessage> SubscriptionSkip;
@@ -171,9 +171,18 @@ namespace PTHPlayer.Controllers
             return PlayerService.GetAudioConfigs();
         }
 
+        public AudioConfigModel GetSelectedAudioConfig()
+        {
+            return PlayerService.GetSelectedAudioConfig();
+        }
+
         public ICollection<SubtitleConfigModel> GetSubtitleConfigs()
         {
             return PlayerService.GetSubtitleConfigs();
+        }
+        public SubtitleConfigModel GetSelectedSubtitleConfig()
+        {
+            return PlayerService.GetSelectedSubtitleConfig();
         }
 
         public void ChangeAudioTrack(int indexId)

@@ -1,0 +1,675 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Abkhaz" xml:space="preserve">
+    <value>Abkhaz</value>
+  </data>
+  <data name="Afar" xml:space="preserve">
+    <value>Afar</value>
+  </data>
+  <data name="Afrikaans" xml:space="preserve">
+    <value>Afrikaans</value>
+  </data>
+  <data name="Akan" xml:space="preserve">
+    <value>Akan</value>
+  </data>
+  <data name="Albanian" xml:space="preserve">
+    <value>Albanian</value>
+  </data>
+  <data name="Amharic" xml:space="preserve">
+    <value>Amharic</value>
+  </data>
+  <data name="Arabic" xml:space="preserve">
+    <value>Arabic</value>
+  </data>
+  <data name="Aragonese" xml:space="preserve">
+    <value>Aragonese</value>
+  </data>
+  <data name="Armenian" xml:space="preserve">
+    <value>Armenian</value>
+  </data>
+  <data name="Assamese" xml:space="preserve">
+    <value>Assamese</value>
+  </data>
+  <data name="Avaric" xml:space="preserve">
+    <value>Avaric</value>
+  </data>
+  <data name="Avestan" xml:space="preserve">
+    <value>Avestan</value>
+  </data>
+  <data name="Aymara" xml:space="preserve">
+    <value>Aymara</value>
+  </data>
+  <data name="Azerbaijani" xml:space="preserve">
+    <value>Azerbaijani</value>
+  </data>
+  <data name="Bambara" xml:space="preserve">
+    <value>Bambara</value>
+  </data>
+  <data name="Bashkir" xml:space="preserve">
+    <value>Bashkir</value>
+  </data>
+  <data name="Basque" xml:space="preserve">
+    <value>Basque</value>
+  </data>
+  <data name="Belarusian" xml:space="preserve">
+    <value>Belarusian</value>
+  </data>
+  <data name="Bengali" xml:space="preserve">
+    <value>Bengali</value>
+  </data>
+  <data name="Bihari" xml:space="preserve">
+    <value>Bihari</value>
+  </data>
+  <data name="Bislama" xml:space="preserve">
+    <value>Bislama</value>
+  </data>
+  <data name="Bosnian" xml:space="preserve">
+    <value>Bosnian</value>
+  </data>
+  <data name="Breton" xml:space="preserve">
+    <value>Breton</value>
+  </data>
+  <data name="Bulgarian" xml:space="preserve">
+    <value>Bulgarian</value>
+  </data>
+  <data name="Burmese" xml:space="preserve">
+    <value>Burmese</value>
+  </data>
+  <data name="Catalan" xml:space="preserve">
+    <value>Catalan</value>
+  </data>
+  <data name="Chamorro" xml:space="preserve">
+    <value>Chamorro</value>
+  </data>
+  <data name="Chechen" xml:space="preserve">
+    <value>Chechen</value>
+  </data>
+  <data name="Chichewa" xml:space="preserve">
+    <value>Chichewa</value>
+  </data>
+  <data name="Chinese" xml:space="preserve">
+    <value>Chinese</value>
+  </data>
+  <data name="ChurchSlavic" xml:space="preserve">
+    <value>Church Slavic</value>
+  </data>
+  <data name="Chuvash" xml:space="preserve">
+    <value>Chuvash</value>
+  </data>
+  <data name="Cornish" xml:space="preserve">
+    <value>Cornish</value>
+  </data>
+  <data name="Corsican" xml:space="preserve">
+    <value>Corsican</value>
+  </data>
+  <data name="Cree" xml:space="preserve">
+    <value>Cree</value>
+  </data>
+  <data name="Croatian" xml:space="preserve">
+    <value>Croatian</value>
+  </data>
+  <data name="Czech" xml:space="preserve">
+    <value>Czech</value>
+  </data>
+  <data name="Danish" xml:space="preserve">
+    <value>Danish</value>
+  </data>
+  <data name="Divehi" xml:space="preserve">
+    <value>Divehi</value>
+  </data>
+  <data name="Dutch" xml:space="preserve">
+    <value>Dutch</value>
+  </data>
+  <data name="Dzongkha" xml:space="preserve">
+    <value>Dzongkha</value>
+  </data>
+  <data name="English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Esperanto" xml:space="preserve">
+    <value>Esperanto</value>
+  </data>
+  <data name="Estonian" xml:space="preserve">
+    <value>Estonian</value>
+  </data>
+  <data name="Ewe" xml:space="preserve">
+    <value>Ewe</value>
+  </data>
+  <data name="Faroese" xml:space="preserve">
+    <value>Faroese</value>
+  </data>
+  <data name="Fijian" xml:space="preserve">
+    <value>Fijian</value>
+  </data>
+  <data name="Finnish" xml:space="preserve">
+    <value>Finnish</value>
+  </data>
+  <data name="French" xml:space="preserve">
+    <value>French</value>
+  </data>
+  <data name="Fulah" xml:space="preserve">
+    <value>Fulah</value>
+  </data>
+  <data name="Gaelic" xml:space="preserve">
+    <value>Gaelic</value>
+  </data>
+  <data name="Galician" xml:space="preserve">
+    <value>Galician</value>
+  </data>
+  <data name="Ganda" xml:space="preserve">
+    <value>Ganda</value>
+  </data>
+  <data name="Georgian" xml:space="preserve">
+    <value>Georgian</value>
+  </data>
+  <data name="German" xml:space="preserve">
+    <value>German</value>
+  </data>
+  <data name="Greek" xml:space="preserve">
+    <value>Greek</value>
+  </data>
+  <data name="Guarani" xml:space="preserve">
+    <value>Guarani</value>
+  </data>
+  <data name="Gujarati" xml:space="preserve">
+    <value>Gujarati</value>
+  </data>
+  <data name="Haitian" xml:space="preserve">
+    <value>Haitian</value>
+  </data>
+  <data name="Hausa" xml:space="preserve">
+    <value>Hausa</value>
+  </data>
+  <data name="Hebrew" xml:space="preserve">
+    <value>Hebrew</value>
+  </data>
+  <data name="Herero" xml:space="preserve">
+    <value>Herero</value>
+  </data>
+  <data name="Hindi" xml:space="preserve">
+    <value>Hindi</value>
+  </data>
+  <data name="HiriMotu" xml:space="preserve">
+    <value>HiriMotu</value>
+  </data>
+  <data name="Hungarian" xml:space="preserve">
+    <value>Hungarian</value>
+  </data>
+  <data name="Icelandic" xml:space="preserve">
+    <value>Icelandic</value>
+  </data>
+  <data name="Ido" xml:space="preserve">
+    <value>Ido</value>
+  </data>
+  <data name="Igbo" xml:space="preserve">
+    <value>Igbo</value>
+  </data>
+  <data name="Indonesian" xml:space="preserve">
+    <value>Indonesian</value>
+  </data>
+  <data name="Interlingua" xml:space="preserve">
+    <value>Interlingua</value>
+  </data>
+  <data name="Interlingue" xml:space="preserve">
+    <value>Interlingue</value>
+  </data>
+  <data name="Inuktitut" xml:space="preserve">
+    <value>Inuktitut</value>
+  </data>
+  <data name="Inupiaq" xml:space="preserve">
+    <value>Inupiaq</value>
+  </data>
+  <data name="Irish" xml:space="preserve">
+    <value>Irish</value>
+  </data>
+  <data name="Italian" xml:space="preserve">
+    <value>Italian</value>
+  </data>
+  <data name="Japanese" xml:space="preserve">
+    <value>Japanese</value>
+  </data>
+  <data name="Javanese" xml:space="preserve">
+    <value>Javanese</value>
+  </data>
+  <data name="Kalaallisut" xml:space="preserve">
+    <value>Kalaallisut</value>
+  </data>
+  <data name="Kannada" xml:space="preserve">
+    <value>Kannada</value>
+  </data>
+  <data name="Kanuri" xml:space="preserve">
+    <value>Kanuri</value>
+  </data>
+  <data name="Kashmiri" xml:space="preserve">
+    <value>Kashmiri</value>
+  </data>
+  <data name="Kazakh" xml:space="preserve">
+    <value>Kazakh</value>
+  </data>
+  <data name="Khmer" xml:space="preserve">
+    <value>Khmer</value>
+  </data>
+  <data name="Kikuyu" xml:space="preserve">
+    <value>Kikuyu</value>
+  </data>
+  <data name="Kinyarwanda" xml:space="preserve">
+    <value>Kinyarwanda</value>
+  </data>
+  <data name="Kirghiz" xml:space="preserve">
+    <value>Kirghiz</value>
+  </data>
+  <data name="Kirundi" xml:space="preserve">
+    <value>Kirundi</value>
+  </data>
+  <data name="Komi" xml:space="preserve">
+    <value>Komi</value>
+  </data>
+  <data name="Kongo" xml:space="preserve">
+    <value>Kongo</value>
+  </data>
+  <data name="Korean" xml:space="preserve">
+    <value>Korean</value>
+  </data>
+  <data name="Kuanyama" xml:space="preserve">
+    <value>Kuanyama</value>
+  </data>
+  <data name="Kurdish" xml:space="preserve">
+    <value>Kurdish</value>
+  </data>
+  <data name="Lao" xml:space="preserve">
+    <value>Lao</value>
+  </data>
+  <data name="Latin" xml:space="preserve">
+    <value>Latin</value>
+  </data>
+  <data name="Latvian" xml:space="preserve">
+    <value>Latvian</value>
+  </data>
+  <data name="Limburgish" xml:space="preserve">
+    <value>Limburgish</value>
+  </data>
+  <data name="Lingala" xml:space="preserve">
+    <value>Lingala</value>
+  </data>
+  <data name="Lithuanian" xml:space="preserve">
+    <value>Lithuanian</value>
+  </data>
+  <data name="LubaKatanga" xml:space="preserve">
+    <value>LubaKatanga</value>
+  </data>
+  <data name="Luxembourgish" xml:space="preserve">
+    <value>Luxembourgish</value>
+  </data>
+  <data name="Macedonian" xml:space="preserve">
+    <value>Macedonian</value>
+  </data>
+  <data name="Malagasy" xml:space="preserve">
+    <value>Malagasy</value>
+  </data>
+  <data name="Malay" xml:space="preserve">
+    <value>Malay</value>
+  </data>
+  <data name="Malayalam" xml:space="preserve">
+    <value>Malayalam</value>
+  </data>
+  <data name="Maltese" xml:space="preserve">
+    <value>Maltese</value>
+  </data>
+  <data name="Manx" xml:space="preserve">
+    <value>Manx</value>
+  </data>
+  <data name="Maori" xml:space="preserve">
+    <value>Maori</value>
+  </data>
+  <data name="Marathi" xml:space="preserve">
+    <value>Marathi</value>
+  </data>
+  <data name="Marshallese" xml:space="preserve">
+    <value>Marshallese</value>
+  </data>
+  <data name="Moldavian" xml:space="preserve">
+    <value>Moldavian</value>
+  </data>
+  <data name="Mongolian" xml:space="preserve">
+    <value>Mongolian</value>
+  </data>
+  <data name="Nauru" xml:space="preserve">
+    <value>Nauru</value>
+  </data>
+  <data name="Navajo" xml:space="preserve">
+    <value>Navajo</value>
+  </data>
+  <data name="Ndonga" xml:space="preserve">
+    <value>Ndonga</value>
+  </data>
+  <data name="Nepali" xml:space="preserve">
+    <value>Nepali</value>
+  </data>
+  <data name="NorthernSami" xml:space="preserve">
+    <value>NorthernSami</value>
+  </data>
+  <data name="NorthNdebele" xml:space="preserve">
+    <value>NorthNdebele</value>
+  </data>
+  <data name="Norwegian" xml:space="preserve">
+    <value>Norwegian</value>
+  </data>
+  <data name="NorwegianBokmal" xml:space="preserve">
+    <value>NorwegianBokmal</value>
+  </data>
+  <data name="NorwegianNynorsk" xml:space="preserve">
+    <value>NorwegianNynorsk</value>
+  </data>
+  <data name="Occitan" xml:space="preserve">
+    <value>Occitan</value>
+  </data>
+  <data name="Ojibwa" xml:space="preserve">
+    <value>Ojibwa</value>
+  </data>
+  <data name="Oriya" xml:space="preserve">
+    <value>Oriya</value>
+  </data>
+  <data name="Oromo" xml:space="preserve">
+    <value>Oromo</value>
+  </data>
+  <data name="Ossetian" xml:space="preserve">
+    <value>Ossetian</value>
+  </data>
+  <data name="Pali" xml:space="preserve">
+    <value>Pali</value>
+  </data>
+  <data name="Panjabi" xml:space="preserve">
+    <value>Panjabi</value>
+  </data>
+  <data name="Pashto" xml:space="preserve">
+    <value>Pashto</value>
+  </data>
+  <data name="Persian" xml:space="preserve">
+    <value>Persian</value>
+  </data>
+  <data name="Polish" xml:space="preserve">
+    <value>Polish</value>
+  </data>
+  <data name="Portuguese" xml:space="preserve">
+    <value>Portuguese</value>
+  </data>
+  <data name="Quechua" xml:space="preserve">
+    <value>Quechua</value>
+  </data>
+  <data name="RaetoRomance" xml:space="preserve">
+    <value>RaetoRomance</value>
+  </data>
+  <data name="Romanian" xml:space="preserve">
+    <value>Romanian</value>
+  </data>
+  <data name="Russian" xml:space="preserve">
+    <value>Russian</value>
+  </data>
+  <data name="Samoan" xml:space="preserve">
+    <value>Samoan</value>
+  </data>
+  <data name="Sango" xml:space="preserve">
+    <value>Sango</value>
+  </data>
+  <data name="Sanskrit" xml:space="preserve">
+    <value>Sanskrit</value>
+  </data>
+  <data name="Sardinian" xml:space="preserve">
+    <value>Sardinian</value>
+  </data>
+  <data name="Serbian" xml:space="preserve">
+    <value>Serbian</value>
+  </data>
+  <data name="Shona" xml:space="preserve">
+    <value>Shona</value>
+  </data>
+  <data name="SichuanYi" xml:space="preserve">
+    <value>SichuanYi</value>
+  </data>
+  <data name="Sindhi" xml:space="preserve">
+    <value>Sindhi</value>
+  </data>
+  <data name="Sinhala" xml:space="preserve">
+    <value>Sinhala</value>
+  </data>
+  <data name="Slovak" xml:space="preserve">
+    <value>Slovak</value>
+  </data>
+  <data name="Slovenian" xml:space="preserve">
+    <value>Slovenian</value>
+  </data>
+  <data name="Somali" xml:space="preserve">
+    <value>Somali</value>
+  </data>
+  <data name="SouthernSotho" xml:space="preserve">
+    <value>SouthernSotho</value>
+  </data>
+  <data name="SouthNdebele" xml:space="preserve">
+    <value>SouthNdebele</value>
+  </data>
+  <data name="Spanish" xml:space="preserve">
+    <value>Spanish</value>
+  </data>
+  <data name="Sundanese" xml:space="preserve">
+    <value>Sundanese</value>
+  </data>
+  <data name="Swahili" xml:space="preserve">
+    <value>Swahili</value>
+  </data>
+  <data name="Swati" xml:space="preserve">
+    <value>Swati</value>
+  </data>
+  <data name="Swedish" xml:space="preserve">
+    <value>Swedish</value>
+  </data>
+  <data name="Tagalog" xml:space="preserve">
+    <value>Tagalog</value>
+  </data>
+  <data name="Tahitian" xml:space="preserve">
+    <value>Tahitian</value>
+  </data>
+  <data name="Tajik" xml:space="preserve">
+    <value>Tajik</value>
+  </data>
+  <data name="Tamil" xml:space="preserve">
+    <value>Tamil</value>
+  </data>
+  <data name="Tatar" xml:space="preserve">
+    <value>Tatar</value>
+  </data>
+  <data name="Telugu" xml:space="preserve">
+    <value>Telugu</value>
+  </data>
+  <data name="Thai" xml:space="preserve">
+    <value>Thai</value>
+  </data>
+  <data name="Tibetan" xml:space="preserve">
+    <value>Tibetan</value>
+  </data>
+  <data name="Tigrinya" xml:space="preserve">
+    <value>Tigrinya</value>
+  </data>
+  <data name="Tonga" xml:space="preserve">
+    <value>Tonga</value>
+  </data>
+  <data name="Tsonga" xml:space="preserve">
+    <value>Tsonga</value>
+  </data>
+  <data name="Tswana" xml:space="preserve">
+    <value>Tswana</value>
+  </data>
+  <data name="Turkish" xml:space="preserve">
+    <value>Turkish</value>
+  </data>
+  <data name="Turkmen" xml:space="preserve">
+    <value>Turkmen</value>
+  </data>
+  <data name="Twi" xml:space="preserve">
+    <value>Twi</value>
+  </data>
+  <data name="Uighur" xml:space="preserve">
+    <value>Uighur</value>
+  </data>
+  <data name="Ukrainian" xml:space="preserve">
+    <value>Ukrainian</value>
+  </data>
+  <data name="Urdu" xml:space="preserve">
+    <value>Urdu</value>
+  </data>
+  <data name="Uzbek" xml:space="preserve">
+    <value>Uzbek</value>
+  </data>
+  <data name="Venda" xml:space="preserve">
+    <value>Venda</value>
+  </data>
+  <data name="Vietnamese" xml:space="preserve">
+    <value>Vietnamese</value>
+  </data>
+  <data name="Volapuk" xml:space="preserve">
+    <value>Volapuk</value>
+  </data>
+  <data name="Walloon" xml:space="preserve">
+    <value>Walloon</value>
+  </data>
+  <data name="Welsh" xml:space="preserve">
+    <value>Welsh</value>
+  </data>
+  <data name="WesternFrisian" xml:space="preserve">
+    <value>WesternFrisian</value>
+  </data>
+  <data name="Wolof" xml:space="preserve">
+    <value>Wolof</value>
+  </data>
+  <data name="Xhosa" xml:space="preserve">
+    <value>Xhosa</value>
+  </data>
+  <data name="Yiddish" xml:space="preserve">
+    <value>Yiddish</value>
+  </data>
+  <data name="Yoruba" xml:space="preserve">
+    <value>Yoruba</value>
+  </data>
+  <data name="Zhuang" xml:space="preserve">
+    <value>Zhuang</value>
+  </data>
+  <data name="Zulu" xml:space="preserve">
+    <value>Zulu</value>
+  </data>
+</root>

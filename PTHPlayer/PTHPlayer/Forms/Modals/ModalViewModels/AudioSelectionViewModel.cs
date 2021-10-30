@@ -6,9 +6,9 @@ namespace PTHPlayer.Forms.Modals.ModalViewModels
 {
     public class AudioSelectionViewModel : ViewModelBase
     {
-        private ICollection<AudioConfigModel> audioConfig = new List<AudioConfigModel>();
+        private ICollection<AudioViewModel> audioConfig = new List<AudioViewModel>();
 
-        public ICollection<AudioConfigModel> AudioConfig
+        public ICollection<AudioViewModel> AudioConfig
         {
             set { SetProperty(ref audioConfig, value); }
             get { return audioConfig; }

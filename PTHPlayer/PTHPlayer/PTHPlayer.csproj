@@ -51,6 +51,11 @@
       <DependentUpon>%(Filename)</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Forms\Resources\ISO639Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ISO639Resources.resx</DependentUpon>
+    </Compile>
     <Compile Update="Forms\Resources\LangResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -97,6 +102,10 @@
     </EmbeddedResource>
     <EmbeddedResource Update="Forms\Modals\NotificationControl.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Forms\Resources\ISO639Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ISO639Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Forms\Resources\LangResources.cs-CZ.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

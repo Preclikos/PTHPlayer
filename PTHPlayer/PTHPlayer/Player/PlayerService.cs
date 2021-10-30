@@ -113,6 +113,16 @@ namespace PTHPlayer.VideoPlayer
             return subtitleConfigs.ToList();
         }
 
+        public AudioConfigModel GetSelectedAudioConfig()
+        {
+            return audioConfig;
+        }
+
+        public SubtitleConfigModel GetSelectedSubtitleConfig()
+        {
+            return subtitleConfig;
+        }
+
         public bool SubtitleEnabled()
         {
             return subtitleConfig.Index != 0;
@@ -388,6 +398,7 @@ namespace PTHPlayer.VideoPlayer
         {
             NativePlayerService.Close();
         }
+
         private void PlayerService_PlayerError(object sender, PlayerErrorEventArgs e)
         {
             if (e.Type == PlayerErrorType.BufferChange)
@@ -395,6 +406,7 @@ namespace PTHPlayer.VideoPlayer
                 if (NativePlayerService.GetPlayerState() == PlayerState.Playing)
                 {
                     NativePlayerService.Pause();
+                    DelegatePlayerStateChange(new PlayerStateChangeEventArgs() { State = PlayerState.Paused });
                 }
                 WaitToBuffer = (DateTime.Now + TimeSpan.FromSeconds(1)).Ticks;
             }

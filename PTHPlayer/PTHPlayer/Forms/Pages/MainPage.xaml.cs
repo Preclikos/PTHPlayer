@@ -124,6 +124,7 @@ namespace PTHPlayer.Forms.Pages
             switch (e.State)
             {
                 case PlayerState.Stop:
+                case PlayerState.Paused:
                     {
                         if (DataStorage.SelectedChannelId == -1)
                         {
