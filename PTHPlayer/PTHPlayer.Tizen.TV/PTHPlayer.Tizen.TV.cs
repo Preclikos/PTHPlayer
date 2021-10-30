@@ -78,18 +78,17 @@ namespace PTHPlayer
 
         private static void UnhandledException(object sender, UnhandledExceptionEventArgs evt)
         {
-            ILogger Logger = LoggerManager.GetInstance().GetLogger(Tag);
             if (evt.ExceptionObject is Exception e)
             {
                 if (e.InnerException != null)
                     e = e.InnerException;
 
-                Logger.Error(Tag, e.Message);
-                Logger.Error(Tag, e.StackTrace);
+                Log.Error(Tag, e.Message);
+                Log.Error(Tag, e.StackTrace);
             }
             else
             {
-                Logger.Error(Tag, "Got unhandled exception event: " + evt);
+                Log.Error(Tag, "Got unhandled exception event: " + evt);
             }
         }
 

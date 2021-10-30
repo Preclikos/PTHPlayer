@@ -2,6 +2,7 @@
 using PTHPlayer.DataStorage.Models;
 using PTHPlayer.DataStorage.Service;
 using PTHPlayer.Enums;
+using PTHPlayer.Event;
 using PTHPlayer.Forms.Modals;
 using PTHPlayer.Forms.ViewModels;
 using PTHPlayer.HTSP.Models;
@@ -22,7 +23,7 @@ namespace PTHPlayer.Forms.Controls
 
         PlayerController VideoPlayerController;
         HTSPController HTSPConnectionController;
-
+        EventService EventNotificationService;
         AudioSelectionControl AudioSelection;
         SubtitleSelectionControl SubtitleSelection;
 
@@ -30,7 +31,7 @@ namespace PTHPlayer.Forms.Controls
         List<ChannelModel> Channels = new List<ChannelModel>();
         List<EPGModel> EPGs = new List<EPGModel>();
 
-        public PlayerControl(DataService dataStorage, PlayerController videoPlayerController, HTSPController hTSPController)
+        public PlayerControl(DataService dataStorage, PlayerController videoPlayerController, HTSPController hTSPController, EventService eventNotificationService)
         {
             InitializeComponent();
 
@@ -38,6 +39,8 @@ namespace PTHPlayer.Forms.Controls
 
             VideoPlayerController = videoPlayerController;
             HTSPConnectionController = hTSPController;
+
+            EventNotificationService = eventNotificationService;
 
             this.BindingContext = PlayerViewModel;
 
@@ -94,84 +97,91 @@ namespace PTHPlayer.Forms.Controls
 
         private void ParseChannelToModel(int id)
         {
-            if (Channels.Count == 0)
+            try
             {
-                return;
+                if (Channels.Count == 0)
+                {
+                    return;
+                }
+
+                var actualDate = DateTime.Now;
+                PlayerViewModel.Time = actualDate.ToString("HH:mm");
+
+                var channel = Channels.FirstOrDefault(f => f.Id == id);
+                if (channel == null)
+                {
+                    channel = Channels.OrderBy(o => o.Number).First();
+                }
+
+                var channelEPGs = EPGs.Where(f => f.ChannelId == channel.Id);
+
+                PlayerViewModel.Id = channel.Id;
+                PlayerViewModel.Number = channel.Number;
+                PlayerViewModel.Label = channel.Label;
+                //PlayerViewModel.EPGModel = channelEPGs;
+
+                if (channelEPGs != null && channelEPGs.Any(f => f.EventId == channel.EventId))
+                {
+                    var epg = channelEPGs.FirstOrDefault(f => f.EventId == channel.EventId);
+
+                    var start = epg.Start.Ticks;
+                    var end = epg.End.Ticks;
+                    var current = actualDate.Ticks;
+
+                    var range = end - start;
+                    var currentOnRange = end - current;
+
+                    var onePercentOnRange = range / 100;
+                    var currentPercent = currentOnRange / onePercentOnRange;
+                    var progressPercent = 1 - currentPercent / (double)100;
+
+                    PlayerViewModel.StartTime = epg.Start.ToString("HH:mm");
+                    PlayerViewModel.EndTime = epg.End.ToString("HH:mm");
+                    PlayerViewModel.Title = epg.Title;
+                    PlayerViewModel.Description = epg.Summary;
+                    PlayerViewModel.FullDescription = epg.Description;
+                    PlayerViewModel.Progress = progressPercent;
+                }
+                else
+                {
+                    PlayerViewModel.StartTime = String.Empty;
+                    PlayerViewModel.EndTime = String.Empty;
+                    PlayerViewModel.Title = String.Empty;
+                    PlayerViewModel.Description = String.Empty;
+                    PlayerViewModel.FullDescription = String.Empty;
+                    PlayerViewModel.Progress = 0;
+                }
+
+                if (PlayerViewModel.Description == String.Empty)
+                {
+                    Separator.IsVisible = false;
+                }
+                else
+                {
+                    Separator.IsVisible = true;
+                }
+
+                if (PlayerViewModel.EndTime == String.Empty)
+                {
+                    EndAt.IsVisible = false;
+                }
+                else
+                {
+                    EndAt.IsVisible = true;
+                }
+
+                if (PlayerViewModel.Id == DataStorage.SelectedChannelId)
+                {
+                    PlayStopButton.ImageSource = ImageSource.FromFile("icons/stop.png");
+                }
+                else
+                {
+                    PlayStopButton.ImageSource = ImageSource.FromFile("icons/multimedia.png");
+                }
             }
-
-            var actualDate = DateTime.Now;
-            PlayerViewModel.Time = actualDate.ToString("HH:mm");
-
-            var channel = Channels.FirstOrDefault(f => f.Id == id);
-            if (channel == null)
+            catch (Exception ex)
             {
-                channel = Channels.OrderBy(o => o.Number).First();
-            }
-
-            var channelEPGs = EPGs.Where(f => f.ChannelId == channel.Id);
-
-            PlayerViewModel.Id = channel.Id;
-            PlayerViewModel.Number = channel.Number;
-            PlayerViewModel.Label = channel.Label;
-            //PlayerViewModel.EPGModel = channelEPGs;
-
-            if (channelEPGs != null && channelEPGs.Any(f => f.EventId == channel.EventId))
-            {
-                var epg = channelEPGs.FirstOrDefault(f => f.EventId == channel.EventId);
-
-                var start = epg.Start.Ticks;
-                var end = epg.End.Ticks;
-                var current = actualDate.Ticks;
-
-                var range = end - start;
-                var currentOnRange = end - current;
-
-                var onePercentOnRange = range / 100;
-                var currentPercent = currentOnRange / onePercentOnRange;
-                var progressPercent = 1 - currentPercent / (double)100;
-
-                PlayerViewModel.StartTime = epg.Start.ToString("HH:mm");
-                PlayerViewModel.EndTime = epg.End.ToString("HH:mm");
-                PlayerViewModel.Title = epg.Title;
-                PlayerViewModel.Description = epg.Summary;
-                PlayerViewModel.FullDescription = epg.Description;
-                PlayerViewModel.Progress = progressPercent;
-            }
-            else
-            {
-                PlayerViewModel.StartTime = String.Empty;
-                PlayerViewModel.EndTime = String.Empty;
-                PlayerViewModel.Title = String.Empty;
-                PlayerViewModel.Description = String.Empty;
-                PlayerViewModel.FullDescription = String.Empty;
-                PlayerViewModel.Progress = 0;
-            }
-
-            if (PlayerViewModel.Description == String.Empty)
-            {
-                Separator.IsVisible = false;
-            }
-            else
-            {
-                Separator.IsVisible = true;
-            }
-
-            if (PlayerViewModel.EndTime == String.Empty)
-            {
-                EndAt.IsVisible = false;
-            }
-            else
-            {
-                EndAt.IsVisible = true;
-            }
-
-            if (PlayerViewModel.Id == DataStorage.SelectedChannelId)
-            {
-                PlayStopButton.ImageSource = ImageSource.FromFile("icons/stop.png");
-            }
-            else
-            {
-                PlayStopButton.ImageSource = ImageSource.FromFile("icons/multimedia.png");
+                EventNotificationService.SendNotification("Channel Parser", ex.Message);
             }
         }
 
