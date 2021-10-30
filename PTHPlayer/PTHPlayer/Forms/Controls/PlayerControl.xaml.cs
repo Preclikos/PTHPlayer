@@ -19,17 +19,17 @@ namespace PTHPlayer.Forms.Controls
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PlayerControl : Grid
     {
-        DataService DataStorage;
+        readonly DataService DataStorage;
+        readonly PlayerController VideoPlayerController;
+        readonly HTSPController HTSPConnectionController;
+        readonly EventService EventNotificationService;
+        readonly AudioSelectionControl AudioSelection;
+        readonly SubtitleSelectionControl SubtitleSelection;
 
-        PlayerController VideoPlayerController;
-        HTSPController HTSPConnectionController;
-        EventService EventNotificationService;
-        AudioSelectionControl AudioSelection;
-        SubtitleSelectionControl SubtitleSelection;
+        readonly PlayerViewModel PlayerViewModel = new PlayerViewModel();
 
-        PlayerViewModel PlayerViewModel = new PlayerViewModel();
-        List<ChannelModel> Channels = new List<ChannelModel>();
-        List<EPGModel> EPGs = new List<EPGModel>();
+        private List<ChannelModel> Channels = new List<ChannelModel>();
+        private List<EPGModel> EPGs = new List<EPGModel>();
 
         public PlayerControl(DataService dataStorage, PlayerController videoPlayerController, HTSPController hTSPController, EventService eventNotificationService)
         {

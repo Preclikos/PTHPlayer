@@ -20,20 +20,19 @@ namespace PTHPlayer.VideoPlayer
         public event EventHandler<PlayerStateChangeEventArgs> PlayerStateChange;
         public event EventHandler<PlayerErrorEventArgs> PlayerError;
 
-        private List<PacketModel> bufferedPackets = new List<PacketModel>();
+        readonly List<PacketModel> bufferedPackets = new List<PacketModel>();
 
         VideoConfigModel videoConfig = new VideoConfigModel();
         AudioConfigModel audioConfig = new AudioConfigModel();
         SubtitleConfigModel subtitleConfig = new SubtitleConfigModel();
 
-        List<AudioConfigModel> audioConfigs = new List<AudioConfigModel>();
-        List<SubtitleConfigModel> subtitleConfigs = new List<SubtitleConfigModel>();
+        readonly List<AudioConfigModel> audioConfigs = new List<AudioConfigModel>();
+        readonly List<SubtitleConfigModel> subtitleConfigs = new List<SubtitleConfigModel>();
 
         private long WaitToBuffer = 0;
 
         public Queue<SubtitleElement> SubtitleElemnts = new Queue<SubtitleElement>();
-
-        IPlayerService NativePlayerService;
+        readonly IPlayerService NativePlayerService;
         public PlayerService()
         {
             NativePlayerService = DependencyService.Get<IPlayerService>();
@@ -148,7 +147,7 @@ namespace PTHPlayer.VideoPlayer
 
                 if (Enum.IsDefined(typeof(VideoCodec), streamType))
                 {
-                    videoConfig.Codec = (int)Enum.Parse(typeof(VideoCodec), streamType);
+                    videoConfig.Codec = (VideoCodec)Enum.Parse(typeof(VideoCodec), streamType);
 
                     videoConfig.Width = stream.getInt("width");
                     videoConfig.Heght = stream.getInt("height");
@@ -165,11 +164,12 @@ namespace PTHPlayer.VideoPlayer
                 if (Enum.IsDefined(typeof(AudioCodec), streamType))
                 {
 
-                    var audio = new AudioConfigModel();
+                    var audio = new AudioConfigModel
+                    {
+                        Codec = (int)Enum.Parse(typeof(AudioCodec), streamType),
 
-                    audio.Codec = (int)Enum.Parse(typeof(AudioCodec), streamType);
-
-                    audio.Language = "unk";
+                        Language = "unk"
+                    };
                     if (stream.containsField("language"))
                     {
                         audio.Language = stream.getString("language");
@@ -187,9 +187,11 @@ namespace PTHPlayer.VideoPlayer
 
                 if (streamType == "DVBSUB")
                 {
-                    var subtitle = new SubtitleConfigModel();
+                    var subtitle = new SubtitleConfigModel
+                    {
+                        Language = "unk"
+                    };
 
-                    subtitle.Language = "unk";
                     if (stream.containsField("language"))
                     {
                         subtitle.Language = stream.getString("language");
@@ -222,7 +224,7 @@ namespace PTHPlayer.VideoPlayer
         public void PushToBuffer(HTSMessage muxPkt)
         {
             var packet = ParsePacket(muxPkt);
-            if (videoConfig.Index != packet.StreamId && audioConfig.Index != packet.StreamId)// && subtitleConfig.Index != packet.StreamId)
+            if (videoConfig.Index != packet.StreamId && audioConfig.Index != packet.StreamId)
             {
                 return;
             }
@@ -334,9 +336,11 @@ namespace PTHPlayer.VideoPlayer
             MemoryStream memStream = new MemoryStream();
             SKManagedWStream wstream = new SKManagedWStream(memStream);
 
-            var subtitleElement = new SubtitleElement();
-            subtitleElement.Pts = packet.PTS;
-            subtitleElement.TimeOut = dvbSub.PageTimeOut();
+            var subtitleElement = new SubtitleElement
+            {
+                Pts = packet.PTS,
+                TimeOut = dvbSub.PageTimeOut()
+            };
 
             if (dvbSub.ContainsData())
             {
@@ -414,11 +418,7 @@ namespace PTHPlayer.VideoPlayer
 
         protected void DelegatePlayerStateChange(PlayerStateChangeEventArgs e)
         {
-            EventHandler<PlayerStateChangeEventArgs> handler = PlayerStateChange;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            PlayerStateChange?.Invoke(this, e);
         }
     }
 }

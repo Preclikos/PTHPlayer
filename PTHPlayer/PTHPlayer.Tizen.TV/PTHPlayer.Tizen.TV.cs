@@ -1,5 +1,4 @@
 using ElmSharp;
-using PTHLogger;
 using PTHLogger.Tizen;
 using PTHLogger.Udp;
 using PTHPlayer.Interfaces;
@@ -8,14 +7,15 @@ using System.Threading.Tasks;
 using Tizen.Applications;
 using Tizen.System;
 using Xamarin.Forms;
+using Xamarin.Forms.Platform.Tizen;
 using Log = Tizen.Log;
 
 namespace PTHPlayer
 {
 
-    class Program : global::Xamarin.Forms.Platform.Tizen.FormsApplication, IKeyEventSender
+    class Program : FormsApplication, IKeyEventSender
     {
-        
+
         private const string Tag = "PTHPlayer";
 
         public static Window ParentMainWindow;

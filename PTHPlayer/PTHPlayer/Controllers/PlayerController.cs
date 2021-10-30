@@ -21,10 +21,9 @@ namespace PTHPlayer.Controllers
     {
         public event EventHandler<PlayerStateChangeEventArgs> PlayerStateChange;
 
-        DataService DataStorage;
-
-        HTSPService HTSPClient;
-        IEventListener EventNotificationListener;
+        readonly DataService DataStorage;
+        readonly HTSPService HTSPClient;
+        readonly IEventListener EventNotificationListener;
 
         PlayerService PlayerService { get; }
         SubtitlePlayer SubtitlePlayer { get; }
@@ -268,11 +267,7 @@ namespace PTHPlayer.Controllers
 
         protected void DelegatePlayerStateChange(object sender, PlayerStateChangeEventArgs e)
         {
-            EventHandler<PlayerStateChangeEventArgs> handler = PlayerStateChange;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            PlayerStateChange?.Invoke(this, e);
         }
 
         protected void DelegatePlayerError(object sender, PlayerErrorEventArgs e)

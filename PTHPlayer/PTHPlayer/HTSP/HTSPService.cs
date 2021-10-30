@@ -41,14 +41,16 @@ namespace PTHPlayer.HTSP
             Random rnd = new Random();
             int subscriptionId = rnd.Next(1, 99999);
 
-            HTSMessage getTicketMessage = new HTSMessage();
-            getTicketMessage.Method = "subscribe";
+            HTSMessage getTicketMessage = new HTSMessage
+            {
+                Method = "subscribe"
+            };
             getTicketMessage.putField("channelId", channelId);
             getTicketMessage.putField("normts", 1);
             getTicketMessage.putField("subscriptionId", subscriptionId);
 
             LoopBackResponseHandler lbrh = new LoopBackResponseHandler();
-            HTPClient.sendMessage(getTicketMessage, lbrh);
+            HTPClient.SendMessage(getTicketMessage, lbrh);
 
             lbrh.getResponse(CancellationToken.None);
 
@@ -57,37 +59,43 @@ namespace PTHPlayer.HTSP
 
         public void UnSubscribe(int subscriptionId)
         {
-            HTSMessage getTicketMessage = new HTSMessage();
-            getTicketMessage.Method = "unsubscribe";
+            HTSMessage getTicketMessage = new HTSMessage
+            {
+                Method = "unsubscribe"
+            };
             getTicketMessage.putField("subscriptionId", subscriptionId);
 
             LoopBackResponseHandler lbrh = new LoopBackResponseHandler();
-            HTPClient.sendMessage(getTicketMessage, lbrh);
+            HTPClient.SendMessage(getTicketMessage, lbrh);
             //lbrh.getResponse();
         }
 
         public void EnableAsyncMetadata()
         {
-            HTSMessage getTicketMessage = new HTSMessage();
-            getTicketMessage.Method = "enableAsyncMetadata";
+            HTSMessage getTicketMessage = new HTSMessage
+            {
+                Method = "enableAsyncMetadata"
+            };
             getTicketMessage.putField("epg", 1);
             DateTime foo = DateTime.UtcNow + TimeSpan.FromHours(4);
             long unixTime = ((DateTimeOffset)foo).ToUnixTimeSeconds();
             getTicketMessage.putField("epgMaxTime", unixTime);
 
             LoopBackResponseHandler lbrh = new LoopBackResponseHandler();
-            HTPClient.sendMessage(getTicketMessage, lbrh);
+            HTPClient.SendMessage(getTicketMessage, lbrh);
 
         }
 
         public void GetEvent(int eventId)
         {
-            HTSMessage getTicketMessage = new HTSMessage();
-            getTicketMessage.Method = "getEvent";
+            HTSMessage getTicketMessage = new HTSMessage
+            {
+                Method = "getEvent"
+            };
             getTicketMessage.putField("eventId", eventId);
 
             LoopBackResponseHandler lbrh = new LoopBackResponseHandler();
-            HTPClient.sendMessage(getTicketMessage, lbrh);
+            HTPClient.SendMessage(getTicketMessage, lbrh);
             lbrh.getResponse(CancellationToken.None);
         }
 

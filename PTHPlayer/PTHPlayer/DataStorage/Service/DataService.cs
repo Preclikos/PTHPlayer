@@ -10,16 +10,15 @@ namespace PTHPlayer.DataStorage.Service
     {
         public int SelectedChannelId = -1;
 
-        private readonly object channelLock = new object();
-        private List<ChannelModel> Channels = new List<ChannelModel>();
+        readonly object channelLock = new object();
+        readonly List<ChannelModel> Channels = new List<ChannelModel>();
 
-        private readonly object epgLock = new object();
-        private List<EPGModel> EPGs = new List<EPGModel>();
+        readonly object epgLock = new object();
+        readonly List<EPGModel> EPGs = new List<EPGModel>();
 
         public string ServerWebRoot;
         public SignalStatusModel SingnalStatus = new SignalStatusModel();
-
-        IDataStorage NativeDataService;
+        readonly IDataStorage NativeDataService;
         public DataService()
         {
             NativeDataService = DependencyService.Get<IDataStorage>();

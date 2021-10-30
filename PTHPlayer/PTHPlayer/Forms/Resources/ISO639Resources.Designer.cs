@@ -22,7 +22,7 @@ namespace PTHPlayer.Forms.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ISO639Resources {
+    public class ISO639Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace PTHPlayer.Forms.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PTHPlayer.Forms.Resources.ISO639Resources", typeof(ISO639Resources).Assembly);
@@ -51,7 +51,7 @@ namespace PTHPlayer.Forms.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Abkhaz.
         /// </summary>
-        internal static string Abkhaz {
+        public static string Abkhaz {
             get {
                 return ResourceManager.GetString("Abkhaz", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Afar.
         /// </summary>
-        internal static string Afar {
+        public static string Afar {
             get {
                 return ResourceManager.GetString("Afar", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Afrikaans.
         /// </summary>
-        internal static string Afrikaans {
+        public static string Afrikaans {
             get {
                 return ResourceManager.GetString("Afrikaans", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Akan.
         /// </summary>
-        internal static string Akan {
+        public static string Akan {
             get {
                 return ResourceManager.GetString("Akan", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Albanian.
         /// </summary>
-        internal static string Albanian {
+        public static string Albanian {
             get {
                 return ResourceManager.GetString("Albanian", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Amharic.
         /// </summary>
-        internal static string Amharic {
+        public static string Amharic {
             get {
                 return ResourceManager.GetString("Amharic", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Arabic.
         /// </summary>
-        internal static string Arabic {
+        public static string Arabic {
             get {
                 return ResourceManager.GetString("Arabic", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Aragonese.
         /// </summary>
-        internal static string Aragonese {
+        public static string Aragonese {
             get {
                 return ResourceManager.GetString("Aragonese", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Armenian.
         /// </summary>
-        internal static string Armenian {
+        public static string Armenian {
             get {
                 return ResourceManager.GetString("Armenian", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Assamese.
         /// </summary>
-        internal static string Assamese {
+        public static string Assamese {
             get {
                 return ResourceManager.GetString("Assamese", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Avaric.
         /// </summary>
-        internal static string Avaric {
+        public static string Avaric {
             get {
                 return ResourceManager.GetString("Avaric", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Avestan.
         /// </summary>
-        internal static string Avestan {
+        public static string Avestan {
             get {
                 return ResourceManager.GetString("Avestan", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Aymara.
         /// </summary>
-        internal static string Aymara {
+        public static string Aymara {
             get {
                 return ResourceManager.GetString("Aymara", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Azerbaijani.
         /// </summary>
-        internal static string Azerbaijani {
+        public static string Azerbaijani {
             get {
                 return ResourceManager.GetString("Azerbaijani", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Bambara.
         /// </summary>
-        internal static string Bambara {
+        public static string Bambara {
             get {
                 return ResourceManager.GetString("Bambara", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Bashkir.
         /// </summary>
-        internal static string Bashkir {
+        public static string Bashkir {
             get {
                 return ResourceManager.GetString("Bashkir", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Basque.
         /// </summary>
-        internal static string Basque {
+        public static string Basque {
             get {
                 return ResourceManager.GetString("Basque", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Belarusian.
         /// </summary>
-        internal static string Belarusian {
+        public static string Belarusian {
             get {
                 return ResourceManager.GetString("Belarusian", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Bengali.
         /// </summary>
-        internal static string Bengali {
+        public static string Bengali {
             get {
                 return ResourceManager.GetString("Bengali", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Bihari.
         /// </summary>
-        internal static string Bihari {
+        public static string Bihari {
             get {
                 return ResourceManager.GetString("Bihari", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Bislama.
         /// </summary>
-        internal static string Bislama {
+        public static string Bislama {
             get {
                 return ResourceManager.GetString("Bislama", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Bosnian.
         /// </summary>
-        internal static string Bosnian {
+        public static string Bosnian {
             get {
                 return ResourceManager.GetString("Bosnian", resourceCulture);
             }
@@ -261,7 +261,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Breton.
         /// </summary>
-        internal static string Breton {
+        public static string Breton {
             get {
                 return ResourceManager.GetString("Breton", resourceCulture);
             }
@@ -270,7 +270,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Bulgarian.
         /// </summary>
-        internal static string Bulgarian {
+        public static string Bulgarian {
             get {
                 return ResourceManager.GetString("Bulgarian", resourceCulture);
             }
@@ -279,7 +279,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Burmese.
         /// </summary>
-        internal static string Burmese {
+        public static string Burmese {
             get {
                 return ResourceManager.GetString("Burmese", resourceCulture);
             }
@@ -288,7 +288,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Catalan.
         /// </summary>
-        internal static string Catalan {
+        public static string Catalan {
             get {
                 return ResourceManager.GetString("Catalan", resourceCulture);
             }
@@ -297,7 +297,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Chamorro.
         /// </summary>
-        internal static string Chamorro {
+        public static string Chamorro {
             get {
                 return ResourceManager.GetString("Chamorro", resourceCulture);
             }
@@ -306,7 +306,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Chechen.
         /// </summary>
-        internal static string Chechen {
+        public static string Chechen {
             get {
                 return ResourceManager.GetString("Chechen", resourceCulture);
             }
@@ -315,7 +315,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Chichewa.
         /// </summary>
-        internal static string Chichewa {
+        public static string Chichewa {
             get {
                 return ResourceManager.GetString("Chichewa", resourceCulture);
             }
@@ -324,7 +324,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Chinese.
         /// </summary>
-        internal static string Chinese {
+        public static string Chinese {
             get {
                 return ResourceManager.GetString("Chinese", resourceCulture);
             }
@@ -333,7 +333,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Church Slavic.
         /// </summary>
-        internal static string ChurchSlavic {
+        public static string ChurchSlavic {
             get {
                 return ResourceManager.GetString("ChurchSlavic", resourceCulture);
             }
@@ -342,7 +342,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Chuvash.
         /// </summary>
-        internal static string Chuvash {
+        public static string Chuvash {
             get {
                 return ResourceManager.GetString("Chuvash", resourceCulture);
             }
@@ -351,7 +351,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Cornish.
         /// </summary>
-        internal static string Cornish {
+        public static string Cornish {
             get {
                 return ResourceManager.GetString("Cornish", resourceCulture);
             }
@@ -360,7 +360,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Corsican.
         /// </summary>
-        internal static string Corsican {
+        public static string Corsican {
             get {
                 return ResourceManager.GetString("Corsican", resourceCulture);
             }
@@ -369,7 +369,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Cree.
         /// </summary>
-        internal static string Cree {
+        public static string Cree {
             get {
                 return ResourceManager.GetString("Cree", resourceCulture);
             }
@@ -378,7 +378,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Croatian.
         /// </summary>
-        internal static string Croatian {
+        public static string Croatian {
             get {
                 return ResourceManager.GetString("Croatian", resourceCulture);
             }
@@ -387,7 +387,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Czech.
         /// </summary>
-        internal static string Czech {
+        public static string Czech {
             get {
                 return ResourceManager.GetString("Czech", resourceCulture);
             }
@@ -396,7 +396,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Danish.
         /// </summary>
-        internal static string Danish {
+        public static string Danish {
             get {
                 return ResourceManager.GetString("Danish", resourceCulture);
             }
@@ -405,7 +405,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Divehi.
         /// </summary>
-        internal static string Divehi {
+        public static string Divehi {
             get {
                 return ResourceManager.GetString("Divehi", resourceCulture);
             }
@@ -414,7 +414,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Dutch.
         /// </summary>
-        internal static string Dutch {
+        public static string Dutch {
             get {
                 return ResourceManager.GetString("Dutch", resourceCulture);
             }
@@ -423,7 +423,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Dzongkha.
         /// </summary>
-        internal static string Dzongkha {
+        public static string Dzongkha {
             get {
                 return ResourceManager.GetString("Dzongkha", resourceCulture);
             }
@@ -432,7 +432,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to English.
         /// </summary>
-        internal static string English {
+        public static string English {
             get {
                 return ResourceManager.GetString("English", resourceCulture);
             }
@@ -441,7 +441,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Esperanto.
         /// </summary>
-        internal static string Esperanto {
+        public static string Esperanto {
             get {
                 return ResourceManager.GetString("Esperanto", resourceCulture);
             }
@@ -450,7 +450,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Estonian.
         /// </summary>
-        internal static string Estonian {
+        public static string Estonian {
             get {
                 return ResourceManager.GetString("Estonian", resourceCulture);
             }
@@ -459,7 +459,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Ewe.
         /// </summary>
-        internal static string Ewe {
+        public static string Ewe {
             get {
                 return ResourceManager.GetString("Ewe", resourceCulture);
             }
@@ -468,7 +468,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Faroese.
         /// </summary>
-        internal static string Faroese {
+        public static string Faroese {
             get {
                 return ResourceManager.GetString("Faroese", resourceCulture);
             }
@@ -477,7 +477,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Fijian.
         /// </summary>
-        internal static string Fijian {
+        public static string Fijian {
             get {
                 return ResourceManager.GetString("Fijian", resourceCulture);
             }
@@ -486,7 +486,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Finnish.
         /// </summary>
-        internal static string Finnish {
+        public static string Finnish {
             get {
                 return ResourceManager.GetString("Finnish", resourceCulture);
             }
@@ -495,7 +495,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to French.
         /// </summary>
-        internal static string French {
+        public static string French {
             get {
                 return ResourceManager.GetString("French", resourceCulture);
             }
@@ -504,7 +504,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Fulah.
         /// </summary>
-        internal static string Fulah {
+        public static string Fulah {
             get {
                 return ResourceManager.GetString("Fulah", resourceCulture);
             }
@@ -513,7 +513,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Gaelic.
         /// </summary>
-        internal static string Gaelic {
+        public static string Gaelic {
             get {
                 return ResourceManager.GetString("Gaelic", resourceCulture);
             }
@@ -522,7 +522,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Galician.
         /// </summary>
-        internal static string Galician {
+        public static string Galician {
             get {
                 return ResourceManager.GetString("Galician", resourceCulture);
             }
@@ -531,7 +531,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Ganda.
         /// </summary>
-        internal static string Ganda {
+        public static string Ganda {
             get {
                 return ResourceManager.GetString("Ganda", resourceCulture);
             }
@@ -540,7 +540,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Georgian.
         /// </summary>
-        internal static string Georgian {
+        public static string Georgian {
             get {
                 return ResourceManager.GetString("Georgian", resourceCulture);
             }
@@ -549,7 +549,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to German.
         /// </summary>
-        internal static string German {
+        public static string German {
             get {
                 return ResourceManager.GetString("German", resourceCulture);
             }
@@ -558,7 +558,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Greek.
         /// </summary>
-        internal static string Greek {
+        public static string Greek {
             get {
                 return ResourceManager.GetString("Greek", resourceCulture);
             }
@@ -567,7 +567,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Guarani.
         /// </summary>
-        internal static string Guarani {
+        public static string Guarani {
             get {
                 return ResourceManager.GetString("Guarani", resourceCulture);
             }
@@ -576,7 +576,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Gujarati.
         /// </summary>
-        internal static string Gujarati {
+        public static string Gujarati {
             get {
                 return ResourceManager.GetString("Gujarati", resourceCulture);
             }
@@ -585,7 +585,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Haitian.
         /// </summary>
-        internal static string Haitian {
+        public static string Haitian {
             get {
                 return ResourceManager.GetString("Haitian", resourceCulture);
             }
@@ -594,7 +594,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Hausa.
         /// </summary>
-        internal static string Hausa {
+        public static string Hausa {
             get {
                 return ResourceManager.GetString("Hausa", resourceCulture);
             }
@@ -603,7 +603,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Hebrew.
         /// </summary>
-        internal static string Hebrew {
+        public static string Hebrew {
             get {
                 return ResourceManager.GetString("Hebrew", resourceCulture);
             }
@@ -612,7 +612,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Herero.
         /// </summary>
-        internal static string Herero {
+        public static string Herero {
             get {
                 return ResourceManager.GetString("Herero", resourceCulture);
             }
@@ -621,7 +621,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Hindi.
         /// </summary>
-        internal static string Hindi {
+        public static string Hindi {
             get {
                 return ResourceManager.GetString("Hindi", resourceCulture);
             }
@@ -630,7 +630,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to HiriMotu.
         /// </summary>
-        internal static string HiriMotu {
+        public static string HiriMotu {
             get {
                 return ResourceManager.GetString("HiriMotu", resourceCulture);
             }
@@ -639,7 +639,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Hungarian.
         /// </summary>
-        internal static string Hungarian {
+        public static string Hungarian {
             get {
                 return ResourceManager.GetString("Hungarian", resourceCulture);
             }
@@ -648,7 +648,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Icelandic.
         /// </summary>
-        internal static string Icelandic {
+        public static string Icelandic {
             get {
                 return ResourceManager.GetString("Icelandic", resourceCulture);
             }
@@ -657,7 +657,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Ido.
         /// </summary>
-        internal static string Ido {
+        public static string Ido {
             get {
                 return ResourceManager.GetString("Ido", resourceCulture);
             }
@@ -666,7 +666,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Igbo.
         /// </summary>
-        internal static string Igbo {
+        public static string Igbo {
             get {
                 return ResourceManager.GetString("Igbo", resourceCulture);
             }
@@ -675,7 +675,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Indonesian.
         /// </summary>
-        internal static string Indonesian {
+        public static string Indonesian {
             get {
                 return ResourceManager.GetString("Indonesian", resourceCulture);
             }
@@ -684,7 +684,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Interlingua.
         /// </summary>
-        internal static string Interlingua {
+        public static string Interlingua {
             get {
                 return ResourceManager.GetString("Interlingua", resourceCulture);
             }
@@ -693,7 +693,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Interlingue.
         /// </summary>
-        internal static string Interlingue {
+        public static string Interlingue {
             get {
                 return ResourceManager.GetString("Interlingue", resourceCulture);
             }
@@ -702,7 +702,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Inuktitut.
         /// </summary>
-        internal static string Inuktitut {
+        public static string Inuktitut {
             get {
                 return ResourceManager.GetString("Inuktitut", resourceCulture);
             }
@@ -711,7 +711,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Inupiaq.
         /// </summary>
-        internal static string Inupiaq {
+        public static string Inupiaq {
             get {
                 return ResourceManager.GetString("Inupiaq", resourceCulture);
             }
@@ -720,7 +720,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Irish.
         /// </summary>
-        internal static string Irish {
+        public static string Irish {
             get {
                 return ResourceManager.GetString("Irish", resourceCulture);
             }
@@ -729,7 +729,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Italian.
         /// </summary>
-        internal static string Italian {
+        public static string Italian {
             get {
                 return ResourceManager.GetString("Italian", resourceCulture);
             }
@@ -738,7 +738,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Japanese.
         /// </summary>
-        internal static string Japanese {
+        public static string Japanese {
             get {
                 return ResourceManager.GetString("Japanese", resourceCulture);
             }
@@ -747,7 +747,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Javanese.
         /// </summary>
-        internal static string Javanese {
+        public static string Javanese {
             get {
                 return ResourceManager.GetString("Javanese", resourceCulture);
             }
@@ -756,7 +756,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Kalaallisut.
         /// </summary>
-        internal static string Kalaallisut {
+        public static string Kalaallisut {
             get {
                 return ResourceManager.GetString("Kalaallisut", resourceCulture);
             }
@@ -765,7 +765,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Kannada.
         /// </summary>
-        internal static string Kannada {
+        public static string Kannada {
             get {
                 return ResourceManager.GetString("Kannada", resourceCulture);
             }
@@ -774,7 +774,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Kanuri.
         /// </summary>
-        internal static string Kanuri {
+        public static string Kanuri {
             get {
                 return ResourceManager.GetString("Kanuri", resourceCulture);
             }
@@ -783,7 +783,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Kashmiri.
         /// </summary>
-        internal static string Kashmiri {
+        public static string Kashmiri {
             get {
                 return ResourceManager.GetString("Kashmiri", resourceCulture);
             }
@@ -792,7 +792,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Kazakh.
         /// </summary>
-        internal static string Kazakh {
+        public static string Kazakh {
             get {
                 return ResourceManager.GetString("Kazakh", resourceCulture);
             }
@@ -801,7 +801,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Khmer.
         /// </summary>
-        internal static string Khmer {
+        public static string Khmer {
             get {
                 return ResourceManager.GetString("Khmer", resourceCulture);
             }
@@ -810,7 +810,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Kikuyu.
         /// </summary>
-        internal static string Kikuyu {
+        public static string Kikuyu {
             get {
                 return ResourceManager.GetString("Kikuyu", resourceCulture);
             }
@@ -819,7 +819,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Kinyarwanda.
         /// </summary>
-        internal static string Kinyarwanda {
+        public static string Kinyarwanda {
             get {
                 return ResourceManager.GetString("Kinyarwanda", resourceCulture);
             }
@@ -828,7 +828,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Kirghiz.
         /// </summary>
-        internal static string Kirghiz {
+        public static string Kirghiz {
             get {
                 return ResourceManager.GetString("Kirghiz", resourceCulture);
             }
@@ -837,7 +837,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Kirundi.
         /// </summary>
-        internal static string Kirundi {
+        public static string Kirundi {
             get {
                 return ResourceManager.GetString("Kirundi", resourceCulture);
             }
@@ -846,7 +846,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Komi.
         /// </summary>
-        internal static string Komi {
+        public static string Komi {
             get {
                 return ResourceManager.GetString("Komi", resourceCulture);
             }
@@ -855,7 +855,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Kongo.
         /// </summary>
-        internal static string Kongo {
+        public static string Kongo {
             get {
                 return ResourceManager.GetString("Kongo", resourceCulture);
             }
@@ -864,7 +864,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Korean.
         /// </summary>
-        internal static string Korean {
+        public static string Korean {
             get {
                 return ResourceManager.GetString("Korean", resourceCulture);
             }
@@ -873,7 +873,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Kuanyama.
         /// </summary>
-        internal static string Kuanyama {
+        public static string Kuanyama {
             get {
                 return ResourceManager.GetString("Kuanyama", resourceCulture);
             }
@@ -882,7 +882,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Kurdish.
         /// </summary>
-        internal static string Kurdish {
+        public static string Kurdish {
             get {
                 return ResourceManager.GetString("Kurdish", resourceCulture);
             }
@@ -891,7 +891,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Lao.
         /// </summary>
-        internal static string Lao {
+        public static string Lao {
             get {
                 return ResourceManager.GetString("Lao", resourceCulture);
             }
@@ -900,7 +900,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Latin.
         /// </summary>
-        internal static string Latin {
+        public static string Latin {
             get {
                 return ResourceManager.GetString("Latin", resourceCulture);
             }
@@ -909,7 +909,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Latvian.
         /// </summary>
-        internal static string Latvian {
+        public static string Latvian {
             get {
                 return ResourceManager.GetString("Latvian", resourceCulture);
             }
@@ -918,7 +918,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Limburgish.
         /// </summary>
-        internal static string Limburgish {
+        public static string Limburgish {
             get {
                 return ResourceManager.GetString("Limburgish", resourceCulture);
             }
@@ -927,7 +927,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Lingala.
         /// </summary>
-        internal static string Lingala {
+        public static string Lingala {
             get {
                 return ResourceManager.GetString("Lingala", resourceCulture);
             }
@@ -936,7 +936,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Lithuanian.
         /// </summary>
-        internal static string Lithuanian {
+        public static string Lithuanian {
             get {
                 return ResourceManager.GetString("Lithuanian", resourceCulture);
             }
@@ -945,7 +945,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to LubaKatanga.
         /// </summary>
-        internal static string LubaKatanga {
+        public static string LubaKatanga {
             get {
                 return ResourceManager.GetString("LubaKatanga", resourceCulture);
             }
@@ -954,7 +954,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Luxembourgish.
         /// </summary>
-        internal static string Luxembourgish {
+        public static string Luxembourgish {
             get {
                 return ResourceManager.GetString("Luxembourgish", resourceCulture);
             }
@@ -963,7 +963,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Macedonian.
         /// </summary>
-        internal static string Macedonian {
+        public static string Macedonian {
             get {
                 return ResourceManager.GetString("Macedonian", resourceCulture);
             }
@@ -972,7 +972,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Malagasy.
         /// </summary>
-        internal static string Malagasy {
+        public static string Malagasy {
             get {
                 return ResourceManager.GetString("Malagasy", resourceCulture);
             }
@@ -981,7 +981,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Malay.
         /// </summary>
-        internal static string Malay {
+        public static string Malay {
             get {
                 return ResourceManager.GetString("Malay", resourceCulture);
             }
@@ -990,7 +990,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Malayalam.
         /// </summary>
-        internal static string Malayalam {
+        public static string Malayalam {
             get {
                 return ResourceManager.GetString("Malayalam", resourceCulture);
             }
@@ -999,7 +999,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Maltese.
         /// </summary>
-        internal static string Maltese {
+        public static string Maltese {
             get {
                 return ResourceManager.GetString("Maltese", resourceCulture);
             }
@@ -1008,7 +1008,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Manx.
         /// </summary>
-        internal static string Manx {
+        public static string Manx {
             get {
                 return ResourceManager.GetString("Manx", resourceCulture);
             }
@@ -1017,7 +1017,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Maori.
         /// </summary>
-        internal static string Maori {
+        public static string Maori {
             get {
                 return ResourceManager.GetString("Maori", resourceCulture);
             }
@@ -1026,7 +1026,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Marathi.
         /// </summary>
-        internal static string Marathi {
+        public static string Marathi {
             get {
                 return ResourceManager.GetString("Marathi", resourceCulture);
             }
@@ -1035,7 +1035,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Marshallese.
         /// </summary>
-        internal static string Marshallese {
+        public static string Marshallese {
             get {
                 return ResourceManager.GetString("Marshallese", resourceCulture);
             }
@@ -1044,7 +1044,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Moldavian.
         /// </summary>
-        internal static string Moldavian {
+        public static string Moldavian {
             get {
                 return ResourceManager.GetString("Moldavian", resourceCulture);
             }
@@ -1053,7 +1053,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Mongolian.
         /// </summary>
-        internal static string Mongolian {
+        public static string Mongolian {
             get {
                 return ResourceManager.GetString("Mongolian", resourceCulture);
             }
@@ -1062,7 +1062,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Nauru.
         /// </summary>
-        internal static string Nauru {
+        public static string Nauru {
             get {
                 return ResourceManager.GetString("Nauru", resourceCulture);
             }
@@ -1071,7 +1071,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Navajo.
         /// </summary>
-        internal static string Navajo {
+        public static string Navajo {
             get {
                 return ResourceManager.GetString("Navajo", resourceCulture);
             }
@@ -1080,7 +1080,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Ndonga.
         /// </summary>
-        internal static string Ndonga {
+        public static string Ndonga {
             get {
                 return ResourceManager.GetString("Ndonga", resourceCulture);
             }
@@ -1089,7 +1089,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Nepali.
         /// </summary>
-        internal static string Nepali {
+        public static string Nepali {
             get {
                 return ResourceManager.GetString("Nepali", resourceCulture);
             }
@@ -1098,7 +1098,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to NorthernSami.
         /// </summary>
-        internal static string NorthernSami {
+        public static string NorthernSami {
             get {
                 return ResourceManager.GetString("NorthernSami", resourceCulture);
             }
@@ -1107,7 +1107,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to NorthNdebele.
         /// </summary>
-        internal static string NorthNdebele {
+        public static string NorthNdebele {
             get {
                 return ResourceManager.GetString("NorthNdebele", resourceCulture);
             }
@@ -1116,7 +1116,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Norwegian.
         /// </summary>
-        internal static string Norwegian {
+        public static string Norwegian {
             get {
                 return ResourceManager.GetString("Norwegian", resourceCulture);
             }
@@ -1125,7 +1125,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to NorwegianBokmal.
         /// </summary>
-        internal static string NorwegianBokmal {
+        public static string NorwegianBokmal {
             get {
                 return ResourceManager.GetString("NorwegianBokmal", resourceCulture);
             }
@@ -1134,7 +1134,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to NorwegianNynorsk.
         /// </summary>
-        internal static string NorwegianNynorsk {
+        public static string NorwegianNynorsk {
             get {
                 return ResourceManager.GetString("NorwegianNynorsk", resourceCulture);
             }
@@ -1143,7 +1143,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Occitan.
         /// </summary>
-        internal static string Occitan {
+        public static string Occitan {
             get {
                 return ResourceManager.GetString("Occitan", resourceCulture);
             }
@@ -1152,7 +1152,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Ojibwa.
         /// </summary>
-        internal static string Ojibwa {
+        public static string Ojibwa {
             get {
                 return ResourceManager.GetString("Ojibwa", resourceCulture);
             }
@@ -1161,7 +1161,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Oriya.
         /// </summary>
-        internal static string Oriya {
+        public static string Oriya {
             get {
                 return ResourceManager.GetString("Oriya", resourceCulture);
             }
@@ -1170,7 +1170,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Oromo.
         /// </summary>
-        internal static string Oromo {
+        public static string Oromo {
             get {
                 return ResourceManager.GetString("Oromo", resourceCulture);
             }
@@ -1179,7 +1179,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Ossetian.
         /// </summary>
-        internal static string Ossetian {
+        public static string Ossetian {
             get {
                 return ResourceManager.GetString("Ossetian", resourceCulture);
             }
@@ -1188,7 +1188,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Pali.
         /// </summary>
-        internal static string Pali {
+        public static string Pali {
             get {
                 return ResourceManager.GetString("Pali", resourceCulture);
             }
@@ -1197,7 +1197,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Panjabi.
         /// </summary>
-        internal static string Panjabi {
+        public static string Panjabi {
             get {
                 return ResourceManager.GetString("Panjabi", resourceCulture);
             }
@@ -1206,7 +1206,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Pashto.
         /// </summary>
-        internal static string Pashto {
+        public static string Pashto {
             get {
                 return ResourceManager.GetString("Pashto", resourceCulture);
             }
@@ -1215,7 +1215,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Persian.
         /// </summary>
-        internal static string Persian {
+        public static string Persian {
             get {
                 return ResourceManager.GetString("Persian", resourceCulture);
             }
@@ -1224,7 +1224,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Polish.
         /// </summary>
-        internal static string Polish {
+        public static string Polish {
             get {
                 return ResourceManager.GetString("Polish", resourceCulture);
             }
@@ -1233,7 +1233,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Portuguese.
         /// </summary>
-        internal static string Portuguese {
+        public static string Portuguese {
             get {
                 return ResourceManager.GetString("Portuguese", resourceCulture);
             }
@@ -1242,7 +1242,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Quechua.
         /// </summary>
-        internal static string Quechua {
+        public static string Quechua {
             get {
                 return ResourceManager.GetString("Quechua", resourceCulture);
             }
@@ -1251,7 +1251,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to RaetoRomance.
         /// </summary>
-        internal static string RaetoRomance {
+        public static string RaetoRomance {
             get {
                 return ResourceManager.GetString("RaetoRomance", resourceCulture);
             }
@@ -1260,7 +1260,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Romanian.
         /// </summary>
-        internal static string Romanian {
+        public static string Romanian {
             get {
                 return ResourceManager.GetString("Romanian", resourceCulture);
             }
@@ -1269,7 +1269,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Russian.
         /// </summary>
-        internal static string Russian {
+        public static string Russian {
             get {
                 return ResourceManager.GetString("Russian", resourceCulture);
             }
@@ -1278,7 +1278,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Samoan.
         /// </summary>
-        internal static string Samoan {
+        public static string Samoan {
             get {
                 return ResourceManager.GetString("Samoan", resourceCulture);
             }
@@ -1287,7 +1287,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Sango.
         /// </summary>
-        internal static string Sango {
+        public static string Sango {
             get {
                 return ResourceManager.GetString("Sango", resourceCulture);
             }
@@ -1296,7 +1296,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Sanskrit.
         /// </summary>
-        internal static string Sanskrit {
+        public static string Sanskrit {
             get {
                 return ResourceManager.GetString("Sanskrit", resourceCulture);
             }
@@ -1305,7 +1305,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Sardinian.
         /// </summary>
-        internal static string Sardinian {
+        public static string Sardinian {
             get {
                 return ResourceManager.GetString("Sardinian", resourceCulture);
             }
@@ -1314,7 +1314,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Serbian.
         /// </summary>
-        internal static string Serbian {
+        public static string Serbian {
             get {
                 return ResourceManager.GetString("Serbian", resourceCulture);
             }
@@ -1323,7 +1323,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Shona.
         /// </summary>
-        internal static string Shona {
+        public static string Shona {
             get {
                 return ResourceManager.GetString("Shona", resourceCulture);
             }
@@ -1332,7 +1332,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to SichuanYi.
         /// </summary>
-        internal static string SichuanYi {
+        public static string SichuanYi {
             get {
                 return ResourceManager.GetString("SichuanYi", resourceCulture);
             }
@@ -1341,7 +1341,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Sindhi.
         /// </summary>
-        internal static string Sindhi {
+        public static string Sindhi {
             get {
                 return ResourceManager.GetString("Sindhi", resourceCulture);
             }
@@ -1350,7 +1350,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Sinhala.
         /// </summary>
-        internal static string Sinhala {
+        public static string Sinhala {
             get {
                 return ResourceManager.GetString("Sinhala", resourceCulture);
             }
@@ -1359,7 +1359,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Slovak.
         /// </summary>
-        internal static string Slovak {
+        public static string Slovak {
             get {
                 return ResourceManager.GetString("Slovak", resourceCulture);
             }
@@ -1368,7 +1368,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Slovenian.
         /// </summary>
-        internal static string Slovenian {
+        public static string Slovenian {
             get {
                 return ResourceManager.GetString("Slovenian", resourceCulture);
             }
@@ -1377,7 +1377,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Somali.
         /// </summary>
-        internal static string Somali {
+        public static string Somali {
             get {
                 return ResourceManager.GetString("Somali", resourceCulture);
             }
@@ -1386,7 +1386,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to SouthernSotho.
         /// </summary>
-        internal static string SouthernSotho {
+        public static string SouthernSotho {
             get {
                 return ResourceManager.GetString("SouthernSotho", resourceCulture);
             }
@@ -1395,7 +1395,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to SouthNdebele.
         /// </summary>
-        internal static string SouthNdebele {
+        public static string SouthNdebele {
             get {
                 return ResourceManager.GetString("SouthNdebele", resourceCulture);
             }
@@ -1404,7 +1404,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Spanish.
         /// </summary>
-        internal static string Spanish {
+        public static string Spanish {
             get {
                 return ResourceManager.GetString("Spanish", resourceCulture);
             }
@@ -1413,7 +1413,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Sundanese.
         /// </summary>
-        internal static string Sundanese {
+        public static string Sundanese {
             get {
                 return ResourceManager.GetString("Sundanese", resourceCulture);
             }
@@ -1422,7 +1422,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Swahili.
         /// </summary>
-        internal static string Swahili {
+        public static string Swahili {
             get {
                 return ResourceManager.GetString("Swahili", resourceCulture);
             }
@@ -1431,7 +1431,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Swati.
         /// </summary>
-        internal static string Swati {
+        public static string Swati {
             get {
                 return ResourceManager.GetString("Swati", resourceCulture);
             }
@@ -1440,7 +1440,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Swedish.
         /// </summary>
-        internal static string Swedish {
+        public static string Swedish {
             get {
                 return ResourceManager.GetString("Swedish", resourceCulture);
             }
@@ -1449,7 +1449,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Tagalog.
         /// </summary>
-        internal static string Tagalog {
+        public static string Tagalog {
             get {
                 return ResourceManager.GetString("Tagalog", resourceCulture);
             }
@@ -1458,7 +1458,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Tahitian.
         /// </summary>
-        internal static string Tahitian {
+        public static string Tahitian {
             get {
                 return ResourceManager.GetString("Tahitian", resourceCulture);
             }
@@ -1467,7 +1467,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Tajik.
         /// </summary>
-        internal static string Tajik {
+        public static string Tajik {
             get {
                 return ResourceManager.GetString("Tajik", resourceCulture);
             }
@@ -1476,7 +1476,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Tamil.
         /// </summary>
-        internal static string Tamil {
+        public static string Tamil {
             get {
                 return ResourceManager.GetString("Tamil", resourceCulture);
             }
@@ -1485,7 +1485,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Tatar.
         /// </summary>
-        internal static string Tatar {
+        public static string Tatar {
             get {
                 return ResourceManager.GetString("Tatar", resourceCulture);
             }
@@ -1494,7 +1494,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Telugu.
         /// </summary>
-        internal static string Telugu {
+        public static string Telugu {
             get {
                 return ResourceManager.GetString("Telugu", resourceCulture);
             }
@@ -1503,7 +1503,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Thai.
         /// </summary>
-        internal static string Thai {
+        public static string Thai {
             get {
                 return ResourceManager.GetString("Thai", resourceCulture);
             }
@@ -1512,7 +1512,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Tibetan.
         /// </summary>
-        internal static string Tibetan {
+        public static string Tibetan {
             get {
                 return ResourceManager.GetString("Tibetan", resourceCulture);
             }
@@ -1521,7 +1521,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Tigrinya.
         /// </summary>
-        internal static string Tigrinya {
+        public static string Tigrinya {
             get {
                 return ResourceManager.GetString("Tigrinya", resourceCulture);
             }
@@ -1530,7 +1530,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Tonga.
         /// </summary>
-        internal static string Tonga {
+        public static string Tonga {
             get {
                 return ResourceManager.GetString("Tonga", resourceCulture);
             }
@@ -1539,7 +1539,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Tsonga.
         /// </summary>
-        internal static string Tsonga {
+        public static string Tsonga {
             get {
                 return ResourceManager.GetString("Tsonga", resourceCulture);
             }
@@ -1548,7 +1548,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Tswana.
         /// </summary>
-        internal static string Tswana {
+        public static string Tswana {
             get {
                 return ResourceManager.GetString("Tswana", resourceCulture);
             }
@@ -1557,7 +1557,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Turkish.
         /// </summary>
-        internal static string Turkish {
+        public static string Turkish {
             get {
                 return ResourceManager.GetString("Turkish", resourceCulture);
             }
@@ -1566,7 +1566,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Turkmen.
         /// </summary>
-        internal static string Turkmen {
+        public static string Turkmen {
             get {
                 return ResourceManager.GetString("Turkmen", resourceCulture);
             }
@@ -1575,7 +1575,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Twi.
         /// </summary>
-        internal static string Twi {
+        public static string Twi {
             get {
                 return ResourceManager.GetString("Twi", resourceCulture);
             }
@@ -1584,7 +1584,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Uighur.
         /// </summary>
-        internal static string Uighur {
+        public static string Uighur {
             get {
                 return ResourceManager.GetString("Uighur", resourceCulture);
             }
@@ -1593,7 +1593,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Ukrainian.
         /// </summary>
-        internal static string Ukrainian {
+        public static string Ukrainian {
             get {
                 return ResourceManager.GetString("Ukrainian", resourceCulture);
             }
@@ -1602,7 +1602,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Urdu.
         /// </summary>
-        internal static string Urdu {
+        public static string Urdu {
             get {
                 return ResourceManager.GetString("Urdu", resourceCulture);
             }
@@ -1611,7 +1611,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Uzbek.
         /// </summary>
-        internal static string Uzbek {
+        public static string Uzbek {
             get {
                 return ResourceManager.GetString("Uzbek", resourceCulture);
             }
@@ -1620,7 +1620,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Venda.
         /// </summary>
-        internal static string Venda {
+        public static string Venda {
             get {
                 return ResourceManager.GetString("Venda", resourceCulture);
             }
@@ -1629,7 +1629,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Vietnamese.
         /// </summary>
-        internal static string Vietnamese {
+        public static string Vietnamese {
             get {
                 return ResourceManager.GetString("Vietnamese", resourceCulture);
             }
@@ -1638,7 +1638,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Volapuk.
         /// </summary>
-        internal static string Volapuk {
+        public static string Volapuk {
             get {
                 return ResourceManager.GetString("Volapuk", resourceCulture);
             }
@@ -1647,7 +1647,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Walloon.
         /// </summary>
-        internal static string Walloon {
+        public static string Walloon {
             get {
                 return ResourceManager.GetString("Walloon", resourceCulture);
             }
@@ -1656,7 +1656,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Welsh.
         /// </summary>
-        internal static string Welsh {
+        public static string Welsh {
             get {
                 return ResourceManager.GetString("Welsh", resourceCulture);
             }
@@ -1665,7 +1665,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to WesternFrisian.
         /// </summary>
-        internal static string WesternFrisian {
+        public static string WesternFrisian {
             get {
                 return ResourceManager.GetString("WesternFrisian", resourceCulture);
             }
@@ -1674,7 +1674,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Wolof.
         /// </summary>
-        internal static string Wolof {
+        public static string Wolof {
             get {
                 return ResourceManager.GetString("Wolof", resourceCulture);
             }
@@ -1683,7 +1683,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Xhosa.
         /// </summary>
-        internal static string Xhosa {
+        public static string Xhosa {
             get {
                 return ResourceManager.GetString("Xhosa", resourceCulture);
             }
@@ -1692,7 +1692,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Yiddish.
         /// </summary>
-        internal static string Yiddish {
+        public static string Yiddish {
             get {
                 return ResourceManager.GetString("Yiddish", resourceCulture);
             }
@@ -1701,7 +1701,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Yoruba.
         /// </summary>
-        internal static string Yoruba {
+        public static string Yoruba {
             get {
                 return ResourceManager.GetString("Yoruba", resourceCulture);
             }
@@ -1710,7 +1710,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Zhuang.
         /// </summary>
-        internal static string Zhuang {
+        public static string Zhuang {
             get {
                 return ResourceManager.GetString("Zhuang", resourceCulture);
             }
@@ -1719,7 +1719,7 @@ namespace PTHPlayer.Forms.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Zulu.
         /// </summary>
-        internal static string Zulu {
+        public static string Zulu {
             get {
                 return ResourceManager.GetString("Zulu", resourceCulture);
             }

@@ -11,12 +11,12 @@ namespace PTHPlayer.HTSP.Listeners
 {
     public class HTSPListener : HTSConnectionListener
     {
-        private DataService DataStorageClient;
+        readonly DataService DataStorageClient;
 
-        private IEventListener EvenetNotificationListener;
+        readonly IEventListener EvenetNotificationListener;
 
-        private IPlayerListener SubcriptionListener;
-        private IHTSPListener HTSPControllerListener;
+        readonly IPlayerListener SubcriptionListener;
+        readonly IHTSPListener HTSPControllerListener;
 
         public HTSPListener(DataService dataStorageClient, IPlayerListener subscriptionListener, IHTSPListener hTSPListener, IEventListener evenetNotificationListener)
         {
@@ -59,11 +59,13 @@ namespace PTHPlayer.HTSP.Listeners
                     }
                 case "channelAdd":
                     {
-                        var channel = new ChannelModel();
-                        channel.Id = response.getInt("channelId");
+                        var channel = new ChannelModel
+                        {
+                            Id = response.getInt("channelId"),
 
-                        channel.Label = response.getString("channelName");
-                        channel.Number = response.getInt("channelNumber");
+                            Label = response.getString("channelName"),
+                            Number = response.getInt("channelNumber")
+                        };
 
                         if (response.containsField("eventId"))
                         {
@@ -125,11 +127,13 @@ namespace PTHPlayer.HTSP.Listeners
                     }
                 case "eventAdd":
                     {
-                        var epg = new EPGModel();
-                        epg.EventId = response.getInt("eventId");
-                        epg.ChannelId = response.getInt("channelId");
-                        epg.Start = UnixTimeStampToDateTime(response.getInt("start"));
-                        epg.End = UnixTimeStampToDateTime(response.getInt("stop"));
+                        var epg = new EPGModel
+                        {
+                            EventId = response.getInt("eventId"),
+                            ChannelId = response.getInt("channelId"),
+                            Start = UnixTimeStampToDateTime(response.getInt("start")),
+                            End = UnixTimeStampToDateTime(response.getInt("stop"))
+                        };
 
                         if (response.containsField("title"))
                         {

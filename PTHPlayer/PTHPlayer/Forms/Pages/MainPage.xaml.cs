@@ -16,15 +16,15 @@ namespace PTHPlayer.Forms.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : ContentPage
     {
-        private DataService DataStorage;
-        private EventService EventNotificationService;
+        readonly DataService DataStorage;
+        readonly EventService EventNotificationService;
 
-        private PlayerController VideoPlayerController;
-        private HTSPController HTSPConnectionController;
+        readonly PlayerController VideoPlayerController;
+        readonly HTSPController HTSPConnectionController;
 
-        private PlayerControl VideoPlayerControl;
-        private ChannelControl ChannelSelectionControl;
-        private EPGControl EPGListControl;
+        readonly PlayerControl VideoPlayerControl;
+        readonly ChannelControl ChannelSelectionControl;
+        readonly EPGControl EPGListControl;
 
         public MainPage(DataService dataStorage, PlayerController videoPlayerController, HTSPController hTSPController, EventService eventNotificationService)
         {

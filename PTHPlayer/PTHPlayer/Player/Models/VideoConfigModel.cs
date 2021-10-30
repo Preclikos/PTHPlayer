@@ -1,9 +1,11 @@
-﻿namespace PTHPlayer.Player.Models
+﻿using PTHPlayer.Player.Enums;
+
+namespace PTHPlayer.Player.Models
 {
     public class VideoConfigModel
     {
         public int Index { get; set; }
-        public int Codec { get; set; }
+        public VideoCodec Codec { get; set; }
         public int Width { get; set; }
         public int Heght { get; set; }
         public byte[] CodecData { get; set; }

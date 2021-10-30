@@ -11,11 +11,11 @@ namespace PTHPlayer.Controllers
 {
     public class HTSPController : IHTSPListener
     {
-        private HTSPService HTSPClient;
-        private DataService DataStorage;
-        private IEventListener EventNotificationListener;
+        readonly HTSPService HTSPClient;
+        readonly DataService DataStorage;
+        readonly IEventListener EventNotificationListener;
 
-        private HTSPListener HTSListener { get; set; }
+        HTSPListener HTSListener { get; set; }
 
         public event EventHandler<ChannelUpdateEventArgs> ChannelUpdateEvent;
 
@@ -139,11 +139,7 @@ namespace PTHPlayer.Controllers
 
         protected void DelegateChannelUpdate(object sender, ChannelUpdateEventArgs e)
         {
-            EventHandler<ChannelUpdateEventArgs> handler = ChannelUpdateEvent;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            ChannelUpdateEvent?.Invoke(this, e);
         }
 
         public void ChannelUpdate(int channelId)

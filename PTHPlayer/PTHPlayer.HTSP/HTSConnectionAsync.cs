@@ -74,20 +74,12 @@ namespace PTHPlayer.HTSP
 
         protected virtual void OnConnectionStateChange(HTSPConnectionStateChangeArgs e)
         {
-            EventHandler<HTSPConnectionStateChangeArgs> handler = ConnectionStateChange;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            ConnectionStateChange?.Invoke(this, e);
         }
 
         protected virtual void OnErrorHandler(HTSPErrorArgs e)
         {
-            EventHandler<HTSPErrorArgs> handler = ErrorHandler;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            ErrorHandler?.Invoke(this, e);
         }
 
         public HTSConnectionAsync(HTSConnectionListener listener, String clientName, String clientVersion)
@@ -175,8 +167,7 @@ namespace PTHPlayer.HTSP
 
             try
             {
-                IPAddress ipAddress;
-                if (!IPAddress.TryParse(_hostName, out ipAddress))
+                if (!IPAddress.TryParse(_hostName, out IPAddress ipAddress))
                 {
                     // no IP --> ask DNS
                     IPHostEntry ipHostInfo = Dns.GetHostEntry(_hostName);
@@ -185,9 +176,11 @@ namespace PTHPlayer.HTSP
 
                 IPEndPoint remoteEP = new IPEndPoint(ipAddress, _port);
 
-                _socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                _socket.ReceiveTimeout = 2000;
-                _socket.SendTimeout = 2000;
+                _socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp)
+                {
+                    ReceiveTimeout = 2000,
+                    SendTimeout = 2000
+                };
 
                 IAsyncResult result = _socket.BeginConnect(remoteEP, null, null);
 
@@ -229,15 +222,18 @@ namespace PTHPlayer.HTSP
 
             Logger.Info("Authentication Start");
 
-            HTSMessage helloMessage = new HTSMessage();
-            helloMessage.Method = "hello";
+            HTSMessage helloMessage = new HTSMessage
+            {
+                Method = "hello"
+            };
+
             helloMessage.putField("clientname", _clientName);
             helloMessage.putField("clientversion", _clientVersion);
             helloMessage.putField("htspversion", HTSMessage.HTSP_VERSION);
             helloMessage.putField("username", username);
 
             LoopBackResponseHandler loopBackResponseHandler = new LoopBackResponseHandler();
-            sendMessage(helloMessage, loopBackResponseHandler);
+            SendMessage(helloMessage, loopBackResponseHandler);
             HTSMessage helloResponse = loopBackResponseHandler.getResponse(cancellationToken);
             if (helloResponse != null)
             {
@@ -268,7 +264,7 @@ namespace PTHPlayer.HTSP
                     _serverversion = "n/a";
                 }
 
-                byte[] salt = null;
+                byte[] salt;
                 if (helloResponse.containsField("challenge"))
                 {
                     salt = helloResponse.getByteArray("challenge");
@@ -279,11 +275,14 @@ namespace PTHPlayer.HTSP
                 }
 
                 byte[] digest = SHA1helper.GenerateSaltedSHA1(password, salt);
-                HTSMessage authMessage = new HTSMessage();
-                authMessage.Method = "authenticate";
+                HTSMessage authMessage = new HTSMessage
+                {
+                    Method = "authenticate"
+                };
+
                 authMessage.putField("username", username);
                 authMessage.putField("digest", digest);
-                sendMessage(authMessage, loopBackResponseHandler);
+                SendMessage(authMessage, loopBackResponseHandler);
                 HTSMessage authResponse = loopBackResponseHandler.getResponse(cancellationToken);
                 if (authResponse != null)
                 {
@@ -293,22 +292,22 @@ namespace PTHPlayer.HTSP
             return false;
         }
 
-        public int getServerProtocolVersion()
+        public int GetServerProtocolVersion()
         {
             return _serverProtocolVersion;
         }
 
-        public string getServername()
+        public string GetServername()
         {
             return _servername;
         }
 
-        public string getServerversion()
+        public string GetServerversion()
         {
             return _serverversion;
         }
 
-        public void sendMessage(HTSMessage message, HTSResponseHandler responseHandler)
+        public void SendMessage(HTSMessage message, HTSResponseHandler responseHandler)
         {
             try
             {
@@ -347,7 +346,7 @@ namespace PTHPlayer.HTSP
                     var receiveDiff = DateTime.UtcNow - LastValidPacketReceived;
                     var timeOutSpan = TimeSpan.FromSeconds(3);
 
-                    var connState = _socket != null ? _socket.Connected : false;
+                    var connState = _socket != null && _socket.Connected;
                     var senderTimeOut = sendTimer.Elapsed > timeOutSpan;
                     var subscriptionTimeOut = isSubscribtionStart && receiveDiff > timeOutSpan;
 
@@ -440,7 +439,7 @@ namespace PTHPlayer.HTSP
                 }
                 catch (SocketException ex)
                 {
-                    OnErrorHandler(new HTSPErrorArgs());
+                    OnErrorHandler(new HTSPErrorArgs(ex.Message));
                     _connected = false;
                 }
                 catch (Exception ex)

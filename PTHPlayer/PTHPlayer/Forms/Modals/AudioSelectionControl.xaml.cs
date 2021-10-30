@@ -14,9 +14,9 @@ namespace PTHPlayer.Forms.Modals
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AudioSelectionControl : StackLayout
     {
-        PlayerController VideoPlayerController;
+        readonly PlayerController VideoPlayerController;
 
-        private AudioSelectionViewModel AudioSelectionModel;
+        readonly AudioSelectionViewModel AudioSelectionModel;
         public AudioSelectionControl(PlayerController videoPlayerController)
         {
             InitializeComponent();

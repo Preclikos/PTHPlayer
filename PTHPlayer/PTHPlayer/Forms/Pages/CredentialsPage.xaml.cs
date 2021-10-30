@@ -11,8 +11,8 @@ namespace PTHPlayer.Forms.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class CredentialsPage : ContentPage
     {
-        DataService DataStorageService;
-        HTSPController HTSPConnectionController;
+        readonly DataService DataStorageService;
+        readonly HTSPController HTSPConnectionController;
 
         public CredentialsPage(DataService dataService, HTSPController hTSPConnectionController, bool invalidLogin = false)
         {
@@ -40,8 +40,7 @@ namespace PTHPlayer.Forms.Pages
                 return;
             }
 
-            int port = 0;
-            if (!int.TryParse(Port.Text, out port))
+            if (!int.TryParse(Port.Text, out int port))
             {
                 Status.Text = "Wrong port inserted!";
                 Status.TextColor = Color.Red;

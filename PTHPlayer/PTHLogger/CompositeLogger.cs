@@ -21,7 +21,7 @@ namespace PTHLogger
 {
     public class CompositeLogger : LoggerBase
     {
-        private List<LoggerBase> loggers = new List<LoggerBase>();
+        private readonly List<LoggerBase> loggers = new List<LoggerBase>();
 
         public CompositeLogger(string channel, LogLevel level) : base(channel, level)
         {

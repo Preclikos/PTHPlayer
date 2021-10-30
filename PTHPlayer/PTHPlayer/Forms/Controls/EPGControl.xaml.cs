@@ -13,13 +13,11 @@ namespace PTHPlayer.Forms.Controls
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class EPGControl : Grid
     {
-        DataService DataStorage;
-
-        PlayerController VideoPlayerController;
-        private HTSPController HTSPConnectionController;
-
-        List<ChannelModel> Channels = new List<ChannelModel>();
-        List<EPGModel> EPGs = new List<EPGModel>();
+        readonly DataService DataStorage;
+        private readonly PlayerController VideoPlayerController;
+        readonly HTSPController HTSPConnectionController;
+        private List<ChannelModel> Channels = new List<ChannelModel>();
+        private List<EPGModel> EPGs = new List<EPGModel>();
 
         public EPGControl(DataService dataStorage, PlayerController videoPlayerController, HTSPController hTSPController)
         {
@@ -80,7 +78,7 @@ namespace PTHPlayer.Forms.Controls
             }
 
             MessagingCenter.Subscribe<IKeyEventSender, string>(this, "KeyDown",
-             async (sender, arg) =>
+             (sender, arg) =>
              {
 
                  if (arg == "XF86Back")

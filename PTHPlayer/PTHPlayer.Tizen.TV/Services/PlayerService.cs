@@ -40,14 +40,10 @@ namespace PTHPlayer.Tizen.TV.Services
 
         protected virtual void DelegatePlayerError(PlayerErrorEventArgs e)
         {
-            EventHandler<PlayerErrorEventArgs> handler = ErrorEvent;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            ErrorEvent?.Invoke(this, e);
         }
 
-        void onPlayerPrepareReady(StreamType streamType)
+        void OnPlayerPrepareReady(StreamType streamType)
         {
             switch (streamType)
             {
@@ -114,9 +110,10 @@ namespace PTHPlayer.Tizen.TV.Services
         public void SetConfig(VideoConfigModel videoConfig, AudioConfigModel audioConfig)
         {
 
-            var stremVideoInfo = new VideoStreamInfo();
-
-            stremVideoInfo.mimeType = (VideoMimeType)videoConfig.Codec;
+            var stremVideoInfo = new VideoStreamInfo
+            {
+                mimeType = (VideoMimeType)videoConfig.Codec
+            };
             if (videoConfig.CodecData != null)
             {
                 stremVideoInfo.codecData = videoConfig.CodecData;
@@ -129,9 +126,11 @@ namespace PTHPlayer.Tizen.TV.Services
             player.SetStream(stremVideoInfo);
 
 
-            var stremAudioInfo = new AudioStreamInfo();
+            var stremAudioInfo = new AudioStreamInfo
+            {
+                mimeType = (AudioMimeType)audioConfig.Codec
+            };
 
-            stremAudioInfo.mimeType = (AudioMimeType)audioConfig.Codec;
             if (audioConfig.CodecData != null)
             {
                 stremAudioInfo.codecData = audioConfig.CodecData;
@@ -152,15 +151,17 @@ namespace PTHPlayer.Tizen.TV.Services
         {
             VideoPrepareReady = new TaskCompletionSource<bool>();
             AudioPrepareReady = new TaskCompletionSource<bool>();
-            return player.PrepareAsync(onPlayerPrepareReady);
+            return player.PrepareAsync(OnPlayerPrepareReady);
         }
 
         private ESPacket ParsePacket(PacketModel packet)
         {
-            var esPacket = new ESPacket();
-            esPacket.pts = (ulong)packet.PTS;
-            esPacket.duration = (ulong)packet.Duration;
-            esPacket.buffer = packet.Data;
+            var esPacket = new ESPacket
+            {
+                pts = (ulong)packet.PTS,
+                duration = (ulong)packet.Duration,
+                buffer = packet.Data
+            };
 
             return esPacket;
         }

@@ -16,8 +16,8 @@ namespace PTHPlayer.Forms.Modals
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SubtitleSelectionControl : StackLayout
     {
-        private PlayerController VideoPlayerController;
-        private SubtitleSelectionViewModel SubtitleSelectionModel;
+        readonly PlayerController VideoPlayerController;
+        readonly SubtitleSelectionViewModel SubtitleSelectionModel;
         public SubtitleSelectionControl(PlayerController videoPlayerController)
         {
             InitializeComponent();

@@ -15,8 +15,8 @@ namespace PTHPlayer.Forms.Controls
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ChannelControl : Grid
     {
-        DataService DataStorage;
-        PlayerController VideoPlayerController;
+        readonly DataService DataStorage;
+        readonly PlayerController VideoPlayerController;
         public ObservableCollection<ChannelViewModel> Items { get; set; }
 
         public ChannelControl(DataService dataStorage, PlayerController videoPlayerController)
@@ -46,11 +46,12 @@ namespace PTHPlayer.Forms.Controls
             var actualDate = DateTime.Now;
             foreach (var channel in channels)
             {
-                var newChannel = new ChannelViewModel();
-
-                newChannel.Id = channel.Id;
-                newChannel.Label = channel.Label;
-                newChannel.Number = channel.Number;
+                var newChannel = new ChannelViewModel
+                {
+                    Id = channel.Id,
+                    Label = channel.Label,
+                    Number = channel.Number
+                };
 
                 if (EPGs.Any())
                 {
