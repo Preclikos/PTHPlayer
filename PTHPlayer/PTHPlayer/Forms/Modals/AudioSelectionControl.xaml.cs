@@ -2,7 +2,6 @@
 using PTHPlayer.Forms.Languages;
 using PTHPlayer.Forms.Modals.ModalViewModels;
 using PTHPlayer.Interfaces;
-using PTHPlayer.Player.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -51,7 +50,7 @@ namespace PTHPlayer.Forms.Modals
             if (e.Item == null)
                 return;
 
-            var audioConfig = (AudioConfigModel)e.Item;
+            var audioConfig = (AudioViewModel)e.Item;
 
             VideoPlayerController.ChangeAudioTrack(audioConfig.Index);
 
@@ -60,7 +59,7 @@ namespace PTHPlayer.Forms.Modals
 
         void OnAppearing()
         {
-             VideoPlayerController.GetAudioConfigs();
+            VideoPlayerController.GetAudioConfigs();
 
             var audioViews = new List<AudioViewModel>();
             var audios = VideoPlayerController.GetAudioConfigs();
@@ -68,14 +67,18 @@ namespace PTHPlayer.Forms.Modals
             foreach (var audio in audios)
             {
                 var language = ISO639_2.FromAlpha3(audio.Language);
+                var Language = language != null ? language.Name : audio.Language.ToUpper();
+                var Channels = ParseChannels(audio.Channels);
+                var Codec = ((AudioCodecs)audio.Codec).ToString();
 
                 audioViews.Add(
                     new AudioViewModel
                     {
                         Index = audio.Index,
-                        Language = language != null ? language.Name : audio.Language.ToUpper(),
-                        Channels = audio.Channels.ToString(),
-                        Codec = audio.Codec.ToString()
+                        Language = Language,
+                        Channels = Channels,
+                        Codec = Codec,
+                        Label = Language + " (" + Channels + ")  - " + Codec
                     });
             }
 
@@ -107,6 +110,42 @@ namespace PTHPlayer.Forms.Modals
         void OnDisappearing()
         {
             //this.IsVisible = false;
+        }
+
+        enum AudioCodecs
+        {
+            MPEG2 = 2,
+            AC3 = 4,
+            AAC = 1,
+            EAC3 = 5,
+            VORBIS = 6
+        }
+
+        string ParseChannels(int channels)
+        {
+            switch (channels)
+            {
+                case 2:
+                    {
+                        return "2.0";
+                    }
+                case 3:
+                    {
+                        return "2.1";
+                    }
+                case 6:
+                    {
+                        return "5.1";
+                    }
+                case 8:
+                    {
+                        return "7.1";
+                    }
+                default:
+                    {
+                        return "Unspec";
+                    }
+            }
         }
     }
 }

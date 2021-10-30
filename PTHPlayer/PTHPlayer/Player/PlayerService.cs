@@ -147,7 +147,7 @@ namespace PTHPlayer.VideoPlayer
 
                 if (Enum.IsDefined(typeof(VideoCodec), streamType))
                 {
-                    videoConfig.Codec = (VideoCodec)Enum.Parse(typeof(VideoCodec), streamType);
+                    videoConfig.Codec = (int)Enum.Parse(typeof(VideoCodec), streamType);
 
                     videoConfig.Width = stream.getInt("width");
                     videoConfig.Heght = stream.getInt("height");
@@ -168,7 +168,7 @@ namespace PTHPlayer.VideoPlayer
                     {
                         Codec = (int)Enum.Parse(typeof(AudioCodec), streamType),
 
-                        Language = "unk"
+                        Language = "unknown"
                     };
                     if (stream.containsField("language"))
                     {

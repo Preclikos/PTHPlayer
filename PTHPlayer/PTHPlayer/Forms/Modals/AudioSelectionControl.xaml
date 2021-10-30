@@ -30,7 +30,9 @@
                 BackgroundColor="Transparent">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <ViewCell>
+                        <TextCell Text="{Binding Label}" />
+                        <!--<ViewCell>
+                            
                             <StackLayout Orientation="Horizontal">
                                 <Label Text="{Binding Language}" />
                                 <Label Text="(" />
@@ -38,7 +40,7 @@
                                 <Label Text=") - " />
                                 <Label Text="{Binding Channels}" />
                             </StackLayout>
-                        </ViewCell>
+                        </ViewCell>-->
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

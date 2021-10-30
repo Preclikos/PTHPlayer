@@ -1,4 +1,6 @@
-﻿namespace PTHPlayer.Player.Models
+﻿using PTHPlayer.Player.Enums;
+
+namespace PTHPlayer.Player.Models
 {
     public class AudioConfigModel
     {
