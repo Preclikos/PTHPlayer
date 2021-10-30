@@ -103,6 +103,10 @@
     <EmbeddedResource Update="Forms\Modals\NotificationControl.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Forms\Resources\ISO639Resources.cs-CZ.resx">
+      <LastGenOutput>ISO639Resources.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Forms\Resources\ISO639Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ISO639Resources.Designer.cs</LastGenOutput>
