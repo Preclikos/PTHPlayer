@@ -52,46 +52,55 @@ namespace PTHPlayer.Forms.Controls
 
         private int ChannelMove(int currentChannel, ChannelMoveDirection channelMove)
         {
-            if (Channels.Count == 0)
+            try
             {
-                return currentChannel;
-            }
+                if (Channels.Count == 0)
+                {
+                    return currentChannel;
+                }
 
-            var channel = Channels.FirstOrDefault(f => f.Id == currentChannel);
-            var orderedChannels = Channels.OrderBy(o => o.Number);
-            if (channel != null)
+                var channel = Channels.FirstOrDefault(f => f.Id == currentChannel);
+                var orderedChannels = Channels.OrderBy(o => o.Number);
+                if (channel != null)
+                {
+                    var sameNumberChannels = orderedChannels.Where(w => w.Number == channel.Number);
+                    if (channelMove == ChannelMoveDirection.Up)
+                    {
+                        if (sameNumberChannels.Any(a => a.Id > channel.Id))
+                        {
+                            return sameNumberChannels.First(a => a.Id > channel.Id).Id;
+                        }
+                        var nextChannel = orderedChannels.FirstOrDefault(w => w.Number > channel.Number);
+                        if (nextChannel != null)
+                        {
+                            return nextChannel.Id;
+                        }
+                        return orderedChannels.First().Id;
+
+                    }
+                    if (channelMove == ChannelMoveDirection.Down)
+                    {
+                        if (sameNumberChannels.Any(a => a.Id < channel.Id))
+                        {
+                            return sameNumberChannels.Last(a => a.Id < channel.Id).Id;
+                        }
+                        var nextChannel = orderedChannels.LastOrDefault(w => w.Number < channel.Number);
+                        if (nextChannel != null)
+                        {
+                            return nextChannel.Id;
+                        }
+                        return orderedChannels.Last().Id;
+
+                    }
+                }
+                return orderedChannels.First().Id;
+
+            }
+            catch (Exception ex)
             {
-                var sameNumberChannels = orderedChannels.Where(w => w.Number == channel.Number);
-                if (channelMove == ChannelMoveDirection.Up)
-                {
-                    if (sameNumberChannels.Any(a => a.Id > channel.Id))
-                    {
-                        return sameNumberChannels.First(a => a.Id > channel.Id).Id;
-                    }
-                    var nextChannel = orderedChannels.FirstOrDefault(w => w.Number > channel.Number);
-                    if (nextChannel != null)
-                    {
-                        return nextChannel.Id;
-                    }
-                    return orderedChannels.First().Id;
-
-                }
-                if (channelMove == ChannelMoveDirection.Down)
-                {
-                    if (sameNumberChannels.Any(a => a.Id < channel.Id))
-                    {
-                        return sameNumberChannels.Last(a => a.Id < channel.Id).Id;
-                    }
-                    var nextChannel = orderedChannels.LastOrDefault(w => w.Number < channel.Number);
-                    if (nextChannel != null)
-                    {
-                        return nextChannel.Id;
-                    }
-                    return orderedChannels.Last().Id;
-
-                }
+                EventNotificationService.SendNotification("Channel Move", ex.Message);
+                return -1;
             }
-            return orderedChannels.First().Id;
         }
 
 
@@ -113,16 +122,14 @@ namespace PTHPlayer.Forms.Controls
                     channel = Channels.OrderBy(o => o.Number).First();
                 }
 
-                var channelEPGs = EPGs.Where(f => f.ChannelId == channel.Id);
-
                 PlayerViewModel.Id = channel.Id;
                 PlayerViewModel.Number = channel.Number;
                 PlayerViewModel.Label = channel.Label;
                 //PlayerViewModel.EPGModel = channelEPGs;
 
-                if (channelEPGs != null && channelEPGs.Any(f => f.EventId == channel.EventId))
+                if (EPGs.Any(f => f.EventId == channel.EventId))
                 {
-                    var epg = channelEPGs.FirstOrDefault(f => f.EventId == channel.EventId);
+                    var epg = EPGs.Single(f => f.EventId == channel.EventId);
 
                     var start = epg.Start.Ticks;
                     var end = epg.End.Ticks;
@@ -231,8 +238,10 @@ namespace PTHPlayer.Forms.Controls
                     }
 
             }
-
-            ParseChannelToModel(channelId);
+            if (channelId != -1)
+            {
+                ParseChannelToModel(channelId);
+            }
         }
 
         private void OnAppearing()
