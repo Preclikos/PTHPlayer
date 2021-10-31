@@ -29,7 +29,6 @@ namespace PTHPlayer.Forms.Modals
 
         void ChangeIcon(EventType eventType)
         {
-            Icon.IsAnimationPlaying = true;
             switch (eventType)
             {
                 case EventType.Info:
@@ -54,8 +53,8 @@ namespace PTHPlayer.Forms.Modals
                     }
                 case EventType.Loading:
                     {
-                        Icon.Source = "icons/share.png";
-                       
+                        Icon.Source = "icons/share200.gif";
+                        Icon.IsAnimationPlaying = true;
                         break;
                     }
             }

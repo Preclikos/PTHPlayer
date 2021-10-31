@@ -41,7 +41,7 @@ namespace PTHPlayer.Forms.Pages
             VideoPlayerControl = new PlayerControl(DataStorage, VideoPlayerController, HTSPConnectionController, EventNotificationService) { IsVisible = false };
             MainContent.Children.Add(VideoPlayerControl);
 
-            ChannelSelectionControl = new ChannelControl(DataStorage, VideoPlayerController) { IsVisible = false };
+            ChannelSelectionControl = new ChannelControl(DataStorage, VideoPlayerController, EventNotificationService) { IsVisible = false };
             MainContent.Children.Add(ChannelSelectionControl);
 
             EPGListControl = new EPGControl(DataStorage, VideoPlayerController, HTSPConnectionController) { IsVisible = false };

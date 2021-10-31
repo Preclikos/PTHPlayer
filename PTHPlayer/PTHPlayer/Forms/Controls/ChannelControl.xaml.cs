@@ -1,5 +1,6 @@
 ﻿using PTHPlayer.Controllers;
 using PTHPlayer.DataStorage.Service;
+using PTHPlayer.Event;
 using PTHPlayer.Forms.ViewModels;
 using PTHPlayer.Interfaces;
 using System;
@@ -17,14 +18,16 @@ namespace PTHPlayer.Forms.Controls
     {
         readonly DataService DataStorage;
         readonly PlayerController VideoPlayerController;
+        readonly EventService EventNotificationService;
         public ObservableCollection<ChannelViewModel> Items { get; set; }
 
-        public ChannelControl(DataService dataStorage, PlayerController videoPlayerController)
+        public ChannelControl(DataService dataStorage, PlayerController videoPlayerController, EventService eventNotificationService)
         {
             InitializeComponent();
 
             DataStorage = dataStorage;
             VideoPlayerController = videoPlayerController;
+            EventNotificationService = eventNotificationService;
         }
 
         private void OnAppearing()
@@ -52,33 +55,39 @@ namespace PTHPlayer.Forms.Controls
                     Label = channel.Label,
                     Number = channel.Number
                 };
-
-                if (EPGs.Any())
+                try
                 {
-                    var selectedChannel = EPGs.Where(s => s.ChannelId == channel.Id);
-
-                    if (selectedChannel != null && selectedChannel.Any())
+                    if (EPGs.Any())
                     {
-                        var currentEpg = selectedChannel.SingleOrDefault(s => s.EventId == channel.EventId);
-                        if (currentEpg != null)
+                        var selectedChannel = EPGs.Where(s => s.ChannelId == channel.Id);
+
+                        if (selectedChannel != null && selectedChannel.Any())
                         {
+                            var currentEpg = selectedChannel.SingleOrDefault(s => s.EventId == channel.EventId);
+                            if (currentEpg != null)
+                            {
 
-                            newChannel.Title = currentEpg.Title;
+                                newChannel.Title = currentEpg.Title;
 
-                            var start = currentEpg.Start.Ticks;
-                            var end = currentEpg.End.Ticks;
-                            var current = actualDate.Ticks;
+                                var start = currentEpg.Start.Ticks;
+                                var end = currentEpg.End.Ticks;
+                                var current = actualDate.Ticks;
 
-                            var range = end - start;
-                            var currentOnRange = end - current;
+                                var range = end - start;
+                                var currentOnRange = end - current;
 
-                            var onePercentOnRange = range / (double)100;
-                            var currentPercent = currentOnRange / onePercentOnRange;
-                            var progressPercent = 1 - currentPercent / (double)100;
+                                var onePercentOnRange = range / (double)100;
+                                var currentPercent = currentOnRange / onePercentOnRange;
+                                var progressPercent = 1 - currentPercent / (double)100;
 
-                            newChannel.Progress = progressPercent;
+                                newChannel.Progress = progressPercent;
+                            }
                         }
                     }
+                }
+                catch(Exception ex)
+                {
+                    EventNotificationService.SendNotification("Channel List Parser", ex.Message);
                 }
                 channelView.Add(newChannel);
             }

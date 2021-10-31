@@ -188,7 +188,7 @@ namespace PTHPlayer.Forms.Controls
             }
             catch (Exception ex)
             {
-                EventNotificationService.SendNotification("Channel Parser", ex.Message);
+                EventNotificationService.SendNotification("Channel Player Parser", ex.Message);
             }
         }
 
