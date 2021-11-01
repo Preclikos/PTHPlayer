@@ -89,45 +89,49 @@ namespace PTHPlayer.Controllers
 
         public void Stop()
         {
-            SubtitlePlayer.Stop();
-            PlayerService.SubscriptionStop();
-            UnSubscribe();
-            Status = SubscriptionStatus.New;
-
+            try
+            {
+                SubtitlePlayer.Stop();
+                PlayerService.SubscriptionStop();
+                UnSubscribe();
+                Status = SubscriptionStatus.New;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
+            }
         }
 
         public void Subscription(int channelId)
         {
-            Logger.Info("Subscription Call");
-            SubscriptionTaskCancellationToken.Cancel();
-
-
-            if (Status == SubscriptionStatus.New)
-            {
-                PlayerSubscriptionCancellationToken.Cancel();
-                Logger.Info("Player Subscription token Cancelled");
-                PlayerSubscriptionCancellationToken = new CancellationTokenSource();
-            }
             try
             {
-                if (SubscriptionTask != null)
+                Logger.Info("Subscription Call");
+                SubscriptionTaskCancellationToken.Cancel();
+
+                if (Status == SubscriptionStatus.New)
+                {
+                    PlayerSubscriptionCancellationToken.Cancel();
+                    Logger.Info("Player Subscription token Cancelled");
+                    PlayerSubscriptionCancellationToken = new CancellationTokenSource();
+                }
+
+                if (SubscriptionTask != null && !SubscriptionTask.IsCompleted)
                 {
                     Logger.Info("Subscription wait");
                     SubscriptionTask.Wait(SubscriptionTaskCancellationToken.Token);
                 }
 
-                if (UnsubscriptionTask != null)
+                if (UnsubscriptionTask != null && !UnsubscriptionTask.IsCompleted)
                 {
                     Logger.Info("Unsubscription wait");
                     UnsubscriptionTask.Wait(SubscriptionTaskCancellationToken.Token);
                 }
 
-                if ((SubscriptionTask == null || SubscriptionTask.IsCompleted) && (UnsubscriptionTask == null || UnsubscriptionTask.IsCompleted))
-                {
-                    Logger.Info("Player Subscription Started");
-                    SubscriptionTask = Task.Run(async () => await SubscriptionProcess(channelId));
-                    SubscriptionTaskCancellationToken = new CancellationTokenSource();
-                }
+                Logger.Info("Player Subscription Started");
+                SubscriptionTask = Task.Run(async () => await SubscriptionProcess(channelId));
+                SubscriptionTaskCancellationToken = new CancellationTokenSource();
+
 
             }
             catch (OperationCanceledException)
@@ -188,17 +192,18 @@ namespace PTHPlayer.Controllers
                 else if (SubscriptionSkip.Task.IsCompleted)
                 {
                     Status = SubscriptionStatus.New;
+                    DelegatePlayerStateChange(this, new PlayerStateChangeEventArgs { State = PlayerState.Stop });
                 }
             }
             catch (OperationCanceledException ex)
             {
-                Logger.Info("Subscription Cancel Exception");
+                Logger.Info("Player Subscription Cancel Exception");
                 UnSubscribe();
                 DelegatePlayerStateChange(this, new PlayerStateChangeEventArgs { State = PlayerState.Stop });
             }
             catch (Exception ex)
             {
-                Logger.Error("Subscription Exception");
+                Logger.Error(ex.Message);
                 UnSubscribe();
                 DelegatePlayerStateChange(this, new PlayerStateChangeEventArgs { State = PlayerState.Stop });
             }
@@ -207,38 +212,52 @@ namespace PTHPlayer.Controllers
 
         public void UnSubscribe(bool forceStop = false, bool withPlayer = true)
         {
-            Logger.Info("Unsubscribe Call with Id: " + SubscriptionId);
-            if (withPlayer)
+            try
             {
-                PlayerSubscriptionCancellationToken.Cancel();
+                Logger.Info("Unsubscribe Call with Id: " + SubscriptionId);
+                if (withPlayer)
+                {
+                    PlayerSubscriptionCancellationToken.Cancel();
+                }
+                if (UnsubscriptionTask == null || UnsubscriptionTask.IsCompleted)
+                {
+                    UnsubscriptionTask = Task.Run(() => UnSubscribeProcess(forceStop));
+                }
             }
-            if (UnsubscriptionTask == null || UnsubscriptionTask.IsCompleted)
+            catch (Exception ex)
             {
-                UnsubscriptionTask = Task.Run(() => UnSubscribeProcess(forceStop));
+                Logger.Error(ex.Message);
             }
         }
 
         void UnSubscribeProcess(bool forceStop = false)
         {
-            if (SubscriptionId == -1)
+            try
             {
-                return;
-            }
-
-            PlayerService.SubscriptionStop();
-            SubtitlePlayer.Stop();
-
-            SubscriptionStop = new TaskCompletionSource<HTSMessage>();
-
-            HTSPClient.UnSubscribe(SubscriptionId);
-            SubscriptionId = -1;
-
-            if (Status != SubscriptionStatus.New || forceStop)
-            {
-                if (!forceStop)
+                if (SubscriptionId == -1)
                 {
-                    SubscriptionStop.Task.Wait(10000);
+                    return;
                 }
+
+                PlayerService.SubscriptionStop();
+                SubtitlePlayer.Stop();
+
+                SubscriptionStop = new TaskCompletionSource<HTSMessage>();
+
+                HTSPClient.UnSubscribe(SubscriptionId);
+                SubscriptionId = -1;
+
+                if (Status != SubscriptionStatus.New || forceStop)
+                {
+                    if (!forceStop)
+                    {
+                        SubscriptionStop.Task.Wait(10000);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
             }
             Logger.Info("Unsubscription Completed");
         }
@@ -306,30 +325,37 @@ namespace PTHPlayer.Controllers
 
         public void OnMuxPkt(HTSMessage message)
         {
-            var subscriptionId = message.getInt("subscriptionId");
-            if (subscriptionId != SubscriptionId)
+            try
             {
-                return;
-            }
+                var subscriptionId = message.getInt("subscriptionId");
+                if (subscriptionId != SubscriptionId)
+                {
+                    return;
+                }
 
-            switch (Status)
+                switch (Status)
+                {
+                    case SubscriptionStatus.Pause:
+                    case SubscriptionStatus.WaitForPlay:
+                    case SubscriptionStatus.Submitted:
+                        {
+                            PlayerService.PushToBuffer(message);
+                            if (!CalculationFps.Task.IsCompleted)
+                                PlayerService.TryCalculateFps(message, CalculationFps);
+                            if (!CalculationSampleRate.Task.IsCompleted)
+                                PlayerService.TryCalculateSampleRate(message, CalculationSampleRate);
+                            break;
+                        }
+                    case SubscriptionStatus.Play:
+                        {
+                            PlayerService.Packet(message);
+                            break;
+                        }
+                }
+            }
+            catch (Exception ex)
             {
-                case SubscriptionStatus.Pause:
-                case SubscriptionStatus.WaitForPlay:
-                case SubscriptionStatus.Submitted:
-                    {
-                        PlayerService.PushToBuffer(message);
-                        if (!CalculationFps.Task.IsCompleted)
-                            PlayerService.TryCalculateFps(message, CalculationFps);
-                        if (!CalculationSampleRate.Task.IsCompleted)
-                            PlayerService.TryCalculateSampleRate(message, CalculationSampleRate);
-                        break;
-                    }
-                case SubscriptionStatus.Play:
-                    {
-                        PlayerService.Packet(message);
-                        break;
-                    }
+                Logger.Error(ex.Message);
             }
         }
 
