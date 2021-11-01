@@ -104,44 +104,50 @@ namespace PTHPlayer.Controllers
 
         public void Subscription(int channelId)
         {
-            try
-            {
-                Logger.Info("Subscription Call");
-                SubscriptionTaskCancellationToken.Cancel();
+            Logger.Info("Subscription Call");
+            SubscriptionTaskCancellationToken.Cancel();
 
-                if (Status == SubscriptionStatus.New)
+            SubscriptionTaskCancellationToken = new CancellationTokenSource();
+            Task.Run(() =>
+            {
+                try
                 {
-                    PlayerSubscriptionCancellationToken.Cancel();
-                    Logger.Info("Player Subscription token Cancelled");
+
+
+                    if (SubscriptionTask != null && !SubscriptionTask.IsCompleted)
+                    {
+                        Logger.Info("Subscription wait");
+                        SubscriptionTask.Wait(SubscriptionTaskCancellationToken.Token);
+                        Logger.Info("Subscription wait Resume");
+                    }
+
+                    if (UnsubscriptionTask != null && !UnsubscriptionTask.IsCompleted)
+                    {
+                        Logger.Info("Unsubscription wait");
+                        UnsubscriptionTask.Wait(SubscriptionTaskCancellationToken.Token);
+                        Logger.Info("Unsubscription wait Resume");
+                    }
+
+                    if (Status == SubscriptionStatus.New)
+                    {
+                        PlayerSubscriptionCancellationToken.Cancel();
+                        Logger.Info("Player Subscription token Cancelled");
+                    }
                     PlayerSubscriptionCancellationToken = new CancellationTokenSource();
-                }
 
-                if (SubscriptionTask != null && !SubscriptionTask.IsCompleted)
+                    Logger.Info("Player Subscription Started");
+                    SubscriptionTask = Task.Run(async () => await SubscriptionProcess(channelId));
+
+                }
+                catch (OperationCanceledException)
                 {
-                    Logger.Info("Subscription wait");
-                    SubscriptionTask.Wait(SubscriptionTaskCancellationToken.Token);
+                    Logger.Info("Subscription Task token Cancelled");
                 }
-
-                if (UnsubscriptionTask != null && !UnsubscriptionTask.IsCompleted)
+                catch (Exception ex)
                 {
-                    Logger.Info("Unsubscription wait");
-                    UnsubscriptionTask.Wait(SubscriptionTaskCancellationToken.Token);
+                    Logger.Error(ex.Message);
                 }
-
-                Logger.Info("Player Subscription Started");
-                SubscriptionTask = Task.Run(async () => await SubscriptionProcess(channelId));
-                SubscriptionTaskCancellationToken = new CancellationTokenSource();
-
-
-            }
-            catch (OperationCanceledException)
-            {
-                Logger.Info("Subscription Task token Cancelled");
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex.Message);
-            }
+            });
         }
 
         async Task SubscriptionProcess(int channelId)
@@ -247,12 +253,9 @@ namespace PTHPlayer.Controllers
                 HTSPClient.UnSubscribe(SubscriptionId);
                 SubscriptionId = -1;
 
-                if (Status != SubscriptionStatus.New || forceStop)
+                if (Status != SubscriptionStatus.New || !forceStop)
                 {
-                    if (!forceStop)
-                    {
-                        SubscriptionStop.Task.Wait(10000);
-                    }
+                    SubscriptionStop.Task.Wait(10000);
                 }
             }
             catch (Exception ex)
