@@ -132,6 +132,13 @@ namespace PTHPlayer.Forms.Pages
                             {
                                 MainLogo.FadeTo(1, 1000);
                             });
+                            if (Loading.Opacity == 1)
+                            {
+                                Device.BeginInvokeOnMainThread(() =>
+                                {
+                                    Loading.FadeTo(0, 200);
+                                });
+                            }
                         }
                         else
                         {

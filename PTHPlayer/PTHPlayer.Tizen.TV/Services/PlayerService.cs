@@ -215,12 +215,34 @@ namespace PTHPlayer.Tizen.TV.Services
 
         public void Pause()
         {
-            player.Pause();
+            try
+            {
+                player.Pause();
+            }
+            catch
+            {
+                var errorEvent = new PlayerErrorEventArgs
+                {
+                    Type = PlayerErrorType.PauseError,
+                };
+                DelegatePlayerError(errorEvent);
+            }
         }
 
         public void Resume()
         {
-            player.Resume();
+            try
+            {
+                player.Resume();
+            }
+            catch
+            {
+                var errorEvent = new PlayerErrorEventArgs
+                {
+                    Type = PlayerErrorType.ResumeError,
+                };
+                DelegatePlayerError(errorEvent);
+            }
         }
 
         public void Close()

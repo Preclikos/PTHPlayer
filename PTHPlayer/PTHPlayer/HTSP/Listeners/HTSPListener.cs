@@ -1,4 +1,5 @@
-﻿using PTHPlayer.Controllers.Listeners;
+﻿using PTHLogger;
+using PTHPlayer.Controllers.Listeners;
 using PTHPlayer.DataStorage.Models;
 using PTHPlayer.DataStorage.Service;
 using PTHPlayer.Event.Enums;
@@ -18,6 +19,7 @@ namespace PTHPlayer.HTSP.Listeners
         readonly IPlayerListener SubcriptionListener;
         readonly IHTSPListener HTSPControllerListener;
 
+        private readonly ILogger Logger = LoggerManager.GetInstance().GetLogger("PTHPlayer.HTSP.Listeners");
         public HTSPListener(DataService dataStorageClient, IPlayerListener subscriptionListener, IHTSPListener hTSPListener, IEventListener evenetNotificationListener)
         {
             DataStorageClient = dataStorageClient;
@@ -33,155 +35,161 @@ namespace PTHPlayer.HTSP.Listeners
 
         public void onMessage(HTSMessage response)
         {
-
-            //throw new NotImplementedException();
-            switch (response.Method)
+            try
             {
-                case "subscriptionStart":
-                    {
-                        SubcriptionListener.OnSubscriptionStart(response);
-                        break;
-                    }
-                case "subscriptionStop":
-                    {
-                        SubcriptionListener.OnSubscriptionStop(response);
-                        break;
-                    }
-                case "subscriptionSkip":
-                    {
-                        SubcriptionListener.OnSubscriptionSkip(response);
-                        break;
-                    }
-                case "muxpkt":
-                    {
-                        SubcriptionListener.OnMuxPkt(response);
-                        break;
-                    }
-                case "channelAdd":
-                    {
-                        var channel = new ChannelModel
+                //throw new NotImplementedException();
+                switch (response.Method)
+                {
+                    case "subscriptionStart":
                         {
-                            Id = response.getInt("channelId"),
-
-                            Label = response.getString("channelName"),
-                            Number = response.getInt("channelNumber")
-                        };
-
-                        if (response.containsField("eventId"))
-                        {
-                            channel.EventId = response.getInt("eventId");
+                            SubcriptionListener.OnSubscriptionStart(response);
+                            break;
                         }
-
-                        if (response.containsField("nextEventId"))
+                    case "subscriptionStop":
                         {
-                            channel.EventId = response.getInt("nextEventId");
+                            SubcriptionListener.OnSubscriptionStop(response);
+                            break;
                         }
-
-                        if (response.containsField("channelIcon"))
+                    case "subscriptionSkip":
                         {
-                            channel.Icon = response.getString("channelIcon");
+                            SubcriptionListener.OnSubscriptionSkip(response);
+                            break;
                         }
-
-                        DataStorageClient.ChannelAdd(channel);
-
-                        HTSPControllerListener.ChannelUpdate(channel.Id);
-                        break;
-                    }
-                case "channelUpdate":
-                    {
-                        var fields = new Dictionary<string, object>();
-                        var channId = response.getInt("channelId");
-
-                        if (response.containsField("eventId"))
+                    case "muxpkt":
                         {
-                            fields.Add("EventId", response.getInt("eventId"));
+                            SubcriptionListener.OnMuxPkt(response);
+                            break;
                         }
-                        if (response.containsField("nextEventId"))
+                    case "channelAdd":
                         {
-                            fields.Add("NextEventId", response.getInt("nextEventId"));
-                        }
-                        if (response.containsField("channelNumber"))
-                        {
-                            fields.Add("Number", response.getInt("channelNumber"));
-                        }
-                        if (response.containsField("channelIcon"))
-                        {
-                            fields.Add("Icon", response.getString("channelIcon"));
-                        }
-
-                        DataStorageClient.ChannelUpdate(channId, fields);
-                        HTSPControllerListener.ChannelUpdate(channId);
-
-                        break;
-                    }
-                case "channelDelete":
-                    {
-                        var channId = response.getInt("channelId");
-                        DataStorageClient.ChannelRemove(channId);
-                        break;
-                    }
-                case "initialSyncCompleted":
-                    {
-                        EvenetNotificationListener.SendNotification(nameof(HTSPListener), "Init Sync Completed", EventId.MetaData, EventType.Success);
-                        break;
-                    }
-                case "eventAdd":
-                    {
-                        var epg = new EPGModel
-                        {
-                            EventId = response.getInt("eventId"),
-                            ChannelId = response.getInt("channelId"),
-                            Start = UnixTimeStampToDateTime(response.getInt("start")),
-                            End = UnixTimeStampToDateTime(response.getInt("stop"))
-                        };
-
-                        if (response.containsField("title"))
-                        {
-                            epg.Title = response.getString("title");
-                        }
-
-                        if (response.containsField("summary"))
-                        {
-                            epg.Summary = response.getString("summary");
-                        }
-
-                        if (response.containsField("description"))
-                        {
-                            epg.Description = response.getString("description");
-                            if (String.IsNullOrEmpty(epg.Summary))
+                            var channel = new ChannelModel
                             {
-                                epg.Summary = epg.Description.Replace(Environment.NewLine, " ");
+                                Id = response.getInt("channelId"),
+
+                                Label = response.getString("channelName"),
+                                Number = response.getInt("channelNumber")
+                            };
+
+                            if (response.containsField("eventId"))
+                            {
+                                channel.EventId = response.getInt("eventId");
                             }
+
+                            if (response.containsField("nextEventId"))
+                            {
+                                channel.EventId = response.getInt("nextEventId");
+                            }
+
+                            if (response.containsField("channelIcon"))
+                            {
+                                channel.Icon = response.getString("channelIcon");
+                            }
+
+                            DataStorageClient.ChannelAdd(channel);
+
+                            HTSPControllerListener.ChannelUpdate(channel.Id);
+                            break;
                         }
+                    case "channelUpdate":
+                        {
+                            var fields = new Dictionary<string, object>();
+                            var channId = response.getInt("channelId");
 
-                        DataStorageClient.EPGAdd(epg);
-                        break;
-                    }
-                case "eventUpdate":
-                    {
+                            if (response.containsField("eventId"))
+                            {
+                                fields.Add("EventId", response.getInt("eventId"));
+                            }
+                            if (response.containsField("nextEventId"))
+                            {
+                                fields.Add("NextEventId", response.getInt("nextEventId"));
+                            }
+                            if (response.containsField("channelNumber"))
+                            {
+                                fields.Add("Number", response.getInt("channelNumber"));
+                            }
+                            if (response.containsField("channelIcon"))
+                            {
+                                fields.Add("Icon", response.getString("channelIcon"));
+                            }
 
-                        break;
-                    }
-                case "eventDelete":
-                    {
-                        var eventId = response.getInt("eventId");
-                        DataStorageClient.EPGRemove(eventId);
-                        break;
-                    }
-                case "subscriptionStatus":
-                    {
-                        break;
-                    }
-                case "subscriptionGrace":
-                    {
-                        break;
-                    }
-                case "signalStatus":
-                    {
-                        var parsedSignal = new SignalStatusParser(response);
-                        DataStorageClient.SingnalStatus = parsedSignal.Response();
-                        break;
-                    }
+                            DataStorageClient.ChannelUpdate(channId, fields);
+                            HTSPControllerListener.ChannelUpdate(channId);
+
+                            break;
+                        }
+                    case "channelDelete":
+                        {
+                            var channId = response.getInt("channelId");
+                            DataStorageClient.ChannelRemove(channId);
+                            break;
+                        }
+                    case "initialSyncCompleted":
+                        {
+                            EvenetNotificationListener.SendNotification(nameof(HTSPListener), "Init Sync Completed", EventId.MetaData, EventType.Success);
+                            break;
+                        }
+                    case "eventAdd":
+                        {
+                            var epg = new EPGModel
+                            {
+                                EventId = response.getInt("eventId"),
+                                ChannelId = response.getInt("channelId"),
+                                Start = UnixTimeStampToDateTime(response.getInt("start")),
+                                End = UnixTimeStampToDateTime(response.getInt("stop"))
+                            };
+
+                            if (response.containsField("title"))
+                            {
+                                epg.Title = response.getString("title");
+                            }
+
+                            if (response.containsField("summary"))
+                            {
+                                epg.Summary = response.getString("summary");
+                            }
+
+                            if (response.containsField("description"))
+                            {
+                                epg.Description = response.getString("description");
+                                if (String.IsNullOrEmpty(epg.Summary))
+                                {
+                                    epg.Summary = epg.Description.Replace(Environment.NewLine, " ");
+                                }
+                            }
+
+                            DataStorageClient.EPGAdd(epg);
+                            break;
+                        }
+                    case "eventUpdate":
+                        {
+
+                            break;
+                        }
+                    case "eventDelete":
+                        {
+                            var eventId = response.getInt("eventId");
+                            DataStorageClient.EPGRemove(eventId);
+                            break;
+                        }
+                    case "subscriptionStatus":
+                        {
+                            break;
+                        }
+                    case "subscriptionGrace":
+                        {
+                            break;
+                        }
+                    case "signalStatus":
+                        {
+                            var parsedSignal = new SignalStatusParser(response);
+                            DataStorageClient.SingnalStatus = parsedSignal.Response();
+                            break;
+                        }
+                }
+            }
+            catch(Exception ex)
+            {
+                Logger.Error(ex.Message);
             }
         }
         public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)

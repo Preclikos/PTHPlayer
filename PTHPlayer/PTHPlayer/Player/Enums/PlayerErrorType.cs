@@ -5,6 +5,8 @@
         EndOfStream,
         BufferChange,
         PlayerError,
-        DisposeError
+        DisposeError,
+        ResumeError,
+        PauseError
     }
 }
