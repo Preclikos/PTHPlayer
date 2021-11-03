@@ -45,7 +45,7 @@ namespace PTHPlayer.Controllers
 
         SubscriptionStatus Status = SubscriptionStatus.New;
 
-        private readonly ILogger Logger = LoggerManager.GetInstance().GetLogger("PTHPlayer");
+        private readonly ILogger Logger = LoggerManager.GetInstance().GetLogger("PTHPlayer.Controllers");
 
         public PlayerController(DataService dataStorage, HTSPService hTSPClient, IEventListener eventNotificationListener)
         {
@@ -112,8 +112,6 @@ namespace PTHPlayer.Controllers
             {
                 try
                 {
-
-
                     if (SubscriptionTask != null && !SubscriptionTask.IsCompleted)
                     {
                         Logger.Info("Subscription wait");
@@ -124,6 +122,12 @@ namespace PTHPlayer.Controllers
                     if (UnsubscriptionTask != null && !UnsubscriptionTask.IsCompleted)
                     {
                         Logger.Info("Unsubscription wait");
+                        UnsubscriptionTask.Wait(SubscriptionTaskCancellationToken.Token);
+                        Logger.Info("Unsubscription wait Resume");
+                    } else if(SubscriptionId != -1)
+                    {
+                        Logger.Info("Unsubscription start and wait");
+                        UnSubscribe();
                         UnsubscriptionTask.Wait(SubscriptionTaskCancellationToken.Token);
                         Logger.Info("Unsubscription wait Resume");
                     }
@@ -148,6 +152,8 @@ namespace PTHPlayer.Controllers
                     Logger.Error(ex.Message);
                 }
             });
+
+            Logger.Info("Subscription Call Done");
         }
 
         async Task SubscriptionProcess(int channelId)
@@ -155,26 +161,22 @@ namespace PTHPlayer.Controllers
             SubscriptionStart = new TaskCompletionSource<HTSMessage>();
             SubscriptionSkip = new TaskCompletionSource<HTSMessage>();
 
-            UnSubscribe(SubscriptionId == -1, false);
-
             try
             {
-                UnsubscriptionTask.Wait(PlayerSubscriptionCancellationToken.Token);
-
-                var subscriptionId = HTSPClient.Subscribe(channelId);
                 Status = SubscriptionStatus.New;
+                var subscriptionId = HTSPClient.Subscribe(channelId);
                 SubscriptionId = subscriptionId;
-
 
                 Task.WaitAny(new[] { SubscriptionStart.Task, SubscriptionSkip.Task }, 120000, PlayerSubscriptionCancellationToken.Token);
 
                 //Flow one SubscriptionStart Success
                 if (SubscriptionStart.Task.IsCompleted)
                 {
+                    Status = SubscriptionStatus.Submitted;
+
                     CalculationFps = new TaskCompletionSource<bool>();
                     CalculationSampleRate = new TaskCompletionSource<bool>();
 
-                    Status = SubscriptionStatus.Submitted;
                     PlayerService.Subscription(SubscriptionStart.Task.Result);
 
                     var results = Task.WaitAll(new[] { CalculationFps.Task, CalculationSampleRate.Task }, 5000, PlayerSubscriptionCancellationToken.Token);
@@ -192,6 +194,10 @@ namespace PTHPlayer.Controllers
                         playerPrepare.Wait();
                         SubtitlePlayer.Start();
                     }
+                    else
+                    {
+
+                    }
                 }
 
                 //Flow one SubscriptionSkip Nothing to do reset state
@@ -204,13 +210,11 @@ namespace PTHPlayer.Controllers
             catch (OperationCanceledException ex)
             {
                 Logger.Info("Player Subscription Cancel Exception");
-                UnSubscribe();
                 DelegatePlayerStateChange(this, new PlayerStateChangeEventArgs { State = PlayerState.Stop });
             }
             catch (Exception ex)
             {
                 Logger.Error(ex.Message);
-                UnSubscribe();
                 DelegatePlayerStateChange(this, new PlayerStateChangeEventArgs { State = PlayerState.Stop });
             }
             Logger.Info("Subscription Completed");
@@ -245,21 +249,55 @@ namespace PTHPlayer.Controllers
                     return;
                 }
 
-                PlayerService.SubscriptionStop();
-                SubtitlePlayer.Stop();
-
                 SubscriptionStop = new TaskCompletionSource<HTSMessage>();
 
-                HTSPClient.UnSubscribe(SubscriptionId);
-                SubscriptionId = -1;
+                switch (Status)
+                {
+                    //New is before send maybe send and not Submitted need other check
+                    case SubscriptionStatus.New:
+                        {
+                            PlayerSubscriptionCancellationToken.Cancel();
+                            HTSPClient.UnSubscribe(SubscriptionId);
+                            return;
+                        }
+                    //Received Sub from server they need to be released
+                    case SubscriptionStatus.Submitted:
+                        {
+                            PlayerSubscriptionCancellationToken.Cancel();
+                            HTSPClient.UnSubscribe(SubscriptionId);
+                            break;
+                        }
+                        //This state need to be player prepared cannot be stoped
+                    case SubscriptionStatus.WaitForPlay:
+                        {
+                            Thread.Sleep(1000);
+                            UnSubscribeProcess(forceStop);
+                            return;
+                        }
+                        //Play need completed shut down
+                    case SubscriptionStatus.Play:
+                        {
+                            SubtitlePlayer.Stop();
+                            PlayerService.SubscriptionStop();
+                            HTSPClient.UnSubscribe(SubscriptionId);
+                            break;
+                        }
+                }
 
+                //If not in first state need to wait for unsub response
                 if (Status != SubscriptionStatus.New || !forceStop)
                 {
-                    SubscriptionStop.Task.Wait(10000);
+                    if(!SubscriptionStop.Task.Wait(10000))
+                    {
+                        Logger.Error("UnSubscription TimeOut maybe some problem");
+                    }
                 }
+
+                SubscriptionId = -1;
             }
             catch (Exception ex)
             {
+                //If all fail need to reset all to usable state
                 Logger.Error(ex.Message);
             }
             Logger.Info("Unsubscription Completed");
