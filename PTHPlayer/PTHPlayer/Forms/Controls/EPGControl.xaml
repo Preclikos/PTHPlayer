@@ -22,7 +22,7 @@
     <StackLayout Grid.Row="1" Grid.Column="1" BackgroundColor="#73000000" Padding="10">
         <StackLayout Orientation="Horizontal">
             <AbsoluteLayout x:Name="EPGLabel"/>
-            <ScrollView Orientation="Horizontal">
+            <ScrollView x:Name="EPGScroll" Orientation="Horizontal">
                 <AbsoluteLayout x:Name="EPGContent"/>
             </ScrollView>
         </StackLayout>

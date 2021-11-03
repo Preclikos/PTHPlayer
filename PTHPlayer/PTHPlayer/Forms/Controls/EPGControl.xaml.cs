@@ -30,6 +30,7 @@ namespace PTHPlayer.Forms.Controls
         const int titleOffset = 180;
         const int timeOffset = 60;
         const int spacing = 2;
+        const int rowCount = 6;
 
         public EPGControl(DataService dataStorage, PlayerController videoPlayerController, HTSPController hTSPController)
         {
@@ -77,63 +78,129 @@ namespace PTHPlayer.Forms.Controls
                 roundedTime = roundedTime + TimeSpan.FromMinutes(30);
             }
 
-            var channels = new List<ChannelModel>();
-            int heightOffset = 0;
+            var channels = new Dictionary<ChannelModel, List<EPGModel>>();
 
             if (fromFirst)
             {
                 var selectedChannels = Channels.SingleOrDefault(w => w.Id == FirstChannelId);
-                var downNumber = Channels.Where(w => w.Number < selectedChannels.Number).OrderBy(o => o.Number).Take(7);
+                var downNumber = Channels.Where(w => w.Number < selectedChannels.Number).OrderByDescending(o => o.Number).Take(rowCount + 1);
+                foreach (var down in downNumber)
+                {
+                    channels.Add(down, EPGs.Where(w => w.ChannelId == down.Id && w.End > DateTime.Now).OrderBy(o => o.Start).ToList());
+                }
             }
             else if (fromLast)
             {
                 var selectedChannels = Channels.SingleOrDefault(w => w.Id == LastChannelId);
-                var upNumber = Channels.Where(w => w.Number > selectedChannels.Number).OrderBy(o => o.Number).Take(7);
-                channels.AddRange(upNumber);
+                var upNumber = Channels.Where(w => w.Number > selectedChannels.Number).OrderBy(o => o.Number).Take(rowCount +1);
+                foreach (var up in upNumber)
+                {
+                    channels.Add(up, EPGs.Where(w => w.ChannelId == up.Id && w.End > DateTime.Now).OrderBy(o => o.Start).ToList());
+                }
             }
             else
             {
-                int selectedChannel = Channels.FirstOrDefault() == null ? -1 : Channels.FirstOrDefault().Id;
+                int selectedChannelId = Channels.FirstOrDefault() == null ? -1 : Channels.OrderBy(o => o.Number).FirstOrDefault().Id;
 
                 if (DataStorage.SelectedChannelId != -1)
                 {
-                    selectedChannel = DataStorage.SelectedChannelId;
+                    selectedChannelId = DataStorage.SelectedChannelId;
                 }
 
-                
-                var selectedChannels = Channels.SingleOrDefault(w => w.Id == selectedChannel);
-                if (selectedChannels == null)
+                var selectedChannel = Channels.SingleOrDefault(w => w.Id == selectedChannelId);
+                if (selectedChannel == null)
                 {
                     return;
                 }
 
-                var downNumber = Channels.Where(w => w.Number < selectedChannels.Number).OrderBy(o => o.Number).Take(3);
-                int upCount = 3;
-                if (downNumber.Count() != 3)
+                var orderedChannelsForFilter = Channels.OrderBy(o => o.Number);
+
+                var downNumber = orderedChannelsForFilter.Where(w => w.Number < selectedChannel.Number);
+                var upNumber = orderedChannelsForFilter.Where(w => w.Number > selectedChannel.Number);
+
+                int halfToTake = rowCount / 2;
+
+                int toUpTake = halfToTake;
+                int toDownTake = halfToTake;
+
+                if (downNumber.Count() < halfToTake)
                 {
-                    upCount = upCount + (3 - downNumber.Count());
+                    toUpTake += halfToTake - downNumber.Count();
                 }
-                var upNumber = Channels.Where(w => w.Number > selectedChannels.Number).OrderBy(o => o.Number).Take(upCount);
+                else if (upNumber.Count() < halfToTake)
+                {
+                    toDownTake += halfToTake - upNumber.Count();
+                }
 
 
-                channels.Add(selectedChannels);
-                channels.AddRange(downNumber);
-                channels.AddRange(upNumber);
+                downNumber = downNumber.OrderByDescending(o => o.Number).Take(toDownTake);
+                upNumber = upNumber.Take(toUpTake);
+
+                channels.Add(selectedChannel, EPGs.Where(w => w.ChannelId == selectedChannel.Id && w.End > DateTime.Now).OrderBy(o => o.Start).ToList());
+
+                foreach (var down in downNumber)
+                {
+                    channels.Add(down, EPGs.Where(w => w.ChannelId == down.Id && w.End > DateTime.Now).OrderBy(o => o.Start).ToList());
+                }
+
+                foreach (var up in upNumber)
+                {
+                    channels.Add(up, EPGs.Where(w => w.ChannelId == up.Id && w.End > DateTime.Now).OrderBy(o => o.Start).ToList());
+                }
+
             }
 
-            foreach (var channel in channels.OrderBy(o => o.Number))
+            var orderedChannels = channels.OrderBy(o => o.Key.Number);
+
+            int totalEpgCount = 0;
+            int[] epgCounts = new int[channels.Count];
+
+            int heightOffset = 0;
+            foreach (var channel in orderedChannels)
+            {
+                epgCounts[heightOffset] = channel.Value.Count;
+                totalEpgCount += channel.Value.Count;
+                heightOffset++;
+            }
+
+            int firstRowWithData = 0;
+            int lastRowWithData = 0;
+
+            for(int c = 0; c < epgCounts.Length; c++)
+            {
+                if (epgCounts[c] > 0)
+                {
+                    firstRowWithData = c;
+                    break;
+                }
+            }
+
+            for (int c = epgCounts.Length - 1; c >= 0; c--)
+            {
+                if (epgCounts[c] > 0)
+                {
+                    lastRowWithData = c;
+                    break;
+                }
+            }
+
+            EPGButton buttonToFocus = null;
+
+            heightOffset = 0;
+
+            bool fromFirstSelect = fromFirst;
+            bool fromLastSelect = fromLast;
+
+            foreach (var channel in orderedChannels)
             {
                 var lableLayout = new StackLayout();
-                lableLayout.Children.Add(new Label { TextColor = Color.Orange, Text = channel.Label, MinimumHeightRequest = rowHeight });
+                lableLayout.Children.Add(new Label { TextColor = Color.Orange, Text = channel.Key.Label, MinimumHeightRequest = rowHeight });
                 EPGLabel.Children.Add(lableLayout, new Rectangle(0, timeOffset + (heightOffset * rowHeight), titleOffset, rowHeight), AbsoluteLayoutFlags.None);
 
-                var singleRow = EPGs.Where(w => w.ChannelId == channel.Id && w.End > DateTime.Now).OrderBy(o => o.Start);
-
-                foreach (var epg in singleRow)
+                foreach (var epg in channel.Value)
                 {
 
                     var start = epg.Start - DateTime.Now;
-
                     var size = epg.End - epg.Start;
 
                     if (epg.Start < DateTime.Now)
@@ -146,16 +213,27 @@ namespace PTHPlayer.Forms.Controls
                     var eventLayout = new StackLayout();
                     var eventButton = new EPGButton { TextColor = Color.Red, Text = epg.Title, MinimumHeightRequest = rowHeight };
 
-                    if(heightOffset == 0)
+                    if (heightOffset == firstRowWithData)
                     {
                         eventButton.FirstRow = true;
-                        FirstChannelId = channel.Id;
+                        FirstChannelId = channel.Key.Id;
+                        if (fromLastSelect)
+                        {
+                            buttonToFocus = eventButton;
+                            fromLastSelect = false;
+                        }
                     }
 
-                    if (heightOffset == 6)
+                    if (heightOffset == lastRowWithData)
                     {
+
                         eventButton.LastRow = true;
-                        LastChannelId = channel.Id;
+                        LastChannelId = channel.Key.Id;
+                        if (fromFirstSelect)
+                        {
+                            buttonToFocus = eventButton;
+                            fromFirstSelect = false;
+                        }
                     }
 
                     eventButton.Clicked += EventButton_Clicked;
@@ -167,6 +245,20 @@ namespace PTHPlayer.Forms.Controls
 
                 heightOffset++;
             }
+
+            if(buttonToFocus != null)
+            {
+                buttonToFocus.Focus();
+                if (fromFirst)
+                {
+                    overLastOne = true;
+                }
+                if (fromLast)
+                {
+                    overFirstOne = true;
+                }
+            }
+
         }
 
         private void EventButton_Focused(object sender, FocusEventArgs e)
@@ -183,6 +275,9 @@ namespace PTHPlayer.Forms.Controls
         {
             return new DateTime((dt.Ticks + d.Ticks - 1) / d.Ticks * d.Ticks, dt.Kind);
         }
+
+        bool overFirstOne = false;
+        bool overLastOne = false;
 
         void OnAppearing()
         {
@@ -212,23 +307,48 @@ namespace PTHPlayer.Forms.Controls
                                  {
                                      if (focusedButton.FirstRow)
                                      {
-                                         fillData(fromFirst: true);
+                                         if (overFirstOne)
+                                         {
+                                             fillData(fromFirst: true);
+                                         }
+                                         else
+                                         {
+                                             overLastOne = false;
+                                             overFirstOne = true;
+                                         }
+                                     }
+                                     else
+                                     {
+                                         overFirstOne = false;
+                                         overLastOne = false;
                                      }
                                  }
                                  break;
                              }
                          case "Down":
                              {
-                                 if(focusedButton != null)
+                                 if (focusedButton != null)
                                  {
-                                     if(focusedButton.LastRow)
+                                     if (focusedButton.LastRow)
                                      {
-                                         fillData(fromLast: true);
+                                         if (overLastOne)
+                                         {
+                                             fillData(fromLast: true);
+                                         }
+                                         else
+                                         {
+                                             overFirstOne = false;
+                                             overLastOne = true;
+                                         }
+                                     }
+                                     else
+                                     {
+                                         overFirstOne = false;
+                                         overLastOne = false;
                                      }
                                  }
                                  break;
                              }
-                             //fillData();
                      }
                  }
              });
