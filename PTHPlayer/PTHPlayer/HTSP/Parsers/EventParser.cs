@@ -43,6 +43,21 @@ namespace PTHPlayer.HTSP.Parsers
             var fields = new Dictionary<string, object>();
             var eventId = eventMsg.getInt("eventId");
 
+            if (eventMsg.containsField("channelId"))
+            {
+                fields.Add("ChannelId", eventMsg.getInt("channelId"));
+            }
+
+            if (eventMsg.containsField("start"))
+            {
+                fields.Add("Start", UnixTimeStampToDateTime(eventMsg.getInt("start")));
+            }
+
+            if (eventMsg.containsField("channelId"))
+            {
+                fields.Add("End", UnixTimeStampToDateTime(eventMsg.getInt("stop")));
+            }
+
             if (eventMsg.containsField("title"))
             {
                 fields.Add("Title", eventMsg.getString("title"));

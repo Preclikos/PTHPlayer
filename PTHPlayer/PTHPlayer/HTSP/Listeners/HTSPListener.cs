@@ -1,12 +1,10 @@
 ﻿using PTHLogger;
 using PTHPlayer.Controllers.Listeners;
-using PTHPlayer.DataStorage.Models;
 using PTHPlayer.DataStorage.Service;
 using PTHPlayer.Event.Enums;
 using PTHPlayer.Event.Listeners;
 using PTHPlayer.HTSP.Parsers;
 using System;
-using System.Collections.Generic;
 
 namespace PTHPlayer.HTSP.Listeners
 {
@@ -65,9 +63,8 @@ namespace PTHPlayer.HTSP.Listeners
                             var channel = ChannelParser.Add(response);
                             DataStorageClient.ChannelAdd(channel);
 
-                            Logger.Info("ChannelAdd with update evet channel with Id: " + channel.Id);
+                            Logger.Info("ChannelAdd with update event channel with Id: " + channel.Id);
                             HTSPControllerListener.ChannelUpdate(channel.Id);
-
                             break;
                         }
                     case "channelUpdate":
@@ -75,16 +72,16 @@ namespace PTHPlayer.HTSP.Listeners
                             var channel = ChannelParser.Update(response);
                             DataStorageClient.ChannelUpdate(channel.Id, channel.Fields);
 
-                            Logger.Info("ChannelUpdate with update evet channel with Id: " + channel.Id);
+                            Logger.Info("ChannelUpdate with update event channel with Id: " + channel.Id);
                             HTSPControllerListener.ChannelUpdate(channel.Id);
-
                             break;
                         }
                     case "channelDelete":
                         {
                             var channId = response.getInt("channelId");
-                            Logger.Info("ChannelDetele channel with Id: " + channId);
                             DataStorageClient.ChannelRemove(channId);
+
+                            Logger.Info("ChannelDetele channel with Id: " + channId);
                             break;
                         }
                     case "initialSyncCompleted":
@@ -97,6 +94,7 @@ namespace PTHPlayer.HTSP.Listeners
                             var epg = EventParser.Add(response);
                             DataStorageClient.EPGAdd(epg);
 
+                            Logger.Info("EventAdd with Id: " + epg.EventId);
                             break;
                         }
                     case "eventUpdate":
@@ -104,12 +102,15 @@ namespace PTHPlayer.HTSP.Listeners
                             var epg = EventParser.Update(response);
                             DataStorageClient.EPGUpdate(epg.Id, epg.Fields);
 
+                            Logger.Info("EventUpdate with Id: " + epg.Id);
                             break;
                         }
                     case "eventDelete":
                         {
                             var eventId = response.getInt("eventId");
                             DataStorageClient.EPGRemove(eventId);
+
+                            Logger.Info("EventDelete with Id: " + eventId);
                             break;
                         }
                     case "subscriptionStatus":
@@ -118,16 +119,19 @@ namespace PTHPlayer.HTSP.Listeners
                             {
                                 EvenetNotificationListener.SendNotification("Status", response.getString("status"), EventId.Subscription, EventType.Loading);
                             }
+                            Logger.Info("Subscription Status");
                             break;
                         }
                     case "subscriptionGrace":
                         {
+                            Logger.Info("Subscription Grace");
                             break;
                         }
                     case "signalStatus":
                         {
                             var parsedSignal = new SignalStatusParser(response);
                             DataStorageClient.SingnalStatus = parsedSignal.Response();
+                            Logger.Info("Subscription Status");
                             break;
                         }
                 }

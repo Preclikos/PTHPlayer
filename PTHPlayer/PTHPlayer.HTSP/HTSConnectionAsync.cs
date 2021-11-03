@@ -459,7 +459,7 @@ namespace PTHPlayer.HTSP
 
         private void ReceiveHandler()
         {
-            byte[] readBuffer = new byte[8192];
+            byte[] readBuffer = new byte[1024];
             while (!handlersCancellationSource.IsCancellationRequested)
             {
                 try
@@ -553,7 +553,7 @@ namespace PTHPlayer.HTSP
                                 if (currHTSResponseHandler != null)
                                 {
                                     _responseHandlers.Remove(seqNo);
-                                    currHTSResponseHandler.handleResponse(response);
+                                    Task.Factory.StartNew(() => currHTSResponseHandler.handleResponse(response));
                                 }
                             }
                             else
