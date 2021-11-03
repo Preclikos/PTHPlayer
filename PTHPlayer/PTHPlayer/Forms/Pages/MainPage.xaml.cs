@@ -75,7 +75,7 @@ namespace PTHPlayer.Forms.Pages
                          }
                      case "Right":
                          {
-                             //EPGListControl.IsVisible = true;
+                             EPGListControl.IsVisible = true;
                              break;
                          }
                      case "Return":
