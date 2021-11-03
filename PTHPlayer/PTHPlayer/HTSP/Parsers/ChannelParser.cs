@@ -23,13 +23,14 @@ namespace PTHPlayer.HTSP.Parsers
 
             if (channelMsg.containsField("nextEventId"))
             {
-                channel.EventId = channelMsg.getInt("nextEventId");
+                channel.NextEventId = channelMsg.getInt("nextEventId");
             }
 
             if (channelMsg.containsField("channelIcon"))
             {
                 channel.Icon = channelMsg.getString("channelIcon");
             }
+
             return channel;
         }
 
@@ -42,14 +43,17 @@ namespace PTHPlayer.HTSP.Parsers
             {
                 fields.Add("EventId", channelMsg.getInt("eventId"));
             }
+
             if (channelMsg.containsField("nextEventId"))
             {
                 fields.Add("NextEventId", channelMsg.getInt("nextEventId"));
             }
+
             if (channelMsg.containsField("channelNumber"))
             {
                 fields.Add("Number", channelMsg.getInt("channelNumber"));
             }
+
             if (channelMsg.containsField("channelIcon"))
             {
                 fields.Add("Icon", channelMsg.getString("channelIcon"));

@@ -75,7 +75,7 @@ namespace PTHPlayer.HTSP
             HTSMessage getTicketMessage = new HTSMessage();
             getTicketMessage.Method = "enableAsyncMetadata";
             getTicketMessage.putField("epg", 1);
-            DateTime maxEPGDateTime = DateTime.UtcNow + TimeSpan.FromHours(4);
+            DateTime maxEPGDateTime = DateTime.Now + TimeSpan.FromHours(4);
             long maxEPGUnixTime = ((DateTimeOffset)maxEPGDateTime).ToUnixTimeSeconds();
             getTicketMessage.putField("epgMaxTime", maxEPGUnixTime);
 

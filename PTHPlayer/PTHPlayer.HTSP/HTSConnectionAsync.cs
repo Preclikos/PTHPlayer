@@ -553,7 +553,7 @@ namespace PTHPlayer.HTSP
                                 if (currHTSResponseHandler != null)
                                 {
                                     _responseHandlers.Remove(seqNo);
-                                    Task.Factory.StartNew(() => currHTSResponseHandler.handleResponse(response));
+                                    currHTSResponseHandler.handleResponse(response);
                                 }
                             }
                             else
