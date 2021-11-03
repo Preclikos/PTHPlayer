@@ -62,64 +62,28 @@ namespace PTHPlayer.HTSP.Listeners
                         }
                     case "channelAdd":
                         {
-                            var channel = new ChannelModel
-                            {
-                                Id = response.getInt("channelId"),
-
-                                Label = response.getString("channelName"),
-                                Number = response.getInt("channelNumber")
-                            };
-
-                            if (response.containsField("eventId"))
-                            {
-                                channel.EventId = response.getInt("eventId");
-                            }
-
-                            if (response.containsField("nextEventId"))
-                            {
-                                channel.EventId = response.getInt("nextEventId");
-                            }
-
-                            if (response.containsField("channelIcon"))
-                            {
-                                channel.Icon = response.getString("channelIcon");
-                            }
-
+                            var channel = ChannelParser.Add(response);
                             DataStorageClient.ChannelAdd(channel);
 
+                            Logger.Info("ChannelAdd with update evet channel with Id: " + channel.Id);
                             HTSPControllerListener.ChannelUpdate(channel.Id);
+
                             break;
                         }
                     case "channelUpdate":
                         {
-                            var fields = new Dictionary<string, object>();
-                            var channId = response.getInt("channelId");
+                            var channel = ChannelParser.Update(response);
+                            DataStorageClient.ChannelUpdate(channel.Id, channel.Fields);
 
-                            if (response.containsField("eventId"))
-                            {
-                                fields.Add("EventId", response.getInt("eventId"));
-                            }
-                            if (response.containsField("nextEventId"))
-                            {
-                                fields.Add("NextEventId", response.getInt("nextEventId"));
-                            }
-                            if (response.containsField("channelNumber"))
-                            {
-                                fields.Add("Number", response.getInt("channelNumber"));
-                            }
-                            if (response.containsField("channelIcon"))
-                            {
-                                fields.Add("Icon", response.getString("channelIcon"));
-                            }
-
-                            DataStorageClient.ChannelUpdate(channId, fields);
-                            HTSPControllerListener.ChannelUpdate(channId);
+                            Logger.Info("ChannelUpdate with update evet channel with Id: " + channel.Id);
+                            HTSPControllerListener.ChannelUpdate(channel.Id);
 
                             break;
                         }
                     case "channelDelete":
                         {
                             var channId = response.getInt("channelId");
+                            Logger.Info("ChannelDetele channel with Id: " + channId);
                             DataStorageClient.ChannelRemove(channId);
                             break;
                         }
@@ -130,38 +94,15 @@ namespace PTHPlayer.HTSP.Listeners
                         }
                     case "eventAdd":
                         {
-                            var epg = new EPGModel
-                            {
-                                EventId = response.getInt("eventId"),
-                                ChannelId = response.getInt("channelId"),
-                                Start = UnixTimeStampToDateTime(response.getInt("start")),
-                                End = UnixTimeStampToDateTime(response.getInt("stop"))
-                            };
-
-                            if (response.containsField("title"))
-                            {
-                                epg.Title = response.getString("title");
-                            }
-
-                            if (response.containsField("summary"))
-                            {
-                                epg.Summary = response.getString("summary");
-                            }
-
-                            if (response.containsField("description"))
-                            {
-                                epg.Description = response.getString("description");
-                                if (String.IsNullOrEmpty(epg.Summary))
-                                {
-                                    epg.Summary = epg.Description.Replace(Environment.NewLine, " ");
-                                }
-                            }
-
+                            var epg = EventParser.Add(response);
                             DataStorageClient.EPGAdd(epg);
+
                             break;
                         }
                     case "eventUpdate":
                         {
+                            var epg = EventParser.Update(response);
+                            DataStorageClient.EPGUpdate(epg.Id, epg.Fields);
 
                             break;
                         }
@@ -173,6 +114,10 @@ namespace PTHPlayer.HTSP.Listeners
                         }
                     case "subscriptionStatus":
                         {
+                            if (response.containsField("status"))
+                            {
+                                EvenetNotificationListener.SendNotification("Status", response.getString("status"), EventId.Subscription, EventType.Loading);
+                            }
                             break;
                         }
                     case "subscriptionGrace":
@@ -187,16 +132,10 @@ namespace PTHPlayer.HTSP.Listeners
                         }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Error(ex.Message);
             }
-        }
-        public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
-        {
-            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
-            return dateTime;
         }
     }
 }

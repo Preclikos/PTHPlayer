@@ -1,35 +1,61 @@
-﻿using System.Collections.Generic;
+﻿using PTHPlayer.DataStorage.Models;
+using System;
+using System.Collections.Generic;
 
 namespace PTHPlayer.HTSP.Parsers
 {
-    public class ChannelParser
+    public static class ChannelParser
     {
-        public int ChannelId { get; set; }
-        public string ChannelName { get; set; }
-        public string ChannelIcon { get; set; }
-        public int EventId { get; set; }
-        public int NextEventId { get; set; }
-        public int Number { get; set; }
-        public ICollection<int> Tags { get; set; }
-        public ChannelParser(HTSMessage channelMsg)
+        public static ChannelModel Add(HTSMessage channelMsg)
         {
-            ChannelId = channelMsg.getInt("channelId");
-            if (channelMsg.containsField("channelName"))
+            var channel = new ChannelModel
             {
-                ChannelName = channelMsg.getString("channelName");
-            }
+                Id = channelMsg.getInt("channelId"),
+
+                Label = channelMsg.getString("channelName"),
+                Number = channelMsg.getInt("channelNumber")
+            };
+
             if (channelMsg.containsField("eventId"))
             {
-                EventId = channelMsg.getInt("eventId");
+                channel.EventId = channelMsg.getInt("eventId");
+            }
+
+            if (channelMsg.containsField("nextEventId"))
+            {
+                channel.EventId = channelMsg.getInt("nextEventId");
+            }
+
+            if (channelMsg.containsField("channelIcon"))
+            {
+                channel.Icon = channelMsg.getString("channelIcon");
+            }
+            return channel;
+        }
+
+        public static (int Id, Dictionary<string, object> Fields) Update(HTSMessage channelMsg)
+        {
+            var fields = new Dictionary<string, object>();
+            var channelId = channelMsg.getInt("channelId");
+
+            if (channelMsg.containsField("eventId"))
+            {
+                fields.Add("EventId", channelMsg.getInt("eventId"));
             }
             if (channelMsg.containsField("nextEventId"))
             {
-                NextEventId = channelMsg.getInt("nextEventId");
+                fields.Add("NextEventId", channelMsg.getInt("nextEventId"));
             }
             if (channelMsg.containsField("channelNumber"))
             {
-                Number = channelMsg.getInt("channelNumber");
+                fields.Add("Number", channelMsg.getInt("channelNumber"));
             }
+            if (channelMsg.containsField("channelIcon"))
+            {
+                fields.Add("Icon", channelMsg.getString("channelIcon"));
+            }
+
+            return (channelId, fields);
         }
     }
 }

@@ -5,6 +5,7 @@
         Generic,
         Connection,
         Authentication,
-        MetaData
+        MetaData,
+        Subscription
     }
 }

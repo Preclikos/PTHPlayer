@@ -58,10 +58,7 @@ namespace PTHPlayer.DataStorage.Service
                         var property = properties.SingleOrDefault(s => s.Name == field.Key);
                         if (property != null)
                         {
-                            if (property.PropertyType == typeof(int))
-                            {
-                                property.SetValue(channelToUpdate, (int)field.Value);
-                            }
+                            property.SetValue(channelToUpdate, field.Value);
                         }
                     }
                 }
@@ -86,6 +83,26 @@ namespace PTHPlayer.DataStorage.Service
             {
                 EPGs.RemoveAll(r => r.EventId == epg.EventId);
                 EPGs.Add(epg);
+            }
+        }
+
+        public void EPGUpdate(int id, Dictionary<string, object> fieldsToUpdate)
+        {
+            var properties = typeof(EPGModel).GetProperties();
+            lock (epgLock)
+            {
+                var epgToUpdate = EPGs.SingleOrDefault(s => s.EventId == id);
+                if (epgToUpdate != null)
+                {
+                    foreach (var field in fieldsToUpdate)
+                    {
+                        var property = properties.SingleOrDefault(s => s.Name == field.Key);
+                        if (property != null)
+                        {
+                            property.SetValue(epgToUpdate, field.Value);
+                        }
+                    }
+                }
             }
         }
 
