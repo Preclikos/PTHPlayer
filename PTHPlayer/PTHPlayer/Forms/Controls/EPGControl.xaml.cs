@@ -65,20 +65,7 @@ namespace PTHPlayer.Forms.Controls
             EPGContent.Children.Clear();
 
             var actualDate = DateTime.Now;
-            var roundedTime = RoundUp(actualDate, TimeSpan.FromMinutes(30));
             ChannelModel selectedChannel = null;
-
-
-            for (int i = 0; i < 8; i++)
-            {
-                var start = roundedTime - actualDate;
-
-                var lableLayout = new StackLayout();
-                lableLayout.Children.Add(new Label { Text = roundedTime.ToString("HH:mm"), MinimumHeightRequest = timeOffset });
-                EPGContent.Children.Add(lableLayout, new Rectangle(start.TotalMinutes * scaleFactor, 0, 80, timeOffset), AbsoluteLayoutFlags.None);
-
-                roundedTime = roundedTime + TimeSpan.FromMinutes(30);
-            }
 
             var channels = new Dictionary<ChannelModel, List<EPGModel>>();
 
@@ -88,16 +75,16 @@ namespace PTHPlayer.Forms.Controls
                 var downNumber = Channels.Where(w => w.Number < selectedChannels.Number).OrderByDescending(o => o.Number).Take(rowCount + 1);
                 foreach (var down in downNumber)
                 {
-                    channels.Add(down, EPGs.Where(w => w.ChannelId == down.Id && w.End > DateTime.Now).OrderBy(o => o.Start).ToList());
+                    channels.Add(down, EPGs.Where(w => w.ChannelId == down.Id && w.End > actualDate).OrderBy(o => o.Start).ToList());
                 }
             }
             else if (fromLast)
             {
                 var selectedChannels = Channels.SingleOrDefault(w => w.Id == LastChannelId);
-                var upNumber = Channels.Where(w => w.Number > selectedChannels.Number).OrderBy(o => o.Number).Take(rowCount +1);
+                var upNumber = Channels.Where(w => w.Number > selectedChannels.Number).OrderBy(o => o.Number).Take(rowCount + 1);
                 foreach (var up in upNumber)
                 {
-                    channels.Add(up, EPGs.Where(w => w.ChannelId == up.Id && w.End > DateTime.Now).OrderBy(o => o.Start).ToList());
+                    channels.Add(up, EPGs.Where(w => w.ChannelId == up.Id && w.End > actualDate).OrderBy(o => o.Start).ToList());
                 }
             }
             else
@@ -138,16 +125,16 @@ namespace PTHPlayer.Forms.Controls
                 downNumber = downNumber.OrderByDescending(o => o.Number).Take(toDownTake);
                 upNumber = upNumber.Take(toUpTake);
 
-                channels.Add(selectedChannel, EPGs.Where(w => w.ChannelId == selectedChannel.Id && w.End > DateTime.Now).OrderBy(o => o.Start).ToList());
+                channels.Add(selectedChannel, EPGs.Where(w => w.ChannelId == selectedChannel.Id && w.End > actualDate).OrderBy(o => o.Start).ToList());
 
                 foreach (var down in downNumber)
                 {
-                    channels.Add(down, EPGs.Where(w => w.ChannelId == down.Id && w.End > DateTime.Now).OrderBy(o => o.Start).ToList());
+                    channels.Add(down, EPGs.Where(w => w.ChannelId == down.Id && w.End > actualDate).OrderBy(o => o.Start).ToList());
                 }
 
                 foreach (var up in upNumber)
                 {
-                    channels.Add(up, EPGs.Where(w => w.ChannelId == up.Id && w.End > DateTime.Now).OrderBy(o => o.Start).ToList());
+                    channels.Add(up, EPGs.Where(w => w.ChannelId == up.Id && w.End > actualDate).OrderBy(o => o.Start).ToList());
                 }
 
             }
@@ -168,7 +155,7 @@ namespace PTHPlayer.Forms.Controls
             int firstRowWithData = 0;
             int lastRowWithData = 0;
 
-            for(int c = 0; c < epgCounts.Length; c++)
+            for (int c = 0; c < epgCounts.Length; c++)
             {
                 if (epgCounts[c] > 0)
                 {
@@ -186,6 +173,34 @@ namespace PTHPlayer.Forms.Controls
                 }
             }
 
+
+            var filterDate = actualDate;
+            foreach (var channel in channels)
+            {
+                foreach (var epg in channel.Value)
+                {
+                    if (epg.Start < filterDate)
+                    {
+                        filterDate = epg.Start;
+                    }
+                }
+            }
+            var roundedTime = RoundUp(filterDate, TimeSpan.FromMinutes(30));
+
+            for (int i = 0; i < 16; i++)
+            {
+                var start = roundedTime - filterDate;
+
+                var lableLayout = new StackLayout();
+                lableLayout.Children.Add(new Label { Text = roundedTime.ToString("HH:mm"), MinimumHeightRequest = timeOffset });
+                EPGContent.Children.Add(lableLayout, new Rectangle(start.TotalMinutes * scaleFactor, 0, 80, timeOffset), AbsoluteLayoutFlags.None);
+
+                roundedTime = roundedTime + TimeSpan.FromMinutes(30);
+            }
+            var current = actualDate - filterDate;
+            var lineLayout = new StackLayout() { MinimumHeightRequest = timeOffset + (epgCounts.Length * rowHeight), MinimumWidthRequest = 2, BackgroundColor = Color.WhiteSmoke };
+            EPGContent.Children.Add(lineLayout, new Rectangle(current.TotalMinutes * scaleFactor, timeOffset, 2, epgCounts.Length * rowHeight), AbsoluteLayoutFlags.None);
+
             EPGButton buttonToFocus = null;
 
             heightOffset = 0;
@@ -202,12 +217,12 @@ namespace PTHPlayer.Forms.Controls
                 foreach (var epg in channel.Value)
                 {
 
-                    var start = epg.Start - DateTime.Now;
+                    var start = epg.Start - filterDate;
                     var size = epg.End - epg.Start;
 
-                    if (epg.Start < DateTime.Now)
+                    if (epg.Start < filterDate)
                     {
-                        var needRemoveStart = DateTime.Now - epg.Start;
+                        var needRemoveStart = filterDate - epg.Start;
                         size = size - needRemoveStart;
                         start = start + needRemoveStart;
                     }
@@ -238,7 +253,7 @@ namespace PTHPlayer.Forms.Controls
                         }
                     }
 
-                    if(selectedChannel != null && epg.EventId == selectedChannel.EventId)
+                    if (selectedChannel != null && epg.EventId == selectedChannel.EventId)
                     {
                         buttonToFocus = eventButton;
                     }
@@ -253,7 +268,7 @@ namespace PTHPlayer.Forms.Controls
                 heightOffset++;
             }
 
-            if(buttonToFocus != null)
+            if (buttonToFocus != null)
             {
                 overFirstOne = false;
                 overLastOne = false;
