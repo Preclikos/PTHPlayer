@@ -66,6 +66,8 @@ namespace PTHPlayer.Forms.Controls
 
             var actualDate = DateTime.Now;
             var roundedTime = RoundUp(actualDate, TimeSpan.FromMinutes(30));
+            ChannelModel selectedChannel = null;
+
 
             for (int i = 0; i < 8; i++)
             {
@@ -107,7 +109,7 @@ namespace PTHPlayer.Forms.Controls
                     selectedChannelId = DataStorage.SelectedChannelId;
                 }
 
-                var selectedChannel = Channels.SingleOrDefault(w => w.Id == selectedChannelId);
+                selectedChannel = Channels.SingleOrDefault(w => w.Id == selectedChannelId);
                 if (selectedChannel == null)
                 {
                     return;
@@ -194,7 +196,7 @@ namespace PTHPlayer.Forms.Controls
             foreach (var channel in orderedChannels)
             {
                 var lableLayout = new StackLayout();
-                lableLayout.Children.Add(new Label { TextColor = Color.Orange, Text = channel.Key.Label, MinimumHeightRequest = rowHeight });
+                lableLayout.Children.Add(new Label { Text = channel.Key.Label, MinimumHeightRequest = rowHeight });
                 EPGLabel.Children.Add(lableLayout, new Rectangle(0, timeOffset + (heightOffset * rowHeight), titleOffset, rowHeight), AbsoluteLayoutFlags.None);
 
                 foreach (var epg in channel.Value)
@@ -211,7 +213,7 @@ namespace PTHPlayer.Forms.Controls
                     }
 
                     var eventLayout = new StackLayout();
-                    var eventButton = new EPGButton { TextColor = Color.Red, Text = epg.Title, MinimumHeightRequest = rowHeight };
+                    var eventButton = new EPGButton { FontSize = 48, Text = epg.Title, MinimumHeightRequest = rowHeight };
 
                     if (heightOffset == firstRowWithData)
                     {
@@ -236,6 +238,11 @@ namespace PTHPlayer.Forms.Controls
                         }
                     }
 
+                    if(selectedChannel != null && epg.EventId == selectedChannel.EventId)
+                    {
+                        buttonToFocus = eventButton;
+                    }
+
                     eventButton.Clicked += EventButton_Clicked;
                     eventButton.Focused += EventButton_Focused;
 
@@ -248,6 +255,8 @@ namespace PTHPlayer.Forms.Controls
 
             if(buttonToFocus != null)
             {
+                overFirstOne = false;
+                overLastOne = false;
                 buttonToFocus.Focus();
                 if (fromFirst)
                 {
