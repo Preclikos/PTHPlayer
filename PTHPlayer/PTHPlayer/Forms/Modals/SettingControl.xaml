@@ -1,0 +1,35 @@
+﻿<StackLayout xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PTHPlayer.Forms.Modals.SettingControl"
+             xmlns:local="clr-namespace:PTHPlayer.Forms.Modals.ModalViewModels"
+             xmlns:resx="clr-namespace:PTHPlayer.Forms.Resources;">
+    
+    <StackLayout.BindingContext>
+        <local:SettingViewModel/>
+    </StackLayout.BindingContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="500"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="500"/>
+        </Grid.ColumnDefinitions>
+
+        <StackLayout Padding="20" Grid.Row="1" Grid.Column="1" BackgroundColor="#BF000000">
+            <StackLayout Orientation="Horizontal">
+                <Label FontSize="Large" Text="{x:Static resx:LangResources.Setting_Title}" HorizontalOptions="Start" />
+            </StackLayout>
+            <Grid>
+                <Label Text="{x:Static resx:LangResources.Setting_Credentials}" />
+                <Button Grid.Column="1"  Text="{x:Static resx:LangResources.Delete}" Clicked="CredentialsClear_Clicked"/>
+            </Grid>
+        </StackLayout>
+    </Grid>
+    
+</StackLayout>

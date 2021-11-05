@@ -73,7 +73,7 @@
             <!--<component:PlayerButton -->
             <Button Margin="0, 15" ImageSource="icons/loudspeaker_fixedColor.png" WidthRequest="100"  Clicked="Handle_AudioSelection" HorizontalOptions="End" BackgroundColor="Transparent" />
             <!--<component:PlayerButton -->
-            <Button Margin="0, 15" ImageSource="icons/settings.png" WidthRequest="100" HorizontalOptions="End" BackgroundColor="Transparent" />
+            <Button Margin="0, 15" ImageSource="icons/settings.png" WidthRequest="100" Clicked="Handle_Settings" HorizontalOptions="End" BackgroundColor="Transparent" />
         </StackLayout>
         <StackLayout Orientation="Horizontal" IsVisible="false">
             <Label Text="{Binding PlayerTime}" HorizontalOptions="StartAndExpand"/>

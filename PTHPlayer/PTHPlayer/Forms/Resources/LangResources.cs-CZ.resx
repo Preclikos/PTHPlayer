@@ -120,6 +120,9 @@
   <data name="AudioSelecton_Title" xml:space="preserve">
     <value>Audio Stopy</value>
   </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Vymazat</value>
+  </data>
   <data name="EPG_Next" xml:space="preserve">
     <value>Následující</value>
   </data>
@@ -149,6 +152,12 @@
   </data>
   <data name="Player_EndAt" xml:space="preserve">
     <value>Končí v:</value>
+  </data>
+  <data name="Setting_Credentials" xml:space="preserve">
+    <value>Přihlášení</value>
+  </data>
+  <data name="Setting_Title" xml:space="preserve">
+    <value>Nastavení</value>
   </data>
   <data name="SubtitleSelection_Title" xml:space="preserve">
     <value>Titulky</value>

@@ -1,10 +1,7 @@
-﻿
-using PTHPlayer.Controllers;
+﻿using PTHPlayer.Controllers;
 using PTHPlayer.Forms.Languages;
 using PTHPlayer.Forms.Modals.ModalViewModels;
 using PTHPlayer.Interfaces;
-using PTHPlayer.Player.Models;
-using PTHPlayer.VideoPlayer.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -63,7 +60,7 @@ namespace PTHPlayer.Forms.Modals
             var subtitleViews = new List<SubtitleViewModel>();
             var subtitles = VideoPlayerController.GetSubtitleConfigs();
 
-            foreach(var subtitle in subtitles)
+            foreach (var subtitle in subtitles)
             {
                 var language = ISO639_2.FromAlpha3(subtitle.Language);
 

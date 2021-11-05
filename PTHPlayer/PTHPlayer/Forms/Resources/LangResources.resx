@@ -120,6 +120,9 @@
   <data name="AudioSelecton_Title" xml:space="preserve">
     <value>Audio Tracks</value>
   </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
   <data name="EPG_Next" xml:space="preserve">
     <value>Next</value>
   </data>
@@ -149,6 +152,12 @@
   </data>
   <data name="Player_EndAt" xml:space="preserve">
     <value>Ends at:</value>
+  </data>
+  <data name="Setting_Credentials" xml:space="preserve">
+    <value>Credentials</value>
+  </data>
+  <data name="Setting_Title" xml:space="preserve">
+    <value>Settings</value>
   </data>
   <data name="SubtitleSelection_Title" xml:space="preserve">
     <value>Subtitles</value>

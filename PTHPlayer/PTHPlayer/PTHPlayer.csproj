@@ -40,6 +40,9 @@
     <Compile Update="Forms\Modals\NotificationItem.xaml.cs">
       <DependentUpon>NotificationItem.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Forms\Modals\SettingControl.xaml.cs">
+      <DependentUpon>SettingControl.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Forms\Modals\SubtitleSelectionControl.xaml.cs">
       <DependentUpon>SubtitleSelectionControl.xaml</DependentUpon>
     </Compile>

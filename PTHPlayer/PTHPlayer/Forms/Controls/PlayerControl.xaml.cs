@@ -25,6 +25,7 @@ namespace PTHPlayer.Forms.Controls
         readonly EventService EventNotificationService;
         readonly AudioSelectionControl AudioSelection;
         readonly SubtitleSelectionControl SubtitleSelection;
+        readonly SettingControl Setting;
 
         readonly PlayerViewModel PlayerViewModel = new PlayerViewModel();
 
@@ -48,6 +49,9 @@ namespace PTHPlayer.Forms.Controls
             ModalSection.Children.Add(AudioSelection);
             SubtitleSelection = new SubtitleSelectionControl(VideoPlayerController) { IsVisible = false };
             ModalSection.Children.Add(SubtitleSelection);
+
+            Setting = new SettingControl(VideoPlayerController) { IsVisible = false };
+            ModalSection.Children.Add(Setting);
         }
 
         private int ChannelMove(int currentChannel, ChannelMoveDirection channelMove)
@@ -102,7 +106,6 @@ namespace PTHPlayer.Forms.Controls
                 return -1;
             }
         }
-
 
         private void ParseChannelToModel(int id)
         {
@@ -328,6 +331,13 @@ namespace PTHPlayer.Forms.Controls
 
                 ParseChannelToModel(e.ChannelId);
             }
+        }
+
+        void Handle_Settings(object sender, EventArgs e)
+        {
+            HideModals();
+            Setting.IsVisible = true;
+            Setting.Focus();
         }
 
         void Handle_AudioSelection(object sender, EventArgs e)

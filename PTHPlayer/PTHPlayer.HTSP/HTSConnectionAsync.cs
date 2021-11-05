@@ -99,7 +99,7 @@ namespace PTHPlayer.HTSP
 
         public void Stop(bool stopMonitor = false)
         {
-            isSubscribtionStart = false;
+            isSubscriptionStart = false;
             _authenticated = false;
 
             if (monitorCancellationSource != null && stopMonitor)

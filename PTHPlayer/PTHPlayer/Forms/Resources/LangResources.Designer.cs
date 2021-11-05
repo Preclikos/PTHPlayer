@@ -70,6 +70,15 @@ namespace PTHPlayer.Forms.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string Delete {
+            get {
+                return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Next.
         /// </summary>
         public static string EPG_Next {
@@ -156,6 +165,24 @@ namespace PTHPlayer.Forms.Resources {
         public static string Player_EndAt {
             get {
                 return ResourceManager.GetString("Player_EndAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Credentials.
+        /// </summary>
+        public static string Setting_Credentials {
+            get {
+                return ResourceManager.GetString("Setting_Credentials", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        public static string Setting_Title {
+            get {
+                return ResourceManager.GetString("Setting_Title", resourceCulture);
             }
         }
         

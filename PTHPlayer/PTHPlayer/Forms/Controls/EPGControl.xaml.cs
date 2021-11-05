@@ -132,9 +132,23 @@ namespace PTHPlayer.Forms.Controls
                     var totalTime = epg.End - epg.Start;
                     var currentTime = totalTime - (epg.End - DateTime.Now);
 
-                    EPGViewModel.CurrentTime = String.Format("{0:00}:{1:00}:{2:00}", currentTime.Hours, currentTime.Minutes, currentTime.Seconds);
-                    EPGViewModel.TotalTime = String.Format("{0:00}:{1:00}:{2:00}", totalTime.Hours, totalTime.Minutes, totalTime.Seconds);
+                    if (currentTime.Hours == 0)
+                    {
+                        EPGViewModel.CurrentTime = String.Format("{0:00}:{1:00}", currentTime.Minutes, currentTime.Seconds);
+                    }
+                    else
+                    {
+                        EPGViewModel.CurrentTime = String.Format("{0:00}:{1:00}:{2:00}", currentTime.Hours, currentTime.Minutes, currentTime.Seconds);
+                    }
 
+                    if (totalTime.Hours == 0)
+                    {
+                        EPGViewModel.TotalTime = String.Format("{0:00}:{1:00}", totalTime.Minutes, totalTime.Seconds);
+                    }
+                    else
+                    {
+                        EPGViewModel.TotalTime = String.Format("{0:00}:{1:00}:{2:00}", totalTime.Hours, totalTime.Minutes, totalTime.Seconds);
+                    }
                 }
                 else
                 {
@@ -253,7 +267,7 @@ namespace PTHPlayer.Forms.Controls
             HTSPConnectionController.ChannelUpdateEvent += HTSPConnectionController_ChannelUpdateEvent;
 
             MessagingCenter.Subscribe<IKeyEventSender, string>(this, "KeyDown",
-             async (sender, arg) =>
+             (sender, arg) =>
              {
                  if (arg == "XF86Back")
                  {

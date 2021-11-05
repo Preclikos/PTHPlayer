@@ -2,6 +2,7 @@
 using PTHPlayer.Controllers.Enums;
 using PTHPlayer.Controllers.Listeners;
 using PTHPlayer.DataStorage.Service;
+using PTHPlayer.Event.Enums;
 using PTHPlayer.Event.Listeners;
 using PTHPlayer.HTSP;
 using PTHPlayer.Player.Enums;
@@ -200,7 +201,8 @@ namespace PTHPlayer.Controllers
                     }
                     else
                     {
-
+                        Logger.Info("Player Subscription - TimeOut");
+                        EventNotificationListener.SendNotification(nameof(PlayerController), "TimeOut", eventType: EventType.Warning);
                     }
                 }
 
