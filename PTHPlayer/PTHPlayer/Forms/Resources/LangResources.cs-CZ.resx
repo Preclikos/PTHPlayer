@@ -120,6 +120,9 @@
   <data name="AudioSelecton_Title" xml:space="preserve">
     <value>Audio Stopy</value>
   </data>
+  <data name="EPG_Next" xml:space="preserve">
+    <value>Následující</value>
+  </data>
   <data name="Exit_Question" xml:space="preserve">
     <value>Skutečně ukončit?</value>
   </data>

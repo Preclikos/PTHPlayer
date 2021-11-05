@@ -131,23 +131,12 @@ namespace PTHPlayer.Forms.Controls
                 {
                     var epg = EPGs.Single(f => f.EventId == channel.EventId);
 
-                    var start = epg.Start.Ticks;
-                    var end = epg.End.Ticks;
-                    var current = actualDate.Ticks;
-
-                    var range = end - start;
-                    var currentOnRange = end - current;
-
-                    var onePercentOnRange = range / 100;
-                    var currentPercent = currentOnRange / onePercentOnRange;
-                    var progressPercent = 1 - currentPercent / (double)100;
-
                     PlayerViewModel.StartTime = epg.Start.ToString("HH:mm");
                     PlayerViewModel.EndTime = epg.End.ToString("HH:mm");
                     PlayerViewModel.Title = epg.Title;
                     PlayerViewModel.Description = epg.Summary;
                     PlayerViewModel.FullDescription = epg.Description;
-                    PlayerViewModel.Progress = progressPercent;
+                    PlayerViewModel.Progress = epg.GetProgress();
                 }
                 else
                 {

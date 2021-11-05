@@ -106,6 +106,8 @@ namespace PTHPlayer
 
             AppDomain.CurrentDomain.UnhandledException += UnhandledException;
 
+           
+
             try
             {
                 var app = new Program();

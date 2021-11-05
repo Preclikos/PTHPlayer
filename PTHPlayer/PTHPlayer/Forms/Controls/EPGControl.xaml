@@ -1,36 +1,111 @@
 ﻿<Grid xmlns="http://xamarin.com/schemas/2014/forms"
       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
       x:Class="PTHPlayer.Forms.Controls.EPGControl"
+      xmlns:component="clr-namespace:PTHPlayer.Forms.Components"
+      xmlns:resx="clr-namespace:PTHPlayer.Forms.Resources;"
+      xmlns:local="clr-namespace:PTHPlayer.Forms.ViewModels"
       NavigationPage.HasNavigationBar="False"
       VerticalOptions="FillAndExpand"
       HorizontalOptions="FillAndExpand"
       ColumnSpacing="0"
       RowSpacing="0">
 
+    <Grid.BindingContext>
+        <local:PlayerViewModel/>
+    </Grid.BindingContext>
+    
     <Grid.RowDefinitions>
-        <RowDefinition Height="150" />
+        <RowDefinition Height="120" />
         <RowDefinition Height="*" />
-        <RowDefinition Height="150" />
+        <RowDefinition Height="500" />
+        <RowDefinition Height="10" />
+        <RowDefinition Height="120" />
     </Grid.RowDefinitions>
 
-    <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="120" />
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="160" />
-    </Grid.ColumnDefinitions>
+    <StackLayout Grid.Row="0" BackgroundColor="#73000000" Padding="10">
+        <Grid ColumnSpacing="0"
+                      RowSpacing="0">
 
-    <StackLayout Grid.Row="1" Grid.Column="1" BackgroundColor="#73000000" Padding="10">
-        <StackLayout Orientation="Horizontal">
-            <AbsoluteLayout x:Name="EPGLabel"/>
-            <ScrollView x:Name="EPGScroll" Orientation="Horizontal">
-                <AbsoluteLayout x:Name="EPGContent"/>
-            </ScrollView>
-        </StackLayout>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width = "240*" />
+                <ColumnDefinition Width = "240" />
+            </Grid.ColumnDefinitions>
+
+            <StackLayout  Grid.Column="0">
+                <Label Text="{Binding Title}" FontSize="74" FontAttributes="Bold" />
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="(" FontSize="52" />
+                    <Label Text="{Binding Number}" FontSize="52" />
+                    <Label Text=")" FontSize="52" />
+                    <Label Text="{Binding Label}" FontSize="52" FontAttributes="Bold" />
+                    <Label x:Name="Separator" Text=" - " FontSize="52" />
+                    <Label Text="{Binding Description}" FontSize="52" MaxLines="1" WidthRequest="600" LineBreakMode="TailTruncation" />
+                </StackLayout>
+            </StackLayout>
+            <StackLayout Grid.Column="1">
+                <Label Text="{Binding Time}" FontSize="74"  HorizontalOptions="End" FontAttributes="Bold" />
+                <StackLayout HorizontalOptions="End" Orientation="Horizontal">
+                    <Label x:Name="EndAt" Text="{x:Static resx:LangResources.Player_EndAt}" FontSize="52" />
+                    <Label Text="{Binding EndTime}" FontAttributes="Bold" FontSize="52"/> 
+                </StackLayout>
+            </StackLayout>
+
+        </Grid>
     </StackLayout>
 
+    <Grid Grid.Row="2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100" />
+            <RowDefinition Height="400"/>
+        </Grid.RowDefinitions>
+        
+        <StackLayout Padding="60, 0" Grid.Row="0">
+            <Label Text="{Binding Number}" FontSize="160"  />
+        </StackLayout>
 
+        <Grid BackgroundColor="#BF000000" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="340"/>
+                <RowDefinition Height="60" />
+            </Grid.RowDefinitions>
 
+            <StackLayout Padding="60, 20" Grid.Row="0">
+                <ScrollView>
+                    <Label Text="{Binding FullDescription}"  />
+                </ScrollView>
+            </StackLayout>
+            <StackLayout Padding="100, 0" Orientation="Horizontal" Grid.Row="1">
+                <Label Text="{x:Static resx:LangResources.EPG_Next}"  />
+                <Label Text=": "  />
+                <Label Text="{Binding NextStart}"  />
+                <Label Text=" - "  />
+                <Label Text="{Binding NextEnd}"  />
+                <Label Text=": "  />
+                <Label Text="{Binding NextTitle}"  />
+            </StackLayout>
+        </Grid>
+        
+
+    </Grid>
+
+    <StackLayout Grid.Row="4" BackgroundColor="#73000000">
+        <StackLayout Orientation="Horizontal" Padding="20, 0">
+            <Label Padding="10" Text="{Binding StartTime}" HorizontalOptions="StartAndExpand" FontSize="48" />
+            <Label Padding="10" Text="{Binding EndTime}" HorizontalOptions="End" FontSize="48" />
+        </StackLayout>
+        <ProgressBar Margin="0" Progress="{Binding Progress}" ScaleY="3" BackgroundColor="DarkSlateBlue" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="360" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            
+            <StackLayout Grid.Column="1" Orientation="Horizontal" Padding="20, 0">
+                <Label Padding="10" Text="{Binding CurrentTime}" HorizontalTextAlignment="End" />
+                <Label Padding="10" Text="/" />
+                <Label Padding="10" Text="{Binding TotalTime}" HorizontalTextAlignment="Start" />
+            </StackLayout>
+        </Grid>
+    </StackLayout>
 </Grid>
-
-
-    

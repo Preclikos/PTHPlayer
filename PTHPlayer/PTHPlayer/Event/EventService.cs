@@ -19,11 +19,7 @@ namespace PTHPlayer.Event
                 Message = message
             };
 
-            EventHandler<NotificationEventArgs> handler = EventHandler;
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
+            EventHandler?.Invoke(this, eventArgs);
         }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using PTHPlayer.Controllers;
 using PTHPlayer.DataStorage.Models;
 using PTHPlayer.DataStorage.Service;
-using PTHPlayer.Forms.Components;
+using PTHPlayer.Enums;
+using PTHPlayer.Event;
+using PTHPlayer.Forms.ViewModels;
+using PTHPlayer.HTSP.Models;
 using PTHPlayer.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -16,30 +19,182 @@ namespace PTHPlayer.Forms.Controls
     public partial class EPGControl : Grid
     {
         readonly DataService DataStorage;
-        private readonly PlayerController VideoPlayerController;
+        readonly PlayerController VideoPlayerController;
         readonly HTSPController HTSPConnectionController;
+        readonly EventService EventNotificationService;
+
+        readonly EPGViewModel EPGViewModel = new EPGViewModel();
+
         private List<ChannelModel> Channels = new List<ChannelModel>();
         private List<EPGModel> EPGs = new List<EPGModel>();
 
-        EPGButton focusedButton;
-        int FirstChannelId;
-        int LastChannelId;
-
-        const int scaleFactor = 6;
-        const int rowHeight = 100;
-        const int titleOffset = 180;
-        const int timeOffset = 60;
-        const int spacing = 2;
-        const int rowCount = 6;
-
-        public EPGControl(DataService dataStorage, PlayerController videoPlayerController, HTSPController hTSPController)
+        public EPGControl(DataService dataStorage, PlayerController videoPlayerController, HTSPController hTSPController, EventService eventNotificationService)
         {
             InitializeComponent();
 
             DataStorage = dataStorage;
+
             VideoPlayerController = videoPlayerController;
             HTSPConnectionController = hTSPController;
 
+            EventNotificationService = eventNotificationService;
+
+            this.BindingContext = EPGViewModel;
+        }
+
+        private int ChannelMove(int currentChannel, ChannelMoveDirection channelMove)
+        {
+            try
+            {
+                if (Channels.Count == 0)
+                {
+                    return currentChannel;
+                }
+
+                var channel = Channels.FirstOrDefault(f => f.Id == currentChannel);
+                var orderedChannels = Channels.OrderBy(o => o.Number);
+                if (channel != null)
+                {
+                    var sameNumberChannels = orderedChannels.Where(w => w.Number == channel.Number);
+                    if (channelMove == ChannelMoveDirection.Up)
+                    {
+                        if (sameNumberChannels.Any(a => a.Id > channel.Id))
+                        {
+                            return sameNumberChannels.First(a => a.Id > channel.Id).Id;
+                        }
+                        var nextChannel = orderedChannels.FirstOrDefault(w => w.Number > channel.Number);
+                        if (nextChannel != null)
+                        {
+                            return nextChannel.Id;
+                        }
+                        return orderedChannels.First().Id;
+
+                    }
+                    if (channelMove == ChannelMoveDirection.Down)
+                    {
+                        if (sameNumberChannels.Any(a => a.Id < channel.Id))
+                        {
+                            return sameNumberChannels.Last(a => a.Id < channel.Id).Id;
+                        }
+                        var nextChannel = orderedChannels.LastOrDefault(w => w.Number < channel.Number);
+                        if (nextChannel != null)
+                        {
+                            return nextChannel.Id;
+                        }
+                        return orderedChannels.Last().Id;
+
+                    }
+                }
+                return orderedChannels.First().Id;
+
+            }
+            catch (Exception ex)
+            {
+                EventNotificationService.SendNotification("Channel Move", ex.Message);
+                return -1;
+            }
+        }
+
+
+        private void ParseChannelToModel(int id)
+        {
+            try
+            {
+                if (Channels.Count == 0)
+                {
+                    return;
+                }
+
+                var actualDate = DateTime.Now;
+                EPGViewModel.Time = actualDate.ToString("HH:mm");
+
+                var channel = Channels.FirstOrDefault(f => f.Id == id);
+                if (channel == null)
+                {
+                    channel = Channels.OrderBy(o => o.Number).First();
+                }
+
+                EPGViewModel.Id = channel.Id;
+                EPGViewModel.Number = channel.Number;
+                EPGViewModel.Label = channel.Label;
+
+                var epg = EPGs.SingleOrDefault(f => f.EventId == channel.EventId);
+
+                if (epg != null)
+                {
+                    EPGViewModel.StartTime = epg.Start.ToString("HH:mm");
+                    EPGViewModel.EndTime = epg.End.ToString("HH:mm");
+                    EPGViewModel.Title = epg.Title;
+                    EPGViewModel.Description = epg.Summary;
+                    EPGViewModel.FullDescription = epg.Description;
+                    EPGViewModel.Progress = epg.GetProgress();
+
+                    var totalTime = epg.End - epg.Start;
+                    var currentTime = totalTime - (epg.End - DateTime.Now);
+
+                    EPGViewModel.CurrentTime = String.Format("{0:00}:{1:00}:{2:00}", currentTime.Hours, currentTime.Minutes, currentTime.Seconds);
+                    EPGViewModel.TotalTime = String.Format("{0:00}:{1:00}:{2:00}", totalTime.Hours, totalTime.Minutes, totalTime.Seconds);
+
+                }
+                else
+                {
+                    EPGViewModel.StartTime = String.Empty;
+                    EPGViewModel.EndTime = String.Empty;
+                    EPGViewModel.Title = String.Empty;
+                    EPGViewModel.Description = String.Empty;
+                    EPGViewModel.FullDescription = String.Empty;
+                    EPGViewModel.Progress = 0;
+                }
+
+                if (EPGViewModel.Description == String.Empty)
+                {
+                    Separator.IsVisible = false;
+                }
+                else
+                {
+                    Separator.IsVisible = true;
+                }
+
+                if (EPGViewModel.EndTime == String.Empty)
+                {
+                    EndAt.IsVisible = false;
+                }
+                else
+                {
+                    EndAt.IsVisible = true;
+                }
+
+                var nextEpg = EPGs.SingleOrDefault(f => f.EventId == channel.NextEventId);
+                if (nextEpg != null)
+                {
+
+                    EPGViewModel.NextStart = nextEpg.Start.ToString("HH:mm");
+                    EPGViewModel.NextEnd = nextEpg.End.ToString("HH:mm");
+                    EPGViewModel.NextTitle = nextEpg.Title;
+
+                }
+                else
+                {
+                    EPGViewModel.NextTitle = String.Empty;
+                    EPGViewModel.NextEnd = String.Empty;
+                    EPGViewModel.NextStart = String.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                EventNotificationService.SendNotification("Channel Player Parser", ex.Message);
+            }
+        }
+
+        void Handle_ChannelClicked(object sender, ItemTappedEventArgs e)
+        {
+            if (e.Item == null)
+                return;
+
+            var channelModel = (ChannelViewModel)e.Item;
+            VideoPlayerController.Subscription(channelModel.Id);
+
+            ((ListView)sender).SelectedItem = null;
         }
 
         protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -59,265 +214,66 @@ namespace PTHPlayer.Forms.Controls
             }
         }
 
-        void fillData(bool fromFirst = false, bool fromLast = false)
+        public void ChannelMove(ChannelMoveDirection moveDirection)
         {
-            EPGLabel.Children.Clear();
-            EPGContent.Children.Clear();
-
-            var actualDate = DateTime.Now;
-            ChannelModel selectedChannel = null;
-
-            var channels = new Dictionary<ChannelModel, List<EPGModel>>();
-
-            if (fromFirst)
+            int channelId = 0;
+            switch (moveDirection)
             {
-                var selectedChannels = Channels.SingleOrDefault(w => w.Id == FirstChannelId);
-                var downNumber = Channels.Where(w => w.Number < selectedChannels.Number).OrderByDescending(o => o.Number).Take(rowCount + 1);
-                foreach (var down in downNumber)
-                {
-                    channels.Add(down, EPGs.Where(w => w.ChannelId == down.Id && w.End > actualDate).OrderBy(o => o.Start).ToList());
-                }
-            }
-            else if (fromLast)
-            {
-                var selectedChannels = Channels.SingleOrDefault(w => w.Id == LastChannelId);
-                var upNumber = Channels.Where(w => w.Number > selectedChannels.Number).OrderBy(o => o.Number).Take(rowCount + 1);
-                foreach (var up in upNumber)
-                {
-                    channels.Add(up, EPGs.Where(w => w.ChannelId == up.Id && w.End > actualDate).OrderBy(o => o.Start).ToList());
-                }
-            }
-            else
-            {
-                int selectedChannelId = Channels.FirstOrDefault() == null ? -1 : Channels.OrderBy(o => o.Number).FirstOrDefault().Id;
 
-                if (DataStorage.SelectedChannelId != -1)
-                {
-                    selectedChannelId = DataStorage.SelectedChannelId;
-                }
-
-                selectedChannel = Channels.SingleOrDefault(w => w.Id == selectedChannelId);
-                if (selectedChannel == null)
-                {
-                    return;
-                }
-
-                var orderedChannelsForFilter = Channels.OrderBy(o => o.Number);
-
-                var downNumber = orderedChannelsForFilter.Where(w => w.Number < selectedChannel.Number);
-                var upNumber = orderedChannelsForFilter.Where(w => w.Number > selectedChannel.Number);
-
-                int halfToTake = rowCount / 2;
-
-                int toUpTake = halfToTake;
-                int toDownTake = halfToTake;
-
-                if (downNumber.Count() < halfToTake)
-                {
-                    toUpTake += halfToTake - downNumber.Count();
-                }
-                else if (upNumber.Count() < halfToTake)
-                {
-                    toDownTake += halfToTake - upNumber.Count();
-                }
-
-
-                downNumber = downNumber.OrderByDescending(o => o.Number).Take(toDownTake);
-                upNumber = upNumber.Take(toUpTake);
-
-                channels.Add(selectedChannel, EPGs.Where(w => w.ChannelId == selectedChannel.Id && w.End > actualDate).OrderBy(o => o.Start).ToList());
-
-                foreach (var down in downNumber)
-                {
-                    channels.Add(down, EPGs.Where(w => w.ChannelId == down.Id && w.End > actualDate).OrderBy(o => o.Start).ToList());
-                }
-
-                foreach (var up in upNumber)
-                {
-                    channels.Add(up, EPGs.Where(w => w.ChannelId == up.Id && w.End > actualDate).OrderBy(o => o.Start).ToList());
-                }
-
-            }
-
-            var orderedChannels = channels.OrderBy(o => o.Key.Number);
-
-            int totalEpgCount = 0;
-            int[] epgCounts = new int[channels.Count];
-
-            int heightOffset = 0;
-            foreach (var channel in orderedChannels)
-            {
-                epgCounts[heightOffset] = channel.Value.Count;
-                totalEpgCount += channel.Value.Count;
-                heightOffset++;
-            }
-
-            int firstRowWithData = 0;
-            int lastRowWithData = 0;
-
-            for (int c = 0; c < epgCounts.Length; c++)
-            {
-                if (epgCounts[c] > 0)
-                {
-                    firstRowWithData = c;
-                    break;
-                }
-            }
-
-            for (int c = epgCounts.Length - 1; c >= 0; c--)
-            {
-                if (epgCounts[c] > 0)
-                {
-                    lastRowWithData = c;
-                    break;
-                }
-            }
-
-
-            var filterDate = actualDate;
-            foreach (var channel in channels)
-            {
-                foreach (var epg in channel.Value)
-                {
-                    if (epg.Start < filterDate)
+                case ChannelMoveDirection.Up:
                     {
-                        filterDate = epg.Start;
+                        channelId = ChannelMove(EPGViewModel.Id, moveDirection);
+                        break;
                     }
-                }
-            }
-            var roundedTime = RoundUp(filterDate, TimeSpan.FromMinutes(30));
-
-            for (int i = 0; i < 16; i++)
-            {
-                var start = roundedTime - filterDate;
-
-                var lableLayout = new StackLayout();
-                lableLayout.Children.Add(new Label { Text = roundedTime.ToString("HH:mm"), MinimumHeightRequest = timeOffset });
-                EPGContent.Children.Add(lableLayout, new Rectangle(start.TotalMinutes * scaleFactor, 0, 80, timeOffset), AbsoluteLayoutFlags.None);
-
-                roundedTime = roundedTime + TimeSpan.FromMinutes(30);
-            }
-            var current = actualDate - filterDate;
-            var lineLayout = new StackLayout() { MinimumHeightRequest = timeOffset + (epgCounts.Length * rowHeight), MinimumWidthRequest = 2, BackgroundColor = Color.WhiteSmoke };
-            EPGContent.Children.Add(lineLayout, new Rectangle(current.TotalMinutes * scaleFactor, timeOffset, 2, epgCounts.Length * rowHeight), AbsoluteLayoutFlags.None);
-
-            EPGButton buttonToFocus = null;
-
-            heightOffset = 0;
-
-            bool fromFirstSelect = fromFirst;
-            bool fromLastSelect = fromLast;
-
-            foreach (var channel in orderedChannels)
-            {
-                var lableLayout = new StackLayout();
-                lableLayout.Children.Add(new Label { Text = channel.Key.Label, MinimumHeightRequest = rowHeight });
-                EPGLabel.Children.Add(lableLayout, new Rectangle(0, timeOffset + (heightOffset * rowHeight), titleOffset, rowHeight), AbsoluteLayoutFlags.None);
-
-                foreach (var epg in channel.Value)
-                {
-
-                    var start = epg.Start - filterDate;
-                    var size = epg.End - epg.Start;
-
-                    if (epg.Start < filterDate)
+                case ChannelMoveDirection.Down:
                     {
-                        var needRemoveStart = filterDate - epg.Start;
-                        size = size - needRemoveStart;
-                        start = start + needRemoveStart;
+                        channelId = ChannelMove(EPGViewModel.Id, moveDirection);
+                        break;
                     }
 
-                    var eventLayout = new StackLayout();
-                    var eventButton = new EPGButton { FontSize = 48, Text = epg.Title, MinimumHeightRequest = rowHeight };
-
-                    if (heightOffset == firstRowWithData)
-                    {
-                        eventButton.FirstRow = true;
-                        FirstChannelId = channel.Key.Id;
-                        if (fromLastSelect)
-                        {
-                            buttonToFocus = eventButton;
-                            fromLastSelect = false;
-                        }
-                    }
-
-                    if (heightOffset == lastRowWithData)
-                    {
-
-                        eventButton.LastRow = true;
-                        LastChannelId = channel.Key.Id;
-                        if (fromFirstSelect)
-                        {
-                            buttonToFocus = eventButton;
-                            fromFirstSelect = false;
-                        }
-                    }
-
-                    if (selectedChannel != null && epg.EventId == selectedChannel.EventId)
-                    {
-                        buttonToFocus = eventButton;
-                    }
-
-                    eventButton.Clicked += EventButton_Clicked;
-                    eventButton.Focused += EventButton_Focused;
-
-                    eventLayout.Children.Add(eventButton);
-                    EPGContent.Children.Add(eventLayout, new Rectangle(start.TotalMinutes * scaleFactor, spacing + timeOffset + (heightOffset * rowHeight), (size.TotalMinutes * scaleFactor) - (spacing * 2), rowHeight), AbsoluteLayoutFlags.None);
-                }
-
-                heightOffset++;
             }
-
-            if (buttonToFocus != null)
+            if (channelId != -1)
             {
-                overFirstOne = false;
-                overLastOne = false;
-                buttonToFocus.Focus();
-                if (fromFirst)
-                {
-                    overLastOne = true;
-                }
-                if (fromLast)
-                {
-                    overFirstOne = true;
-                }
+                ParseChannelToModel(channelId);
             }
-
         }
 
-        private void EventButton_Focused(object sender, FocusEventArgs e)
+        private void OnAppearing()
         {
-            focusedButton = (EPGButton)sender;
-        }
-
-        private void EventButton_Clicked(object sender, EventArgs e)
-        {
-            //throw new NotImplementedException();
-        }
-
-        DateTime RoundUp(DateTime dt, TimeSpan d)
-        {
-            return new DateTime((dt.Ticks + d.Ticks - 1) / d.Ticks * d.Ticks, dt.Kind);
-        }
-
-        bool overFirstOne = false;
-        bool overLastOne = false;
-
-        void OnAppearing()
-        {
-
             Channels = DataStorage.GetChannels();
             EPGs = DataStorage.GetEPGs();
 
-            fillData();
+            if (DataStorage.SelectedChannelId != -1)
+            {
+                EPGViewModel.Id = DataStorage.SelectedChannelId;
+            }
+
+            ParseChannelToModel(EPGViewModel.Id);
+
+            HTSPConnectionController.ChannelUpdateEvent += HTSPConnectionController_ChannelUpdateEvent;
 
             MessagingCenter.Subscribe<IKeyEventSender, string>(this, "KeyDown",
-             (sender, arg) =>
+             async (sender, arg) =>
              {
-
                  if (arg == "XF86Back")
                  {
                      OnDisappearing();
+                     return;
+                 }
+
+                 if (arg == "Return" || arg == "XF86PlayBack")
+                 {
+                     if (EPGViewModel.Id == DataStorage.SelectedChannelId)
+                     {
+                         if (arg == "XF86PlayBack")
+                         {
+                             DataStorage.SelectedChannelId = -1;
+                             VideoPlayerController.UnSubscribe();
+                         }
+                         return;
+                     }
+                     VideoPlayerController.Subscription(EPGViewModel.Id);
+                     DataStorage.SelectedChannelId = EPGViewModel.Id;
                      return;
                  }
 
@@ -325,63 +281,38 @@ namespace PTHPlayer.Forms.Controls
                  {
                      switch (arg)
                      {
+
                          case "Up":
                              {
-                                 if (focusedButton != null)
-                                 {
-                                     if (focusedButton.FirstRow)
-                                     {
-                                         if (overFirstOne)
-                                         {
-                                             fillData(fromFirst: true);
-                                         }
-                                         else
-                                         {
-                                             overLastOne = false;
-                                             overFirstOne = true;
-                                         }
-                                     }
-                                     else
-                                     {
-                                         overFirstOne = false;
-                                         overLastOne = false;
-                                     }
-                                 }
+                                 ChannelMove(ChannelMoveDirection.Up);
                                  break;
                              }
                          case "Down":
                              {
-                                 if (focusedButton != null)
-                                 {
-                                     if (focusedButton.LastRow)
-                                     {
-                                         if (overLastOne)
-                                         {
-                                             fillData(fromLast: true);
-                                         }
-                                         else
-                                         {
-                                             overFirstOne = false;
-                                             overLastOne = true;
-                                         }
-                                     }
-                                     else
-                                     {
-                                         overFirstOne = false;
-                                         overLastOne = false;
-                                     }
-                                 }
+                                 ChannelMove(ChannelMoveDirection.Down);
                                  break;
                              }
+
                      }
+                     return;
                  }
              });
         }
 
+        private void HTSPConnectionController_ChannelUpdateEvent(object sender, ChannelUpdateEventArgs e)
+        {
+            if (e.ChannelId == EPGViewModel.Id)
+            {
+                Channels = DataStorage.GetChannels();
+                EPGs = DataStorage.GetEPGs();
+
+                ParseChannelToModel(e.ChannelId);
+            }
+        }
 
         private void OnDisappearing()
         {
-            //EPGGrid.Children.Clear();
+            HTSPConnectionController.ChannelUpdateEvent -= HTSPConnectionController_ChannelUpdateEvent;
             MessagingCenter.Unsubscribe<IKeyEventSender, string>(this, "KeyDown");
             this.IsVisible = false;
         }

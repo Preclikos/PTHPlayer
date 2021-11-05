@@ -23,8 +23,9 @@ namespace PTHPlayer.Forms.Pages
         readonly HTSPController HTSPConnectionController;
 
         readonly PlayerControl VideoPlayerControl;
+        readonly EPGControl EPGPlayerControl;
         readonly ChannelControl ChannelSelectionControl;
-        readonly EPGControl EPGListControl;
+        readonly EPGOverViewControl EPGListControl;
 
         public MainPage(DataService dataStorage, PlayerController videoPlayerController, HTSPController hTSPController, EventService eventNotificationService)
         {
@@ -41,10 +42,13 @@ namespace PTHPlayer.Forms.Pages
             VideoPlayerControl = new PlayerControl(DataStorage, VideoPlayerController, HTSPConnectionController, EventNotificationService) { IsVisible = false };
             MainContent.Children.Add(VideoPlayerControl);
 
+            EPGPlayerControl = new EPGControl(DataStorage, VideoPlayerController, HTSPConnectionController, EventNotificationService) { IsVisible = false };
+            MainContent.Children.Add(EPGPlayerControl);
+
             ChannelSelectionControl = new ChannelControl(DataStorage, VideoPlayerController, EventNotificationService) { IsVisible = false };
             MainContent.Children.Add(ChannelSelectionControl);
 
-            EPGListControl = new EPGControl(DataStorage, VideoPlayerController, HTSPConnectionController) { IsVisible = false };
+            EPGListControl = new EPGOverViewControl(DataStorage, VideoPlayerController, HTSPConnectionController) { IsVisible = false };
             MainContent.Children.Add(EPGListControl);
 
             VideoPlayerController.SetSubtitleDisplay(SubtitleImageComponent);
@@ -57,6 +61,9 @@ namespace PTHPlayer.Forms.Pages
 
             EventNotificationService.EventHandler += EventNotificationService_EventHandler;
             VideoPlayerController.PlayerStateChange += PlayerService_StateChange;
+            VideoPlayerController.SubscriptionCompletedEvent += VideoPlayerController_SubscriptionCompletedEvent;
+            VideoPlayerController.SubscriptionStartEvent += VideoPlayerController_SubscriptionStartEvent;
+
 
             MessagingCenter.Subscribe<IKeyEventSender, string>(this, "KeyDown",
              (sender, arg) =>
@@ -68,6 +75,20 @@ namespace PTHPlayer.Forms.Pages
 
                  switch (arg)
                  {
+                     case "Up":
+                         {
+                             EPGPlayerControl.IsVisible = true;
+                             EPGPlayerControl.Focus();
+                             EPGPlayerControl.ChannelMove(ChannelMoveDirection.Up);
+                             break;
+                         }
+                     case "Down":
+                         {
+                             EPGPlayerControl.IsVisible = true;
+                             EPGPlayerControl.Focus();
+                             EPGPlayerControl.ChannelMove(ChannelMoveDirection.Down);
+                             break;
+                         }
                      case "Left":
                          {
                              ChannelSelectionControl.IsVisible = true;
@@ -119,54 +140,88 @@ namespace PTHPlayer.Forms.Pages
              });
         }
 
+        private void VideoPlayerController_SubscriptionCompletedEvent(object sender, System.EventArgs e)
+        {
+            ShowLoading(false);
+        }
+
+        private void VideoPlayerController_SubscriptionStartEvent(object sender, System.EventArgs e)
+        {
+            ShowLoading(true);
+            ShowLogo(false);
+        }
+
         private void PlayerService_StateChange(object sender, PlayerStateChangeEventArgs e)
         {
             switch (e.State)
             {
                 case PlayerState.Stop:
+                    {
+                        ShowLoading(false);
+                        ShowLogo(true);
+                        break;
+                    }
                 case PlayerState.Paused:
                     {
-                        if (DataStorage.SelectedChannelId == -1)
-                        {
-                            Device.BeginInvokeOnMainThread(() =>
-                            {
-                                MainLogo.FadeTo(1, 1000);
-                            });
-                            if (Loading.Opacity == 1)
-                            {
-                                Device.BeginInvokeOnMainThread(() =>
-                                {
-                                    Loading.FadeTo(0, 200);
-                                });
-                            }
-                        }
-                        else
-                        {
-                            Device.BeginInvokeOnMainThread(() =>
-                            {
-                                Loading.IsAnimationPlaying = true;
-                                Loading.FadeTo(1, 200);
-
-                            });
-                        }
+                        ShowLoading(true);
                         break;
                     }
                 case PlayerState.Playing:
                     {
-                        if (MainLogo.Opacity != 0)
-                        {
-                            Device.BeginInvokeOnMainThread(() =>
-                            {
-                                MainLogo.FadeTo(0, 1000);
-                            });
-                        }
-
-                        Device.BeginInvokeOnMainThread(() =>
-                        {
-                            Loading.FadeTo(0, 1000);
-                        });
+                        ShowLoading(false);
+                        ShowLogo(false);
                         break;
                     }
+            }
+        }
+
+        void ShowLogo(bool display)
+        {
+            if (display)
+            {
+                if (MainLogo.Opacity == 0)
+                {
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        MainLogo.FadeTo(1, 500);
+                    });
+                }
+            }
+            else
+            {
+                if (MainLogo.Opacity == 1)
+                {
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        MainLogo.FadeTo(0, 500);
+                    });
+                }
+            }
+        }
+
+        void ShowLoading(bool display)
+        {
+            if(display)
+            {
+                if(Loading.Opacity == 0)
+                {
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        Loading.IsAnimationPlaying = true;
+                        Loading.FadeTo(1, 200);
+
+                    });
+                }
+            }
+            else
+            {
+                if(Loading.Opacity == 1)
+                {
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        Loading.FadeTo(0, 1000);
+                    });
+                }
             }
         }
 
@@ -185,6 +240,8 @@ namespace PTHPlayer.Forms.Pages
         {
             EventNotificationService.EventHandler -= EventNotificationService_EventHandler;
             VideoPlayerController.PlayerStateChange -= PlayerService_StateChange;
+            VideoPlayerController.SubscriptionCompletedEvent -= VideoPlayerController_SubscriptionCompletedEvent;
+            VideoPlayerController.SubscriptionStartEvent -= VideoPlayerController_SubscriptionStartEvent;
             MessagingCenter.Unsubscribe<IKeyEventSender, string>(this, "KeyDown");
             base.OnDisappearing();
 

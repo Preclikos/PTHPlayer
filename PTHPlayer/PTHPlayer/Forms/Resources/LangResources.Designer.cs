@@ -70,6 +70,15 @@ namespace PTHPlayer.Forms.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        public static string EPG_Next {
+            get {
+                return ResourceManager.GetString("EPG_Next", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to exit?.
         /// </summary>
         public static string Exit_Question {

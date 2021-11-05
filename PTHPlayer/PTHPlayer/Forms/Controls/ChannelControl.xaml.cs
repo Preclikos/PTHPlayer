@@ -59,33 +59,19 @@ namespace PTHPlayer.Forms.Controls
                 {
                     if (EPGs.Any())
                     {
-                        var selectedChannel = EPGs.Where(s => s.ChannelId == channel.Id);
 
-                        if (selectedChannel != null && selectedChannel.Any())
+                        var currentEpg = EPGs.SingleOrDefault(s => s.EventId == channel.EventId);
+                        if (currentEpg != null)
                         {
-                            var currentEpg = selectedChannel.SingleOrDefault(s => s.EventId == channel.EventId);
-                            if (currentEpg != null)
-                            {
+                            newChannel.Title = currentEpg.Title;
 
-                                newChannel.Title = currentEpg.Title;
+                            newChannel.Progress = currentEpg.GetProgress();
 
-                                var start = currentEpg.Start.Ticks;
-                                var end = currentEpg.End.Ticks;
-                                var current = actualDate.Ticks;
-
-                                var range = end - start;
-                                var currentOnRange = end - current;
-
-                                var onePercentOnRange = range / (double)100;
-                                var currentPercent = currentOnRange / onePercentOnRange;
-                                var progressPercent = 1 - currentPercent / (double)100;
-
-                                newChannel.Progress = progressPercent;
-                            }
                         }
+
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     EventNotificationService.SendNotification("Channel List Parser", ex.Message);
                 }
@@ -104,6 +90,7 @@ namespace PTHPlayer.Forms.Controls
 
                 }
             }
+
             ChannelListView.SelectedItem = null;
         }
 

@@ -35,7 +35,7 @@ namespace PTHPlayer.HTSP
         volatile int _seq = 0;
 
         readonly object _lock;
-        readonly HTSConnectionListener _listener;
+        readonly IHTSConnectionListener _listener;
         readonly string _clientName;
         readonly string _clientVersion;
 
@@ -82,7 +82,7 @@ namespace PTHPlayer.HTSP
             ErrorHandler?.Invoke(this, e);
         }
 
-        public HTSConnectionAsync(HTSConnectionListener listener, String clientName, String clientVersion)
+        public HTSConnectionAsync(IHTSConnectionListener listener, String clientName, String clientVersion)
         {
             _connected = false;
             _lock = new object();
@@ -446,7 +446,7 @@ namespace PTHPlayer.HTSP
                 {
                     if (_listener != null)
                     {
-                        _listener.onError(ex);
+                        _listener.OnError(ex);
                     }
                     else
                     {
@@ -480,7 +480,7 @@ namespace PTHPlayer.HTSP
                 {
                     if (_listener != null)
                     {
-                        Task.Factory.StartNew(() => _listener.onError(ex));
+                        Task.Factory.StartNew(() => _listener.OnError(ex));
                     }
                     else
                     {
@@ -524,7 +524,7 @@ namespace PTHPlayer.HTSP
                 {
                     if (_listener != null)
                     {
-                        _listener.onError(ex);
+                        _listener.OnError(ex);
                     }
                     else
                     {
@@ -566,7 +566,7 @@ namespace PTHPlayer.HTSP
                             // auto update messages
                             if (_listener != null)
                             {
-                                _listener.onMessage(response);
+                                _listener.OnMessage(response);
                             }
                         }
                     }
@@ -575,7 +575,7 @@ namespace PTHPlayer.HTSP
                 {
                     if (_listener != null)
                     {
-                        _listener.onError(ex);
+                        _listener.OnError(ex);
                     }
                     else
                     {

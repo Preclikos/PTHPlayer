@@ -2,9 +2,9 @@
 
 namespace PTHPlayer.HTSP
 {
-    public interface HTSConnectionListener
+    public interface IHTSConnectionListener
     {
-        void onMessage(HTSMessage response);
-        void onError(Exception ex);
+        void OnMessage(HTSMessage response);
+        void OnError(Exception ex);
     }
 }

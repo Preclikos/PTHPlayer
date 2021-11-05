@@ -1,0 +1,36 @@
+﻿<Grid xmlns="http://xamarin.com/schemas/2014/forms"
+      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+      x:Class="PTHPlayer.Forms.Controls.EPGOverViewControl"
+      NavigationPage.HasNavigationBar="False"
+      VerticalOptions="FillAndExpand"
+      HorizontalOptions="FillAndExpand"
+      ColumnSpacing="0"
+      RowSpacing="0">
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="150" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="150" />
+    </Grid.RowDefinitions>
+
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="120" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="160" />
+    </Grid.ColumnDefinitions>
+
+    <StackLayout Grid.Row="1" Grid.Column="1" BackgroundColor="#73000000" Padding="10">
+        <StackLayout Orientation="Horizontal">
+            <AbsoluteLayout x:Name="EPGLabel"/>
+            <ScrollView x:Name="EPGScroll" Orientation="Horizontal">
+                <AbsoluteLayout x:Name="EPGContent"/>
+            </ScrollView>
+        </StackLayout>
+    </StackLayout>
+
+
+
+</Grid>
+
+
+    

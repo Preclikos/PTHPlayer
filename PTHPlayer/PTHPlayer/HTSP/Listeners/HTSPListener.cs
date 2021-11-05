@@ -8,7 +8,7 @@ using System;
 
 namespace PTHPlayer.HTSP.Listeners
 {
-    public class HTSPListener : HTSConnectionListener
+    public class HTSPListener : IHTSConnectionListener
     {
         readonly DataService DataStorageClient;
 
@@ -26,12 +26,12 @@ namespace PTHPlayer.HTSP.Listeners
             EvenetNotificationListener = evenetNotificationListener;
         }
 
-        public void onError(Exception ex)
+        public void OnError(Exception ex)
         {
             EvenetNotificationListener.SendNotification(nameof(HTSPListener), ex.Message, eventType: Event.Enums.EventType.Error);
         }
 
-        public void onMessage(HTSMessage response)
+        public void OnMessage(HTSMessage response)
         {
             try
             {
@@ -69,11 +69,11 @@ namespace PTHPlayer.HTSP.Listeners
                         }
                     case "channelUpdate":
                         {
-                            var channel = ChannelParser.Update(response);
-                            DataStorageClient.ChannelUpdate(channel.Id, channel.Fields);
+                            var (Id, Fields) = ChannelParser.Update(response);
+                            DataStorageClient.ChannelUpdate(Id, Fields);
 
-                            Logger.Info("ChannelUpdate with update event channel with Id: " + channel.Id);
-                            HTSPControllerListener.ChannelUpdate(channel.Id);
+                            Logger.Info("ChannelUpdate with update event channel with Id: " + Id);
+                            HTSPControllerListener.ChannelUpdate(Id);
                             break;
                         }
                     case "channelDelete":
@@ -99,10 +99,10 @@ namespace PTHPlayer.HTSP.Listeners
                         }
                     case "eventUpdate":
                         {
-                            var epg = EventParser.Update(response);
-                            DataStorageClient.EPGUpdate(epg.Id, epg.Fields);
+                            var (Id, Fields) = EventParser.Update(response);
+                            DataStorageClient.EPGUpdate(Id, Fields);
 
-                            Logger.Info("EventUpdate with Id: " + epg.Id);
+                            Logger.Info("EventUpdate with Id: " + Id);
                             break;
                         }
                     case "eventDelete":

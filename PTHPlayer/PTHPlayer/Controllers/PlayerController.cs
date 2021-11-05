@@ -19,6 +19,8 @@ namespace PTHPlayer.Controllers
 {
     public class PlayerController : IPlayerListener
     {
+        public event EventHandler SubscriptionStartEvent;
+        public event EventHandler SubscriptionCompletedEvent;
         public event EventHandler<PlayerStateChangeEventArgs> PlayerStateChange;
 
         readonly DataService DataStorage;
@@ -105,6 +107,8 @@ namespace PTHPlayer.Controllers
         public void Subscription(int channelId)
         {
             Logger.Info("Subscription Call");
+            SubscriptionStartEvent?.Invoke(this, new EventArgs());
+
             SubscriptionTaskCancellationToken.Cancel();
 
             SubscriptionTaskCancellationToken = new CancellationTokenSource();
@@ -207,7 +211,7 @@ namespace PTHPlayer.Controllers
                     DelegatePlayerStateChange(this, new PlayerStateChangeEventArgs { State = PlayerState.Stop });
                 }
             }
-            catch (OperationCanceledException ex)
+            catch (OperationCanceledException)
             {
                 Logger.Info("Player Subscription Cancel Exception");
                 DelegatePlayerStateChange(this, new PlayerStateChangeEventArgs { State = PlayerState.Stop });
@@ -218,6 +222,7 @@ namespace PTHPlayer.Controllers
                 DelegatePlayerStateChange(this, new PlayerStateChangeEventArgs { State = PlayerState.Stop });
             }
             Logger.Info("Subscription Completed");
+            SubscriptionCompletedEvent?.Invoke(this, new EventArgs());
         }
 
         public void UnSubscribe(bool forceStop = false, bool withPlayer = true)
