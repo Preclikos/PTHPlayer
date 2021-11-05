@@ -1,7 +1,7 @@
 ﻿<StackLayout xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PTHPlayer.Forms.Modals.NotificationItem"
-             BackgroundColor="#99000000" MinimumWidthRequest="450" MinimumHeightRequest="100" Padding="10">
+             BackgroundColor="#BF000000" MinimumWidthRequest="450" MinimumHeightRequest="100" Padding="10">
     <StackLayout Orientation="Horizontal">
         <StackLayout>
             <Image x:Name="Icon" HorizontalOptions="Start" WidthRequest="100" HeightRequest="100" />

@@ -19,7 +19,7 @@
         <ColumnDefinition Width="*"/>
     </Grid.ColumnDefinitions>
 
-    <StackLayout Grid.Column="1" Grid.Row="1" BackgroundColor="#73000000" Padding="20">
+    <StackLayout Grid.Column="1" Grid.Row="1" BackgroundColor="#BF000000" Padding="20">
         <Label Text="{x:Static resx:LangResources.Exit_Question}"  FontSize="Large"/>
         <StackLayout Orientation="Horizontal">
             <Button x:Name="YesButton" Text="{x:Static resx:LangResources.Yes}" MinimumWidthRequest="80" Clicked="Yes_Clicked" HorizontalOptions="StartAndExpand" />

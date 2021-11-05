@@ -1,7 +1,6 @@
 ﻿<Grid xmlns="http://xamarin.com/schemas/2014/forms"
       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
       x:Class="PTHPlayer.Forms.Controls.PlayerControl"
-      xmlns:component="clr-namespace:PTHPlayer.Forms.Components"
       xmlns:resx="clr-namespace:PTHPlayer.Forms.Resources;"
       xmlns:local="clr-namespace:PTHPlayer.Forms.ViewModels"
       NavigationPage.HasNavigationBar="False"
@@ -20,7 +19,7 @@
         <RowDefinition Height="160" />
     </Grid.RowDefinitions>
 
-    <StackLayout Grid.Row="0" BackgroundColor="#73000000" Padding="10">
+    <StackLayout Grid.Row="0" BackgroundColor="#BF000000" Padding="10">
         <Grid ColumnSpacing="0"
                       RowSpacing="0">
 
@@ -59,7 +58,7 @@
         <Label Text="{Binding FullDescription}" />
     </StackLayout>
 
-    <StackLayout Grid.Row="2" BackgroundColor="#73000000">
+    <StackLayout Grid.Row="2" BackgroundColor="#BF000000">
         <StackLayout Orientation="Horizontal" Padding="20, 0">
             <Label Padding="10" Text="{Binding StartTime}" HorizontalOptions="StartAndExpand" FontSize="48" />
             <Label Padding="10" Text="{Binding EndTime}" HorizontalOptions="End" FontSize="48" />

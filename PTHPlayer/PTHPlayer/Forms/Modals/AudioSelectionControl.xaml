@@ -21,7 +21,7 @@
             <ColumnDefinition Width="500"/>
         </Grid.ColumnDefinitions>
 
-        <StackLayout Padding="20" Grid.Row="1" Grid.Column="1" BackgroundColor="#9F000000">
+        <StackLayout Padding="20" Grid.Row="1" Grid.Column="1" BackgroundColor="#BF000000">
             <Label FontSize="Large" Text="{x:Static resx:LangResources.AudioSelecton_Title}" />
             <ListView
                 x:Name="AudioSelectionList"
