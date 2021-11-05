@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Timers;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -23,10 +24,16 @@ namespace PTHPlayer.Forms.Controls
         readonly HTSPController HTSPConnectionController;
         readonly EventService EventNotificationService;
 
+        Timer RefreshTimer;
+
         readonly EPGViewModel EPGViewModel = new EPGViewModel();
 
         private List<ChannelModel> Channels = new List<ChannelModel>();
         private List<EPGModel> EPGs = new List<EPGModel>();
+
+        bool DescriptionScrollerReset = false;
+        DateTime EPGStart;
+        DateTime EPGStop;
 
         public EPGControl(DataService dataStorage, PlayerController videoPlayerController, HTSPController hTSPController, EventService eventNotificationService)
         {
@@ -40,7 +47,56 @@ namespace PTHPlayer.Forms.Controls
             EventNotificationService = eventNotificationService;
 
             this.BindingContext = EPGViewModel;
+
+            RefreshTimer = new Timer(400);
+            RefreshTimer.AutoReset = true;
+
+            RefreshTimer.Elapsed += RefreshTimer_Elapsed;
         }
+
+        private void RefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (EPGStart != null && EPGStop != null)
+            {
+                var totalTime = EPGStop - EPGStart;
+                var currentTime = totalTime - (EPGStop - DateTime.Now);
+                if (currentTime.Hours == 0)
+                {
+                    EPGViewModel.CurrentTime = String.Format("{0:00}:{1:00}", currentTime.Minutes, currentTime.Seconds);
+                }
+                else
+                {
+                    EPGViewModel.CurrentTime = String.Format("{0:00}:{1:00}:{2:00}", currentTime.Hours, currentTime.Minutes, currentTime.Seconds);
+                }
+            }
+            var maxScroll = DecriptionScroll.Content.Height - 300;
+            if (maxScroll > 0)
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (DecriptionScroll.ScrollY == 0)
+                    {
+                        DescriptionScrollerReset = false;
+                    }
+                    if (DecriptionScroll.ScrollY < maxScroll - 1 && !DescriptionScrollerReset)
+                    {
+                        var scrollTarget = DecriptionScroll.ScrollY + 5;
+                        if (scrollTarget > maxScroll)
+                        {
+                            scrollTarget = maxScroll;
+                        }
+                        DecriptionScroll.ScrollToAsync(0, scrollTarget, true);
+                    }
+                    else
+                    {
+                        DescriptionScrollerReset = true;
+                        DecriptionScroll.ScrollToAsync(0, 0, true);
+                    }
+                });
+            }
+        }
+
+        
 
         private int ChannelMove(int currentChannel, ChannelMoveDirection channelMove)
         {
@@ -123,7 +179,9 @@ namespace PTHPlayer.Forms.Controls
                 if (epg != null)
                 {
                     EPGViewModel.StartTime = epg.Start.ToString("HH:mm");
+                    EPGStart = epg.Start;
                     EPGViewModel.EndTime = epg.End.ToString("HH:mm");
+                    EPGStop = epg.End;
                     EPGViewModel.Title = epg.Title;
                     EPGViewModel.Description = epg.Summary;
                     EPGViewModel.FullDescription = epg.Description;
@@ -198,6 +256,7 @@ namespace PTHPlayer.Forms.Controls
             {
                 EventNotificationService.SendNotification("Channel Player Parser", ex.Message);
             }
+
         }
 
         void Handle_ChannelClicked(object sender, ItemTappedEventArgs e)
@@ -254,6 +313,8 @@ namespace PTHPlayer.Forms.Controls
 
         private void OnAppearing()
         {
+            RefreshTimer.Start();
+
             Channels = DataStorage.GetChannels();
             EPGs = DataStorage.GetEPGs();
 
@@ -326,6 +387,7 @@ namespace PTHPlayer.Forms.Controls
 
         private void OnDisappearing()
         {
+            RefreshTimer.Stop();
             HTSPConnectionController.ChannelUpdateEvent -= HTSPConnectionController_ChannelUpdateEvent;
             MessagingCenter.Unsubscribe<IKeyEventSender, string>(this, "KeyDown");
             this.IsVisible = false;

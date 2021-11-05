@@ -34,7 +34,7 @@
                 <Label Text="{Binding Title}" FontSize="74" FontAttributes="Bold" />
                 <StackLayout Orientation="Horizontal">
                     <Label Text="(" FontSize="52" />
-                    <Label Text="{Binding Number}" FontSize="52" />
+                    <Label Text="{Binding Number}" FontSize="52" TextColor="#00abef" />
                     <Label Text=")" FontSize="52" />
                     <Label Text="{Binding Label}" FontSize="52" FontAttributes="Bold" />
                     <Label x:Name="Separator" Text=" - " FontSize="52" />
@@ -59,7 +59,7 @@
         </Grid.RowDefinitions>
         
         <StackLayout Padding="60, 0" Grid.Row="0">
-            <Label Text="{Binding Number}" TextColor="WhiteSmoke" FontSize="160"  />
+            <Label Text="{Binding Number}" TextColor="WhiteSmoke" FontSize="160" FontAttributes="Bold" />
         </StackLayout>
 
         <Grid BackgroundColor="#BF000000" Grid.Row="1">
@@ -69,12 +69,12 @@
             </Grid.RowDefinitions>
 
             <StackLayout Padding="60, 20" Grid.Row="0">
-                <ScrollView>
-                    <Label Text="{Binding FullDescription}"  />
+                <ScrollView x:Name="DecriptionScroll">
+                    <Label FontSize="Large" Text="{Binding FullDescription}"  />
                 </ScrollView>
             </StackLayout>
             <StackLayout Padding="100, 0" Orientation="Horizontal" Grid.Row="1">
-                <Label Text="{x:Static resx:LangResources.EPG_Next}"  />
+                <Label Text="{x:Static resx:LangResources.EPG_Next}" FontAttributes="Bold" />
                 <Label Text=": "  />
                 <Label Text="{Binding NextStart}"  />
                 <Label Text=" - "  />
@@ -96,14 +96,14 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="360" />
+                <ColumnDefinition Width="400" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             
             <StackLayout Grid.Column="1" Orientation="Horizontal" Padding="20, 0">
-                <Label Padding="10" Text="{Binding CurrentTime}" HorizontalTextAlignment="End" />
-                <Label Padding="10" Text="/" />
-                <Label Padding="10" Text="{Binding TotalTime}" HorizontalTextAlignment="Start" />
+                <Label Padding="10" Text="{Binding CurrentTime}" FontSize="Large" HorizontalTextAlignment="End" FontAttributes="Bold" />
+                <Label Padding="10" Text="/" FontSize="Large" FontAttributes="Bold" />
+                <Label Padding="10" Text="{Binding TotalTime}" FontSize="Large" HorizontalTextAlignment="Start" FontAttributes="Bold" />
             </StackLayout>
         </Grid>
     </StackLayout>

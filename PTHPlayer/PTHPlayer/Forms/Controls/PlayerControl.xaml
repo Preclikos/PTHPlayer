@@ -32,11 +32,11 @@
                 <Label Text="{Binding Title}" FontSize="74" FontAttributes="Bold" />
                 <StackLayout Orientation="Horizontal">
                     <Label Text="(" FontSize="52" />
-                    <Label Text="{Binding Number}" FontSize="52" />
+                    <Label Text="{Binding Number}" FontSize="52" TextColor="#00abef" />
                     <Label Text=")" FontSize="52" />
                     <Label Text="{Binding Label}" FontSize="52" FontAttributes="Bold" />
                     <Label x:Name="Separator" Text=" - " FontSize="52" />
-                    <Label Text="{Binding Description}" FontSize="52" MaxLines="1" WidthRequest="600" LineBreakMode="TailTruncation" />
+                    <Label Text="{Binding Description}" FontSize="52" MaxLines="1" WidthRequest="1000" LineBreakMode="TailTruncation" />
                 </StackLayout>
             </StackLayout>
             <StackLayout Grid.Column="1">
