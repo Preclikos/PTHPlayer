@@ -202,7 +202,9 @@ namespace PTHPlayer.Forms.Languages
                 new ISO639_2_Lang(ISO639Resources.Yoruba, "yor"),
                 new ISO639_2_Lang(ISO639Resources.Zhuang, "zha"),
                 new ISO639_2_Lang(ISO639Resources.Chinese, "chi/zho"),
-                new ISO639_2_Lang(ISO639Resources.Zulu, "zul")
+                new ISO639_2_Lang(ISO639Resources.Zulu, "zul"),
+                //Not in ISO but needed
+                new ISO639_2_Lang(ISO639Resources.Original, "qaa")
             };
 
             return collection;

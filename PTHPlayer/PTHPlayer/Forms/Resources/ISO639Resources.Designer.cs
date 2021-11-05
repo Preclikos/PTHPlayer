@@ -1159,6 +1159,15 @@ namespace PTHPlayer.Forms.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Original.
+        /// </summary>
+        public static string Original {
+            get {
+                return ResourceManager.GetString("Original", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Oriya.
         /// </summary>
         public static string Oriya {

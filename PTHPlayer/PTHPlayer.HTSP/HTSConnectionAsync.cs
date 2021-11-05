@@ -61,7 +61,7 @@ namespace PTHPlayer.HTSP
 
         Stopwatch sendTimer = new Stopwatch();
         DateTime LastValidPacketReceived = DateTime.UtcNow;
-        volatile bool isSubscribtionStart = false;
+        volatile bool isSubscriptionStart = false;
 
         //Monitor credentials
         string _hostName = string.Empty;
@@ -348,7 +348,7 @@ namespace PTHPlayer.HTSP
 
                     var connState = _socket != null && _socket.Connected;
                     var senderTimeOut = sendTimer.Elapsed > timeOutSpan;
-                    var subscriptionTimeOut = isSubscribtionStart && receiveDiff > timeOutSpan;
+                    var subscriptionTimeOut = isSubscriptionStart && receiveDiff > timeOutSpan;
 
                     var disconnected = !connState || senderTimeOut || subscriptionTimeOut;
 
@@ -509,13 +509,13 @@ namespace PTHPlayer.HTSP
                         //Monitor if receive sub or desub 
                         if (response.Method == "subscriptionStart")
                         {
-                            isSubscribtionStart = true;
-                            Logger.Info("Subscribtion Received");
+                            isSubscriptionStart = true;
+                            Logger.Info("Subscription Received");
                         }
                         if (response.Method == "subscriptionStop" || response.Method == "subscriptionSkip")
                         {
-                            isSubscribtionStart = false;
-                            Logger.Info("Subscribtion Stop or Skip Received");
+                            isSubscriptionStart = false;
+                            Logger.Info("Subscription Stop or Skip Received");
                         }
 
                     }
