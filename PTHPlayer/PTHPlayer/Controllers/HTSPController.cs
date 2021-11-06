@@ -1,4 +1,5 @@
-﻿using PTHPlayer.Controllers.Listeners;
+﻿using PTHLogger;
+using PTHPlayer.Controllers.Listeners;
 using PTHPlayer.DataStorage.Service;
 using PTHPlayer.Event.Enums;
 using PTHPlayer.Event.Listeners;
@@ -6,6 +7,8 @@ using PTHPlayer.HTSP;
 using PTHPlayer.HTSP.Listeners;
 using PTHPlayer.HTSP.Models;
 using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace PTHPlayer.Controllers
 {
@@ -18,6 +21,8 @@ namespace PTHPlayer.Controllers
         HTSPListener HTSListener { get; set; }
 
         public event EventHandler<ChannelUpdateEventArgs> ChannelUpdateEvent;
+
+        private readonly ILogger Logger = LoggerManager.GetInstance().GetLogger("PTHPlayer.Controllers");
 
         public HTSPController(DataService dataStorage, HTSPService hTSPClient, IEventListener eventNotificationListener)
         {
@@ -121,13 +126,14 @@ namespace PTHPlayer.Controllers
                     }
                     else
                     {
+                        Logger.Error("Invalid Login Credentials");
                         throw new Exception("Invalid Login Credentials");
                     }
                 }
                 else
                 {
+                    Logger.Error("Cannot connect server");
                     throw new Exception("Cannot connect server");
-
                 }
             }
         }
@@ -144,12 +150,63 @@ namespace PTHPlayer.Controllers
 
         public void ChannelUpdate(int channelId)
         {
+
             var eventArgs = new ChannelUpdateEventArgs
             {
                 ChannelId = channelId
             };
 
             DelegateChannelUpdate(this, eventArgs);
+
+            Task.Run(() => CacheChannelImage(channelId));
+
+        }
+
+        readonly object lockImageDownload = new object();
+
+        void CacheChannelImage(int channelId)
+        {
+            string iconDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "imagecache");
+            if (!Directory.Exists(iconDirectory))
+            {
+                Directory.CreateDirectory(iconDirectory);
+            }
+            lock (lockImageDownload)
+            {
+                var channel = DataStorage.GetChannel(channelId);
+                if (channel != null && !String.IsNullOrEmpty(channel.Icon))
+                {
+                    string filepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), channel.Icon + ".png");
+
+                    var file = HTSPClient.FileOpen(channel.Icon);
+
+                    if (File.Exists(filepath))
+                    {
+                        var lastIconModify = File.GetLastWriteTime(filepath);
+                        if (lastIconModify < file.LastModified)
+                        {
+                            Download(file.Id, file.Size, filepath);
+                        }
+                        else
+                        {
+                            Download(file.Id, file.Size, filepath);
+                        }
+                    }
+                    else
+                    {
+                        Download(file.Id, file.Size, filepath);
+                    }
+
+                    HTSPClient.FileClose(file.Id);
+                }
+            }
+        }
+
+        void Download(int id, long size, string path)
+        {
+            var data = HTSPClient.FileRead(id, size);
+
+            File.WriteAllBytes(path, data);
         }
     }
 }

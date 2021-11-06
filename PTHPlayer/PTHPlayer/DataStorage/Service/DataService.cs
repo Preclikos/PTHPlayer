@@ -16,12 +16,24 @@ namespace PTHPlayer.DataStorage.Service
         readonly object epgLock = new object();
         readonly List<EPGModel> EPGs = new List<EPGModel>();
 
+        SettingModel Setting = new SettingModel();
+
         public string ServerWebRoot;
         public SignalStatusModel SingnalStatus = new SignalStatusModel();
         readonly IDataStorage NativeDataService;
         public DataService()
         {
             NativeDataService = DependencyService.Get<IDataStorage>();
+        }
+
+        public void SetSetting(SettingModel setting)
+        {
+            Setting = setting;
+        }
+
+        public SettingModel GetSetting()
+        {
+            return Setting;
         }
 
         public void CleanChannelsAndEPGs()
@@ -119,6 +131,14 @@ namespace PTHPlayer.DataStorage.Service
             lock (channelLock)
             {
                 return Channels.ToList();
+            }
+        }
+
+        public ChannelModel GetChannel(int id)
+        {
+            lock (channelLock)
+            {
+                return Channels.SingleOrDefault(s => s.Id == id);
             }
         }
 

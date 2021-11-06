@@ -75,10 +75,5 @@
             <!--<component:PlayerButton -->
             <Button Margin="0, 15" ImageSource="icons/settings.png" WidthRequest="100" Clicked="Handle_Settings" HorizontalOptions="End" BackgroundColor="Transparent" />
         </StackLayout>
-        <StackLayout Orientation="Horizontal" IsVisible="false">
-            <Label Text="{Binding PlayerTime}" HorizontalOptions="StartAndExpand"/>
-            <Label Text="{Binding PacketPTS}" HorizontalOptions="End"/>
-        </StackLayout>
-
     </StackLayout>
 </Grid>

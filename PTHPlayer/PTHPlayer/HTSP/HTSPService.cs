@@ -1,4 +1,5 @@
 ﻿using PTHPlayer.HTSP.Listeners;
+using PTHPlayer.HTSP.Models;
 using PTHPlayer.HTSP.Responses;
 using System;
 using System.Threading;
@@ -110,6 +111,69 @@ namespace PTHPlayer.HTSP
             {
                 Task.Run(() => HTPClient.Stop(true));
             }
+        }
+
+        public OpenFileResponse FileOpen(string path)
+        {
+            HTSMessage openFileMessage = new HTSMessage
+            {
+                Method = "fileOpen"
+            };
+            openFileMessage.putField("file", path);
+
+            LoopBackResponseHandler lbrh = new LoopBackResponseHandler();
+            HTPClient.SendMessage(openFileMessage, lbrh);
+            var response = lbrh.getResponse(CancellationToken.None);
+
+            var openResponse = new OpenFileResponse
+            {
+                Id = response.getInt("id"),
+                Size = response.getLong("size"),
+            };
+
+            if(response.containsField("mtime"))
+            {
+                var lastModifyLong = response.getLong("mtime");
+                openResponse.LastModified = UnixTimeStampToDateTime(lastModifyLong);
+            }
+
+            return openResponse;
+        }
+
+        public byte[] FileRead(int id, long size)
+        {
+            HTSMessage readFileMessage = new HTSMessage
+            {
+                Method = "fileRead"
+            };
+            readFileMessage.putField("id", id);
+            readFileMessage.putField("size", size);
+
+            LoopBackResponseHandler lbrh = new LoopBackResponseHandler();
+            HTPClient.SendMessage(readFileMessage, lbrh);
+            var response = lbrh.getResponse(CancellationToken.None);
+
+            return response.getByteArray("data");
+        }
+
+        public void FileClose(int id)
+        {
+            HTSMessage closeFileMessage = new HTSMessage
+            {
+                Method = "fileClose"
+            };
+            closeFileMessage.putField("id", id);
+
+            LoopBackResponseHandler lbrh = new LoopBackResponseHandler();
+            HTPClient.SendMessage(closeFileMessage, lbrh);
+            //lbrh.getResponse(CancellationToken.None);
+        }
+
+        private static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
+        {
+            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dateTime;
         }
     }
 }

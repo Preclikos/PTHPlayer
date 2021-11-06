@@ -307,29 +307,33 @@ namespace PTHPlayer.HTSP
             return _serverversion;
         }
 
+        readonly object seqLock = new object();
         public void SendMessage(HTSMessage message, HTSResponseHandler responseHandler)
         {
             try
             {
-                // loop the sequence number
-                if (_seq == int.MaxValue)
+                lock (seqLock)
                 {
-                    _seq = int.MinValue;
-                }
-                else
-                {
-                    _seq++;
-                }
+                    // loop the sequence number
+                    if (_seq == int.MaxValue)
+                    {
+                        _seq = int.MinValue;
+                    }
+                    else
+                    {
+                        _seq++;
+                    }
 
-                // housekeeping verry old response handlers
-                if (_responseHandlers.ContainsKey(_seq))
-                {
-                    _responseHandlers.Remove(_seq);
-                }
+                    // housekeeping verry old response handlers
+                    if (_responseHandlers.ContainsKey(_seq))
+                    {
+                        _responseHandlers.Remove(_seq);
+                    }
 
-                message.putField("seq", _seq);
-                _messagesForSendQueue.Enqueue(message);
-                _responseHandlers.Add(_seq, responseHandler);
+                    message.putField("seq", _seq);
+                    _messagesForSendQueue.Enqueue(message);
+                    _responseHandlers.Add(_seq, responseHandler);
+                }
             }
             catch (Exception ex)
             {

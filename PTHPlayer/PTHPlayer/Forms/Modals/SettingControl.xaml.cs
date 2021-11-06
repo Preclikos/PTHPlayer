@@ -1,5 +1,4 @@
-﻿
-using PTHPlayer.Controllers;
+﻿using PTHPlayer.Controllers;
 using PTHPlayer.DataStorage;
 using PTHPlayer.Forms.Modals.ModalViewModels;
 using PTHPlayer.Interfaces;

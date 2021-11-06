@@ -38,7 +38,7 @@
                     <Label Text=")" FontSize="52" />
                     <Label Text="{Binding Label}" FontSize="52" FontAttributes="Bold" />
                     <Label x:Name="Separator" Text=" - " FontSize="52" />
-                    <Label Text="{Binding Description}" FontSize="52" MaxLines="1" WidthRequest="600" LineBreakMode="TailTruncation" />
+                    <Label Text="{Binding Description}" FontSize="52" MaxLines="1" WidthRequest="1000" LineBreakMode="TailTruncation" />
                 </StackLayout>
             </StackLayout>
             <StackLayout Grid.Column="1">
@@ -93,18 +93,12 @@
             <Label Padding="10" Text="{Binding EndTime}" HorizontalOptions="End" FontSize="48" />
         </StackLayout>
         <ProgressBar Margin="0" Progress="{Binding Progress}" ScaleY="3" BackgroundColor="DarkSlateBlue" />
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="400" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            
-            <StackLayout Grid.Column="1" Orientation="Horizontal" Padding="20, 0">
-                <Label Padding="10" Text="{Binding CurrentTime}" FontSize="Large" HorizontalTextAlignment="End" FontAttributes="Bold" />
-                <Label Padding="10" Text="/" FontSize="Large" FontAttributes="Bold" />
-                <Label Padding="10" Text="{Binding TotalTime}" FontSize="Large" HorizontalTextAlignment="Start" FontAttributes="Bold" />
-            </StackLayout>
-        </Grid>
+
+        <StackLayout Orientation="Horizontal" Padding="20, 0">
+            <Label Padding="10" Text="{Binding CurrentTime}" HorizontalOptions="EndAndExpand" FontSize="Large" FontAttributes="Bold" />
+            <Label Padding="10" Text="/" FontSize="Large" HorizontalOptions="Center" FontAttributes="Bold" />
+            <Label Padding="10" Text="{Binding TotalTime}" HorizontalOptions="StartAndExpand" FontSize="Large" FontAttributes="Bold" />
+        </StackLayout>
+        
     </StackLayout>
 </Grid>

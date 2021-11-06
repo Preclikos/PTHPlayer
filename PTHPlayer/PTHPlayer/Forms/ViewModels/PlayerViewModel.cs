@@ -18,21 +18,6 @@ namespace PTHPlayer.Forms.ViewModels
         private string startTime;
         private string endTime;
 
-        private long playerTime;
-        private long packetPTS;
-
-        public long PlayerTime
-        {
-            set { SetProperty(ref playerTime, value); }
-            get { return playerTime; }
-        }
-
-        public long PacketPTS
-        {
-            set { SetProperty(ref packetPTS, value); }
-            get { return packetPTS; }
-        }
-
         public int Id
         {
             set { SetProperty(ref id, value); }

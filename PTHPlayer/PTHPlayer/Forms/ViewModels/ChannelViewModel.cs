@@ -1,4 +1,6 @@
-﻿namespace PTHPlayer.Forms.ViewModels
+﻿using Xamarin.Forms;
+
+namespace PTHPlayer.Forms.ViewModels
 {
     public class ChannelViewModel
     {

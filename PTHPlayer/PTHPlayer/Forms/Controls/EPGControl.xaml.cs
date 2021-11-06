@@ -23,8 +23,7 @@ namespace PTHPlayer.Forms.Controls
         readonly PlayerController VideoPlayerController;
         readonly HTSPController HTSPConnectionController;
         readonly EventService EventNotificationService;
-
-        Timer RefreshTimer;
+        readonly Timer RefreshTimer;
 
         readonly EPGViewModel EPGViewModel = new EPGViewModel();
 
@@ -48,8 +47,10 @@ namespace PTHPlayer.Forms.Controls
 
             this.BindingContext = EPGViewModel;
 
-            RefreshTimer = new Timer(400);
-            RefreshTimer.AutoReset = true;
+            RefreshTimer = new Timer(400)
+            {
+                AutoReset = true
+            };
 
             RefreshTimer.Elapsed += RefreshTimer_Elapsed;
         }
@@ -95,8 +96,6 @@ namespace PTHPlayer.Forms.Controls
                 });
             }
         }
-
-        
 
         private int ChannelMove(int currentChannel, ChannelMoveDirection channelMove)
         {
@@ -150,7 +149,6 @@ namespace PTHPlayer.Forms.Controls
                 return -1;
             }
         }
-
 
         private void ParseChannelToModel(int id)
         {

@@ -6,6 +6,7 @@ using PTHPlayer.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Xamarin.Forms;
@@ -55,6 +56,10 @@ namespace PTHPlayer.Forms.Controls
                     Label = channel.Label,
                     Number = channel.Number
                 };
+
+                string filepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), channel.Icon + ".png");
+                newChannel.Image = filepath;
+
                 try
                 {
                     if (EPGs.Any())

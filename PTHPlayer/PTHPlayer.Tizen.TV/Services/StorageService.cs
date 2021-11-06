@@ -46,5 +46,24 @@ namespace PTHPlayer.Tizen.TV.Services
             DataManager.RemoveAlias("UserName");
             DataManager.RemoveAlias("Password");
         }
+
+        public string GetField(string name)
+        {
+            try
+            {
+                var fieldBytes = DataManager.Get(name, "");
+                return Encoding.UTF8.GetString(fieldBytes);
+            }
+            catch
+            {
+                //No stored values do exception
+                return String.Empty;
+            }
+        }
+
+        public void SaveField(string name, string value)
+        {
+            DataManager.Save(name, Encoding.UTF8.GetBytes(value), new Policy());
+        }
     }
 }
