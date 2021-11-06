@@ -3,6 +3,7 @@ using PTHPlayer.Controllers.Listeners;
 using PTHPlayer.DataStorage.Service;
 using PTHPlayer.Event.Enums;
 using PTHPlayer.Event.Listeners;
+using PTHPlayer.HTSP.Enums;
 using PTHPlayer.HTSP.Parsers;
 using System;
 
@@ -46,6 +47,20 @@ namespace PTHPlayer.HTSP.Listeners
                     case "subscriptionStop":
                         {
                             SubcriptionListener.OnSubscriptionStop(response);
+                            if (response.containsField("subscriptionError"))
+                            {
+                                var error = response.getString("subscriptionError");
+                                try
+                                {
+                                    var errorValue = (SubscriptionStopError)Enum.Parse(typeof(SubscriptionStopError), error, true);
+                                }
+                                catch
+                                {
+                                    Logger.Error("Subscription Stop - Parse Error code");
+                                }
+                                Logger.Warn("Subscription Stop - Error code: " + error);
+                            }
+
                             break;
                         }
                     case "subscriptionSkip":
@@ -117,14 +132,28 @@ namespace PTHPlayer.HTSP.Listeners
                         {
                             if (response.containsField("status"))
                             {
-                                EvenetNotificationListener.SendNotification("Status", response.getString("status"), EventId.Subscription, EventType.Loading);
+                                EvenetNotificationListener.SendNotification("Status", response.getString("status"), EventId.Subscription, EventType.Error);
+                            }
+
+                            if (response.containsField("subscriptionError"))
+                            {
+                                var error = response.getString("subscriptionError");
+                                try
+                                {
+                                    var errorValue = (SubscriptionStatusError)Enum.Parse(typeof(SubscriptionStatusError), error, true);
+                                }
+                                catch
+                                {
+                                    Logger.Error("Subscription Status - Parse Error code");
+                                }
+                                Logger.Warn("Subscription Status - Error code: " + error);
                             }
                             Logger.Info("Subscription Status");
                             break;
                         }
                     case "subscriptionGrace":
                         {
-                            Logger.Info("Subscription Grace");
+                            SubcriptionListener.OnSubscriptionGrace(response);
                             break;
                         }
                     case "signalStatus":

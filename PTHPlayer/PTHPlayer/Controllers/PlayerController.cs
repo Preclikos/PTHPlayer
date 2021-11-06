@@ -37,6 +37,7 @@ namespace PTHPlayer.Controllers
         Task UnsubscriptionTask;
 
         TaskCompletionSource<HTSMessage> SubscriptionStart;
+        TaskCompletionSource<int> SubscriptionGrace;
         TaskCompletionSource<HTSMessage> SubscriptionSkip;
         TaskCompletionSource<HTSMessage> SubscriptionStop;
 
@@ -117,6 +118,13 @@ namespace PTHPlayer.Controllers
             {
                 try
                 {
+
+                    if (Status == SubscriptionStatus.New)
+                    {
+                        PlayerSubscriptionCancellationToken.Cancel();
+                        Logger.Info("Player Subscription token Cancelled");
+                    }
+                    
                     if (SubscriptionTask != null && !SubscriptionTask.IsCompleted)
                     {
                         Logger.Info("Subscription wait");
@@ -137,11 +145,6 @@ namespace PTHPlayer.Controllers
                         Logger.Info("Unsubscription wait Resume");
                     }
 
-                    if (Status == SubscriptionStatus.New)
-                    {
-                        PlayerSubscriptionCancellationToken.Cancel();
-                        Logger.Info("Player Subscription token Cancelled");
-                    }
                     PlayerSubscriptionCancellationToken = new CancellationTokenSource();
 
                     Logger.Info("Player Subscription Started");
@@ -164,6 +167,7 @@ namespace PTHPlayer.Controllers
         async Task SubscriptionProcess(int channelId)
         {
             SubscriptionStart = new TaskCompletionSource<HTSMessage>();
+            SubscriptionGrace = new TaskCompletionSource<int>();
             SubscriptionSkip = new TaskCompletionSource<HTSMessage>();
 
             try
@@ -172,45 +176,55 @@ namespace PTHPlayer.Controllers
                 var subscriptionId = HTSPClient.Subscribe(channelId);
                 SubscriptionId = subscriptionId;
 
-                Task.WaitAny(new[] { SubscriptionStart.Task, SubscriptionSkip.Task }, 120000, PlayerSubscriptionCancellationToken.Token);
+                SubscriptionGrace.Task.Wait(30000, PlayerSubscriptionCancellationToken.Token);
+                var timeOut = SubscriptionGrace.Task.IsCompleted ? SubscriptionGrace.Task.Result : 120000; //Depends on documentation describe can be 2 minutes
 
-                //Flow one SubscriptionStart Success
-                if (SubscriptionStart.Task.IsCompleted)
+                var subscriptionWaitResult = Task.WaitAny(new[] { SubscriptionStart.Task, SubscriptionSkip.Task }, timeOut, PlayerSubscriptionCancellationToken.Token);
+
+                if (subscriptionWaitResult != -1)
                 {
-                    Status = SubscriptionStatus.Submitted;
-
-                    CalculationFps = new TaskCompletionSource<bool>();
-                    CalculationSampleRate = new TaskCompletionSource<bool>();
-
-                    PlayerService.Subscription(SubscriptionStart.Task.Result);
-
-                    var results = Task.WaitAll(new[] { CalculationFps.Task, CalculationSampleRate.Task }, 5000, PlayerSubscriptionCancellationToken.Token);
-                    if (results)
+                    //Flow one SubscriptionStart Success
+                    if (SubscriptionStart.Task.IsCompleted)
                     {
+                        Status = SubscriptionStatus.Submitted;
 
-                        Status = SubscriptionStatus.WaitForPlay;
+                        CalculationFps = new TaskCompletionSource<bool>();
+                        CalculationSampleRate = new TaskCompletionSource<bool>();
 
-                        var playerPrepare = PlayerService.PreparePlayer();
+                        PlayerService.Subscription(SubscriptionStart.Task.Result);
 
-                        await PlayerService.PacketReady();
-                        Status = SubscriptionStatus.Play;
+                        var results = Task.WaitAll(new[] { CalculationFps.Task, CalculationSampleRate.Task }, 5000, PlayerSubscriptionCancellationToken.Token);
+                        if (results)
+                        {
 
-                        //Wait block packet for a while this do scratch on start -- maybe
-                        playerPrepare.Wait();
-                        SubtitlePlayer.Start();
+                            Status = SubscriptionStatus.WaitForPlay;
+
+                            var playerPrepare = PlayerService.PreparePlayer();
+
+                            await PlayerService.PacketReady();
+                            Status = SubscriptionStatus.Play;
+
+                            //Wait block packet for a while this do scratch on start -- maybe
+                            playerPrepare.Wait();
+                            SubtitlePlayer.Start();
+                        }
+                        else
+                        {
+                            Logger.Info("Player Subscription - TimeOut");
+                            EventNotificationListener.SendNotification(nameof(PlayerController), "TimeOut", eventType: EventType.Warning);
+                        }
                     }
-                    else
+
+                    //Flow one SubscriptionSkip Nothing to do reset state
+                    else if (SubscriptionSkip.Task.IsCompleted)
                     {
-                        Logger.Info("Player Subscription - TimeOut");
-                        EventNotificationListener.SendNotification(nameof(PlayerController), "TimeOut", eventType: EventType.Warning);
+                        Status = SubscriptionStatus.New;
+                        DelegatePlayerStateChange(this, new PlayerStateChangeEventArgs { State = PlayerState.Stop });
                     }
                 }
-
-                //Flow one SubscriptionSkip Nothing to do reset state
-                else if (SubscriptionSkip.Task.IsCompleted)
+                else
                 {
-                    Status = SubscriptionStatus.New;
-                    DelegatePlayerStateChange(this, new PlayerStateChangeEventArgs { State = PlayerState.Stop });
+                    UnSubscribe();
                 }
             }
             catch (OperationCanceledException)
@@ -448,6 +462,17 @@ namespace PTHPlayer.Controllers
 
             }
 
+        }
+
+        public void OnSubscriptionGrace(HTSMessage message)
+        {
+            var timeOut = message.getInt("graceTimeout");
+            if (SubscriptionGrace != null && !SubscriptionGrace.Task.IsCompleted)
+                SubscriptionGrace.SetResult(timeOut * 1000);
+        }
+
+        public void OnSubscriptionStatus(HTSMessage message)
+        {
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using PTHPlayer.Controllers;
+﻿using PTHLogger;
+using PTHPlayer.Controllers;
 using PTHPlayer.DataStorage.Service;
 using PTHPlayer.Enums;
 using PTHPlayer.Event;
@@ -27,6 +28,7 @@ namespace PTHPlayer.Forms.Pages
         readonly ChannelControl ChannelSelectionControl;
         readonly EPGOverViewControl EPGListControl;
 
+        private readonly ILogger Logger = LoggerManager.GetInstance().GetLogger("PTHPlayer");
         public MainPage(DataService dataStorage, PlayerController videoPlayerController, HTSPController hTSPController, EventService eventNotificationService)
         {
 
@@ -140,25 +142,34 @@ namespace PTHPlayer.Forms.Pages
              });
         }
 
+        bool InSubscription = false;
         private void VideoPlayerController_SubscriptionCompletedEvent(object sender, System.EventArgs e)
         {
+            Logger.Info("Player Subscription Completed");
+            InSubscription = false;
             ShowLoading(false);
         }
 
         private void VideoPlayerController_SubscriptionStartEvent(object sender, System.EventArgs e)
         {
+            Logger.Info("Player Subscription Start");
+            InSubscription = true;
             ShowLoading(true);
             ShowLogo(false);
         }
 
         private void PlayerService_StateChange(object sender, PlayerStateChangeEventArgs e)
         {
+            Logger.Info("Player State changed: " + e.State.ToString());
             switch (e.State)
             {
                 case PlayerState.Stop:
                     {
-                        ShowLoading(false);
-                        ShowLogo(true);
+                        if (!InSubscription)
+                        {
+                            ShowLoading(false);
+                            ShowLogo(true);
+                        }
                         break;
                     }
                 case PlayerState.Paused:
