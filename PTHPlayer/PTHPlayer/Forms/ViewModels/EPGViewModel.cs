@@ -7,6 +7,7 @@ namespace PTHPlayer.Forms.ViewModels
         private int id = -1;
         private string label;
         private int number;
+        private string image;
 
         private string title;
         private string fullDescription;
@@ -41,6 +42,11 @@ namespace PTHPlayer.Forms.ViewModels
         {
             set { SetProperty(ref number, value); }
             get { return number; }
+        }
+        public string Image
+        {
+            set { SetProperty(ref image, value); }
+            get { return image; }
         }
 
         public string Title

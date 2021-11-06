@@ -8,6 +8,7 @@ using PTHPlayer.HTSP.Models;
 using PTHPlayer.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Timers;
@@ -171,6 +172,24 @@ namespace PTHPlayer.Forms.Controls
                 EPGViewModel.Id = channel.Id;
                 EPGViewModel.Number = channel.Number;
                 EPGViewModel.Label = channel.Label;
+
+                if (!String.IsNullOrEmpty(channel.Icon))
+                {
+                    string filepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), channel.Icon + ".png");
+                    if (!channel.HasHttpIcon() && File.Exists(filepath))
+                    {
+                        
+                        EPGViewModel.Image = filepath;
+                        ChannelNumber.IsVisible = false;
+                        ChannelIcon.IsVisible = true;
+                    }
+                    else
+                    {
+                        ChannelNumber.IsVisible = true;
+                        ChannelIcon.IsVisible = false;
+                    }
+
+                }
 
                 var epg = EPGs.SingleOrDefault(f => f.EventId == channel.EventId);
 

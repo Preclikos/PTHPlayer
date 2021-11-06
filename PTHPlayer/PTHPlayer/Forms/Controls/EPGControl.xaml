@@ -16,7 +16,7 @@
     <Grid.RowDefinitions>
         <RowDefinition Height="120" />
         <RowDefinition Height="*" />
-        <RowDefinition Height="500" />
+        <RowDefinition Height="520" />
         <RowDefinition Height="10" />
         <RowDefinition Height="120" />
     </Grid.RowDefinitions>
@@ -54,12 +54,17 @@
 
     <Grid Grid.Row="2">
         <Grid.RowDefinitions>
-            <RowDefinition Height="100" />
+            <RowDefinition Height="120" />
             <RowDefinition Height="400"/>
         </Grid.RowDefinitions>
         
         <StackLayout Padding="60, 0" Grid.Row="0">
-            <Label Text="{Binding Number}" TextColor="WhiteSmoke" FontSize="160" FontAttributes="Bold" />
+            <Label Text="{Binding Number}" TextColor="WhiteSmoke" FontSize="160" FontAttributes="Bold" x:Name="ChannelNumber" />
+            <Image IsVisible="False" Aspect="AspectFit" x:Name="ChannelIcon" HorizontalOptions="Start">
+                <Image.Source>
+                    <FileImageSource File="{Binding Image}" />
+                </Image.Source>
+            </Image>
         </StackLayout>
 
         <Grid BackgroundColor="#BF000000" Grid.Row="1">
