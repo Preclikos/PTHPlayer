@@ -67,6 +67,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>LangResources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Forms\SharedControls\PlayerHeader.xaml.cs">
+      <DependentUpon>PlayerHeader.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 

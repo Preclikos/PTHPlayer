@@ -2,6 +2,8 @@
 using PTHPlayer.DataStorage;
 using PTHPlayer.Forms.Modals.ModalViewModels;
 using PTHPlayer.Interfaces;
+using System;
+using System.IO;
 using System.Runtime.CompilerServices;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -11,16 +13,16 @@ namespace PTHPlayer.Forms.Modals
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SettingControl : StackLayout
     {
-        readonly SettingViewModel SettingModel;
+        readonly SettingViewModel SettingModel = new SettingViewModel();
         readonly IDataStorage NativeDataService;
 
         public SettingControl(PlayerController videoPlayerController)
         {
             InitializeComponent();
 
-            SettingModel = new SettingViewModel();
-
             NativeDataService = DependencyService.Get<IDataStorage>();
+
+            this.BindingContext = SettingModel;
         }
 
         protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -42,6 +44,8 @@ namespace PTHPlayer.Forms.Modals
 
         void OnAppearing()
         {
+            FillData();
+
             MessagingCenter.Subscribe<IKeyEventSender, string>(this, "KeyDown",
              (sender, arg) =>
              {
@@ -52,6 +56,29 @@ namespace PTHPlayer.Forms.Modals
 
                  }
              });
+        }
+
+        void FillData()
+        {
+            SettingModel.CacheSize = CalculateCacheSize();
+        }
+
+        double CalculateCacheSize()
+        {
+            string iconDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "imagecache");
+            var files = Directory.GetFiles(iconDirectory);
+
+            long Size = 0;
+
+            foreach (var file in files)
+            {
+                var fileInfo = new FileInfo(file);
+                Size = Size + fileInfo.Length;
+            }
+
+            var TotalSize = (double)Size / (double)1024 / (double)1024; //kB
+
+            return TotalSize;
         }
 
         void OnDisappearing()

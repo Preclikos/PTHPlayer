@@ -26,8 +26,12 @@
                 <Label FontSize="Large" Text="{x:Static resx:LangResources.Setting_Title}" HorizontalOptions="Start" />
             </StackLayout>
             <Grid>
-                <Label Text="{x:Static resx:LangResources.Setting_Credentials}" />
-                <Button Grid.Column="1"  Text="{x:Static resx:LangResources.Delete}" Clicked="CredentialsClear_Clicked"/>
+
+                <Label Grid.Row="0" Text="{x:Static resx:LangResources.Setting_Credentials}" />
+                <Button Grid.Row="0" Grid.Column="1"  Text="{x:Static resx:LangResources.Delete}" Clicked="CredentialsClear_Clicked"/>
+
+                <Label Grid.Row="1" Text="{Binding CacheSize}" />
+                <Button Grid.Row="1" Grid.Column="1"  Text="{x:Static resx:LangResources.Delete}" Clicked="CredentialsClear_Clicked"/>
             </Grid>
         </StackLayout>
     </Grid>
