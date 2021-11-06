@@ -8,5 +8,14 @@
         public int EventId { get; set; }
         public int NextEventId { get; set; }
         public string Icon { get; set; }
+
+        public bool HasHttpIcon()
+        {
+            if(Icon.StartsWith("http", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

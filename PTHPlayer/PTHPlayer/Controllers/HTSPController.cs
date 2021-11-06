@@ -166,16 +166,22 @@ namespace PTHPlayer.Controllers
 
         void CacheChannelImage(int channelId)
         {
-            string iconDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "imagecache");
-            if (!Directory.Exists(iconDirectory))
-            {
-                Directory.CreateDirectory(iconDirectory);
-            }
             lock (lockImageDownload)
             {
                 var channel = DataStorage.GetChannel(channelId);
                 if (channel != null && !String.IsNullOrEmpty(channel.Icon))
                 {
+                    if(channel.HasHttpIcon())
+                    {
+                        return;
+                    }
+
+                    string iconDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "imagecache");
+                    if (!Directory.Exists(iconDirectory))
+                    {
+                        Directory.CreateDirectory(iconDirectory);
+                    }
+
                     string filepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), channel.Icon + ".png");
 
                     var file = HTSPClient.FileOpen(channel.Icon);
