@@ -181,12 +181,21 @@ namespace PTHPlayer.Forms.Controls
                         
                         EPGViewModel.Image = filepath;
                         ChannelNumber.IsVisible = false;
+                        ChannelIconUrl.IsVisible = false;
                         ChannelIcon.IsVisible = true;
+                    }
+                    else if(channel.HasHttpIcon())
+                    {
+                        EPGViewModel.ImageUrl = channel.Icon;
+                        ChannelIconUrl.IsVisible = true;
+                        ChannelNumber.IsVisible = false;
+                        ChannelIcon.IsVisible = false;
                     }
                     else
                     {
                         ChannelNumber.IsVisible = true;
                         ChannelIcon.IsVisible = false;
+                        ChannelIconUrl.IsVisible = false;
                     }
 
                 }

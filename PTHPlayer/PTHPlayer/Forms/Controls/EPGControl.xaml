@@ -65,6 +65,11 @@
                     <FileImageSource File="{Binding Image}" />
                 </Image.Source>
             </Image>
+            <Image IsVisible="False" Aspect="AspectFit" x:Name="ChannelIconUrl" HorizontalOptions="Start">
+                <Image.Source>
+                    <UriImageSource Uri="{Binding ImageUrl}" />
+                </Image.Source>
+            </Image>
         </StackLayout>
 
         <Grid BackgroundColor="#BF000000" Grid.Row="1">

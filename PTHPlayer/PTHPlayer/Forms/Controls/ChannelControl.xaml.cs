@@ -57,8 +57,18 @@ namespace PTHPlayer.Forms.Controls
                     Number = channel.Number
                 };
 
-                string filepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), channel.Icon + ".png");
-                newChannel.Image = filepath;
+                if (!String.IsNullOrEmpty(channel.Icon))
+                {
+                    if (!channel.HasHttpIcon())
+                    {
+                        string filepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), channel.Icon + ".png");
+                        newChannel.Image = filepath;
+                    }
+                    else
+                    {
+                        newChannel.ImageUrl = channel.Icon;
+                    }
+                }
 
                 try
                 {
