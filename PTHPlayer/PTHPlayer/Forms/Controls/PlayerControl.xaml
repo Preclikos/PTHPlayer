@@ -54,7 +54,6 @@
     <StackLayout Grid.Row="1" x:Name="ModalSection">
     </StackLayout>
     <StackLayout Opacity="0" x:Name="FullDescription" Grid.Row="1" BackgroundColor="#BF000000" Margin="60" Padding="30">
-        
         <Label Text="{Binding Title}" FontSize="74" FontAttributes="Bold" />
         <Label Text="{Binding FullDescription}" />
     </StackLayout>
@@ -66,7 +65,6 @@
         </StackLayout>
         <ProgressBar Margin="0" Progress="{Binding Progress}" ScaleY="3" BackgroundColor="DarkSlateBlue" />
         <StackLayout Orientation="Horizontal">
-            <!--<component:PlayerButton -->
             <component:ImageButton 
                 x:Name="PlayStopButton"
                 Margin="0, 15" HorizontalOptions="Start"
@@ -76,21 +74,18 @@
                 />
 
             <Label HorizontalOptions="CenterAndExpand"/>
-            <!--<component:PlayerButton -->
             <component:ImageButton
                 Margin="0, 15" HorizontalOptions="End"
                 DefaultImage="icons/messages.png" 
                 WidthRequest="80" 
-                Command="{Binding AudioSelectionCommand}"
+                Command="{Binding SubtitleSelectionCommand}"
                 />
-            <!--<component:PlayerButton -->
             <component:ImageButton 
                 Margin="0, 15" HorizontalOptions="End"
                 DefaultImage="icons/loudspeaker_fixedColor.png"
                 WidthRequest="80"
-                Command="{Binding SubtitleSelectionCommand}"
+                Command="{Binding AudioSelectionCommand}"
                 />
-            <!--<component:PlayerButton -->
             <component:ImageButton
                 Margin="0, 15" HorizontalOptions="End"
                 DefaultImage="icons/settings.png"

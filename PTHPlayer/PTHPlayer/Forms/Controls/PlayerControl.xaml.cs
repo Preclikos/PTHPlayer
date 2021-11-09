@@ -196,7 +196,7 @@ namespace PTHPlayer.Forms.Controls
             if (e.Item == null)
                 return;
 
-            var channelModel = (ChannelItemViewModel)e.Item;
+            var channelModel = (ChannelViewModel)e.Item;
             VideoPlayerController.Subscription(channelModel.Id);
 
             ((ListView)sender).SelectedItem = null;
