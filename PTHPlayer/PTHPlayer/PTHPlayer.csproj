@@ -92,6 +92,12 @@
     <EmbeddedResource Update="App.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Forms\Components\ChannelListViewItem.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Forms\Components\ImageButton.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Forms\Controls\ExitControl.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
@@ -126,6 +132,9 @@
     <EmbeddedResource Update="Forms\Resources\LangResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>LangResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Forms\Components\ScrollableGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
 
