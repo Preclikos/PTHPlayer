@@ -3,6 +3,7 @@
       x:Class="PTHPlayer.Forms.Controls.PlayerControl"
       xmlns:resx="clr-namespace:PTHPlayer.Forms.Resources;"
       xmlns:local="clr-namespace:PTHPlayer.Forms.ViewModels"
+      xmlns:component="clr-namespace:PTHPlayer.Forms.Components"
       NavigationPage.HasNavigationBar="False"
       VerticalOptions="FillAndExpand"
       HorizontalOptions="FillAndExpand"
@@ -66,14 +67,36 @@
         <ProgressBar Margin="0" Progress="{Binding Progress}" ScaleY="3" BackgroundColor="DarkSlateBlue" />
         <StackLayout Orientation="Horizontal">
             <!--<component:PlayerButton -->
-            <Button x:Name="PlayStopButton" Margin="0, 15" ImageSource="icons/multimedia.png" WidthRequest="100" Clicked="Handle_PlayButton" HorizontalOptions="Start" BackgroundColor="Transparent" />
+            <component:ImageButton 
+                x:Name="PlayStopButton"
+                Margin="0, 15" HorizontalOptions="Start"
+                DefaultImage="icons/multimedia.png" 
+                WidthRequest="80" 
+                Command="{Binding PlayStopCommand}"
+                />
+
             <Label HorizontalOptions="CenterAndExpand"/>
             <!--<component:PlayerButton -->
-            <Button Margin="0, 15" ImageSource="icons/messages.png" WidthRequest="100" Clicked="Handle_SubtitleSelection" HorizontalOptions="End" BackgroundColor="Transparent" />
+            <component:ImageButton
+                Margin="0, 15" HorizontalOptions="End"
+                DefaultImage="icons/messages.png" 
+                WidthRequest="80" 
+                Command="{Binding AudioSelectionCommand}"
+                />
             <!--<component:PlayerButton -->
-            <Button Margin="0, 15" ImageSource="icons/loudspeaker_fixedColor.png" WidthRequest="100"  Clicked="Handle_AudioSelection" HorizontalOptions="End" BackgroundColor="Transparent" />
+            <component:ImageButton 
+                Margin="0, 15" HorizontalOptions="End"
+                DefaultImage="icons/loudspeaker_fixedColor.png"
+                WidthRequest="80"
+                Command="{Binding SubtitleSelectionCommand}"
+                />
             <!--<component:PlayerButton -->
-            <Button Margin="0, 15" ImageSource="icons/settings.png" WidthRequest="100" Clicked="Handle_Settings" HorizontalOptions="End" BackgroundColor="Transparent" />
+            <component:ImageButton
+                Margin="0, 15" HorizontalOptions="End"
+                DefaultImage="icons/settings.png"
+                WidthRequest="80" 
+                Command="{Binding SettingsCommand}"
+                />
         </StackLayout>
     </StackLayout>
 </Grid>

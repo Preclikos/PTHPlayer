@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -32,6 +33,7 @@ namespace PTHPlayer.Forms.Controls
         private List<ChannelModel> Channels = new List<ChannelModel>();
         private List<EPGModel> EPGs = new List<EPGModel>();
 
+        public ICommand PlayStopCommand { get; private set; }
         public PlayerControl(DataService dataStorage, PlayerController videoPlayerController, HTSPController hTSPController, EventService eventNotificationService)
         {
             InitializeComponent();
@@ -52,6 +54,11 @@ namespace PTHPlayer.Forms.Controls
 
             Setting = new SettingControl(VideoPlayerController) { IsVisible = false };
             ModalSection.Children.Add(Setting);
+
+            PlayerViewModel.PlayStopCommand = new Command(PlayStopButtonCommand);
+            PlayerViewModel.AudioSelectionCommand = new Command(AudioSelectionButtonCommand);
+            PlayerViewModel.SubtitleSelectionCommand = new Command(SubtitleSelectionButtonCommand);
+            PlayerViewModel.SettingsCommand = new Command(SettingsButtonCommand);
         }
 
         private int ChannelMove(int currentChannel, ChannelMoveDirection channelMove)
@@ -171,11 +178,11 @@ namespace PTHPlayer.Forms.Controls
 
                 if (PlayerViewModel.Id == DataStorage.SelectedChannelId)
                 {
-                    PlayStopButton.ImageSource = ImageSource.FromFile("icons/stop.png");
+                    PlayStopButton.DefaultImage = "icons/stop.png";
                 }
                 else
                 {
-                    PlayStopButton.ImageSource = ImageSource.FromFile("icons/multimedia.png");
+                    PlayStopButton.DefaultImage = "icons/multimedia.png";
                 }
             }
             catch (Exception ex)
@@ -189,7 +196,7 @@ namespace PTHPlayer.Forms.Controls
             if (e.Item == null)
                 return;
 
-            var channelModel = (ChannelViewModel)e.Item;
+            var channelModel = (ChannelItemViewModel)e.Item;
             VideoPlayerController.Subscription(channelModel.Id);
 
             ((ListView)sender).SelectedItem = null;
@@ -333,40 +340,40 @@ namespace PTHPlayer.Forms.Controls
             }
         }
 
-        void Handle_Settings(object sender, EventArgs e)
+        void SettingsButtonCommand()
         {
             HideModals();
             Setting.IsVisible = true;
             Setting.Focus();
         }
 
-        void Handle_AudioSelection(object sender, EventArgs e)
+        void AudioSelectionButtonCommand()
         {
             HideModals();
             AudioSelection.IsVisible = true;
             AudioSelection.Focus();
         }
 
-        void Handle_SubtitleSelection(object sender, EventArgs e)
+        void SubtitleSelectionButtonCommand()
         {
             HideModals();
             SubtitleSelection.IsVisible = true;
             SubtitleSelection.Focus();
         }
 
-        void Handle_PlayButton(object sender, EventArgs e)
+        void PlayStopButtonCommand()
         {
 
             if (PlayerViewModel.Id == DataStorage.SelectedChannelId)
             {
                 DataStorage.SelectedChannelId = -1;
                 VideoPlayerController.UnSubscribe();
-                PlayStopButton.ImageSource = ImageSource.FromFile("icons/multimedia.png");
+                PlayStopButton.DefaultImage = "icons/multimedia.png";
                 return;
             }
             VideoPlayerController.Subscription(PlayerViewModel.Id);
             DataStorage.SelectedChannelId = PlayerViewModel.Id;
-            PlayStopButton.ImageSource = ImageSource.FromFile("icons/stop.png");
+            PlayStopButton.DefaultImage = "icons/stop.png";
         }
 
         void HideModals()

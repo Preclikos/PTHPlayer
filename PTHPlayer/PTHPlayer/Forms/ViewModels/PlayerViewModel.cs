@@ -1,4 +1,5 @@
 ﻿using PTHPlayer.DataStorage.Models;
+using System.Windows.Input;
 
 namespace PTHPlayer.Forms.ViewModels
 {
@@ -17,6 +18,11 @@ namespace PTHPlayer.Forms.ViewModels
         private string time;
         private string startTime;
         private string endTime;
+
+        ICommand playStopCommand;
+        ICommand audioSelectionCommand;
+        ICommand subtitleSeletionCommand;
+        ICommand settingsCommand;
 
         public int Id
         {
@@ -80,6 +86,27 @@ namespace PTHPlayer.Forms.ViewModels
         {
             set { SetProperty(ref endTime, value); }
             get { return endTime; }
+        }
+
+        public ICommand PlayStopCommand
+        {
+            set { SetProperty(ref playStopCommand, value); }
+            get { return playStopCommand; }
+        }
+        public ICommand AudioSelectionCommand
+        {
+            set { SetProperty(ref audioSelectionCommand, value); }
+            get { return audioSelectionCommand; }
+        }
+        public ICommand SubtitleSelectionCommand
+        {
+            set { SetProperty(ref subtitleSeletionCommand, value); }
+            get { return subtitleSeletionCommand; }
+        }
+        public ICommand SettingsCommand
+        {
+            set { SetProperty(ref settingsCommand, value); }
+            get { return settingsCommand; }
         }
     }
 }

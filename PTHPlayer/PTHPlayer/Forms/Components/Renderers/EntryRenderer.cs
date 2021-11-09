@@ -6,8 +6,6 @@ namespace PTHPlayer.Forms.Components.Renderers
 {
     public class EntryRenderer : Xamarin.Forms.Platform.Tizen.EntryRenderer
     {
-        const string _doneKeyName = "Select";
-        const string _cancelKeyName = "Cancel";
 
         protected override void OnElementChanged(ElementChangedEventArgs<Entry> e)
         {
