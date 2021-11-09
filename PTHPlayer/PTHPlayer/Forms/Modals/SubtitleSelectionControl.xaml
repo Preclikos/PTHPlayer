@@ -24,7 +24,7 @@
         <StackLayout Padding="20" Grid.Row="1" Grid.Column="1" BackgroundColor="#BF000000">
             <StackLayout Orientation="Horizontal">
                 <Label FontSize="Large" Text="{x:Static resx:LangResources.SubtitleSelection_Title}" HorizontalOptions="Start" />
-                <Switch IsToggled="{Binding SubtitleEnabled}" Toggled="SubtitleEnable_Toggled" x:Name="SubtitleEnable" HorizontalOptions="EndAndExpand" />
+                <Switch IsToggled="{Binding SubtitleEnabled}" Toggled="SubtitleEnable_Toggled" WidthRequest="300" x:Name="SubtitleEnable" HorizontalOptions="EndAndExpand" />
             </StackLayout>
             <ListView            
                 x:Name="SubtitleSelectionList"
